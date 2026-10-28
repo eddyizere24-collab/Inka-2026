@@ -37,7 +37,7 @@ export const SpectatorView: React.FC = () => {
             <h2 className="text-base sm:text-lg font-bold font-display text-white">{t.live_arena}</h2>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            Watch live matches in real time. Engage in artistic discussion with fellow spectators.
+            {t.watchLiveMatchesDescription}
           </p>
         </div>
 
@@ -75,7 +75,7 @@ export const SpectatorView: React.FC = () => {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs uppercase tracking-wider font-bold text-emerald-400 font-mono">
-                  {m.gameType}
+                  {m.gameType === 'dame' ? t.dameTitle : m.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
                 </span>
                 <span className="text-xs text-slate-400 flex items-center gap-1 font-mono">
                   <Eye className="w-3.5 h-3.5 text-slate-400" />
@@ -86,8 +86,8 @@ export const SpectatorView: React.FC = () => {
                 {m.playerA.name} <span className="text-slate-500 font-normal">{t.versusLabel}</span> {m.playerB.name}
               </div>
               <div className="text-xs text-slate-400 mt-1 flex justify-between font-mono">
-                <span>{m.timeControl}</span>
-                <span className="text-emerald-400 font-medium">Advantage: {(m.advantage * 100).toFixed(0)}%</span>
+                <span>{m.timeControl === 'casual' ? t.time_casual : m.timeControl === '30s' ? t.time_30s : t.time_60s}</span>
+                <span className="text-emerald-400 font-medium">{t.skillAdvantageLabel}: {(m.advantage * 100).toFixed(0)}%</span>
               </div>
             </button>
           );
@@ -115,9 +115,9 @@ export const SpectatorView: React.FC = () => {
 
               <div className="text-center">
                 <span className="text-xs uppercase font-bold text-emerald-400 font-mono block">
-                  {selectedMatch.gameType.toUpperCase()}
+                  {selectedMatch.gameType === 'dame' ? t.dameTitle : selectedMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
                 </span>
-                <span className="text-[11px] text-slate-500">Move #{selectedMatch.moveCount}</span>
+                <span className="text-[11px] text-slate-500">{t.moveNumberLabel} #{selectedMatch.moveCount}</span>
               </div>
 
               <div className="flex items-center gap-3 text-right">
@@ -162,7 +162,7 @@ export const SpectatorView: React.FC = () => {
                   {selectedMatch.gameType === 'dame' ? t.dameTitle : selectedMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle} · {t.gameStreamInProgress}
                 </p>
                 <p className="text-xs text-slate-400 max-w-sm mt-1">
-                  Advantage: <span className="font-mono text-emerald-400">{(selectedMatch.advantage * 100).toFixed(0)}%</span>. Current turn is with{' '}
+                  {t.skillAdvantageLabel}: <span className="font-mono text-emerald-400">{(selectedMatch.advantage * 100).toFixed(0)}%</span>. {t.currentTurnWithLabel.replace('{player}', selectedMatch.turn === 'A' ? selectedMatch.playerA.name : selectedMatch.playerB.name)}.
                   <span className="text-emerald-300 font-semibold">
                     {selectedMatch.turn === 'A' ? selectedMatch.playerA.name : selectedMatch.playerB.name}
                   </span>.
@@ -179,14 +179,14 @@ export const SpectatorView: React.FC = () => {
                   className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
-                  <span>Challenge {selectedMatch.playerA.name.split(' ')[0]}</span>
+                  <span>{t.challenge} {selectedMatch.playerA.name.split(' ')[0]}</span>
                 </button>
                 <button
                   onClick={() => handleRequestToPlay(selectedMatch.playerB)}
                   className="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
-                  <span>Challenge {selectedMatch.playerB.name.split(' ')[0]}</span>
+                  <span>{t.challenge} {selectedMatch.playerB.name.split(' ')[0]}</span>
                 </button>
               </div>
             </div>
