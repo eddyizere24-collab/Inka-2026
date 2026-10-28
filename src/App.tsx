@@ -51,7 +51,7 @@ const MainShell: React.FC = () => {
             <div className="hidden sm:flex items-center gap-2">
               <InkaLogo variant="symbol" size="sm" />
               <span className="font-display font-bold text-white text-sm sm:text-base">
-                INKA · {currentMatch.gameType.toUpperCase()}
+                INKA · {currentMatch.gameType === 'dame' ? t.dameTitle : currentMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
               </span>
             </div>
           </div>
