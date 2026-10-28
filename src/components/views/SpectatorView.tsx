@@ -254,7 +254,7 @@ export const SpectatorView: React.FC = () => {
           onStart={(game, timeControl) => {
             const oppName = challengedPlayer.name;
             setChallengedPlayer(null);
-            setRequestSentNotice(`Challenge sent to ${oppName} for ${game.toUpperCase()} (${timeControl}).`);
+            setRequestSentNotice(t.challengeSentNotice.replace('{player}', oppName).replace('{game}', game === 'dame' ? t.dameTitle : game === 'igisoro' ? t.igisoroTitle : t.biyariTitle).replace('{time}', timeControl === 'casual' ? t.time_casual : timeControl === '30s' ? t.time_30s : t.time_60s));
           }}
         />
       )}
