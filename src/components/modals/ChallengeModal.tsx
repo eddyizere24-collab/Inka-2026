@@ -122,7 +122,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
           {/* Friendly Note */}
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1">
-              Friendly Greeting / Message
+              {t.friendlyMessageLabel}
             </label>
             <input
               type="text"
