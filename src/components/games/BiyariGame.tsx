@@ -185,7 +185,7 @@ export const BiyariGame: React.FC = () => {
             b.isPotted = true;
             b.vx = 0;
             b.vy = 0;
-            sounds.playBilliardPocket();
+            sounds.playPocketDrop();
 
             if (b.type === 'cue') {
               // Scratch: respawn cue ball on head spot
