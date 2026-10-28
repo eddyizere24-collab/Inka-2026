@@ -339,15 +339,15 @@ export const IgisoroGame: React.FC = () => {
             </h4>
             <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
               <p>
-                In Igisoro, players sow seeds in counter-clockwise loops. When the final seed lands in an occupied front pit with opponent seeds directly opposite, a capture occurs.
+                {t.igisoroDesc}
               </p>
               <div className="p-2.5 bg-[#0e131b] rounded-lg font-mono text-[11px] text-emerald-300 space-y-1">
-                <div>A Seeds: {seedsA} / 64 ({(seedsA / 64 * 100).toFixed(0)}%)</div>
-                <div>Advantage (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
-                <div>Leader: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : 'Level'}</div>
+                <div>{t.playerASeedsLabel}: {seedsA} / 64 ({(seedsA / 64 * 100).toFixed(0)}%)</div>
+                <div>{t.skillAdvantageLabel} (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
+                <div>{t.leaderLabel}: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : t.levelStanding}</div>
               </div>
               <p className="text-[11px] text-slate-500">
-                Play continues until one side has no seeds or no legal sowing moves remaining.
+                {t.igisoroRulesShort}
               </p>
             </div>
           </div>
@@ -367,7 +367,7 @@ export const IgisoroGame: React.FC = () => {
                 onClick={() => setCurrentMatch(null)}
                 className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
-                Return to Lobby
+                {t.backToLobby}
               </button>
             </div>
           )}
