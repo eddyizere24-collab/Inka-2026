@@ -3,7 +3,7 @@
 > **"Kina. Ruhura mu mutwe. Rushanwa ku bwenge. Menyane n'abandi."**
 > *(Play. Relax the mind. Compete with intellect. Connect with friends.)*
 
-An authentic, modern web platform celebrating traditional Rwandan skill games. Officially branded as **INKA**, inspired by Rwandan heritage, community connection, intellectual play, and genuine sportsmanship.
+A modern front-end prototype for a platform celebrating traditional Rwandan skill games. Officially branded as **INKA**, it is inspired by Rwandan heritage, community connection, intellectual play, and sportsmanship.
 
 ---
 
@@ -13,9 +13,9 @@ An authentic, modern web platform celebrating traditional Rwandan skill games. O
 * **100% Free Skill Platform**: INKA has completely eliminated financial wagering, cow staking, money transfer, and cashouts. Play is 100% free for everyone, governed by intellect and sportsmanship.
 * **Match Scoring & Advantage Engine**: Replaces gambling formulas with a pure skill advantage metric $w \in [0, 1.0]$ indicating match dominance based on net captures, seed counts, and pocketed balls.
 * **Sportsmanship & Honor System**: Players earn honor points and level up sportsmanship stars (1 to 5 stars) through polite play, mutual draws, and fair matches.
-* **Strictly Human-vs-Human**: Every match is played against a verified human community member. Computer bots and AI players are strictly excluded.
+* **Prototype limitation**: The repository currently contains sample player profiles and match data, plus simulated/local opponent behavior. It does not yet include a production authentication system, database, live matchmaking service, or real-time multiplayer backend. The sample profiles are not verified real accounts.
 * **Freedom to Conclude Gracefully**: Either player may propose a draw or conclude a match anytime with dignity.
-* **Spectator Integrity**: Spectators watch games live in silence without coaching. Comments remain isolated until the final move is made.
+* **Spectator prototype**: The spectator screens demonstrate the intended layout and interaction flow using local sample matches. A real live-match feed and shared spectator chat require a connected backend.
 * **Trilingual Localization**: Full parity across **Kinyarwanda (`rw`, default)**, **English (`en`)**, and **French (`fr`)**, verified by automated test suites.
 
 ---
@@ -114,4 +114,4 @@ Build outputs are written to the `dist/` directory.
 ---
 
 ## 5. Deployment
-The project is ready for immediate deployment on Vercel, Cloud Run, Render, or any standard static or Node host.
+The front-end prototype can be deployed for a preview, but it is **not production-ready for real online multiplayer**. Before presenting it as a live service, implement and test secure accounts, persistent data storage, real matchmaking, server-authoritative game state, real-time synchronization, and server-side validation. Deployment of the static front end alone does not provide these services.
