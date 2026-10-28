@@ -45,7 +45,7 @@ export const ProfilesView: React.FC = () => {
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-white">{currentUser.name}</h3>
               <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                YOU
+                {t.youLabel}
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
@@ -56,7 +56,7 @@ export const ProfilesView: React.FC = () => {
               <span>·</span>
               <span className="flex items-center gap-1 text-emerald-400">
                 <Award className="w-3.5 h-3.5 text-emerald-400" />
-                {currentUser.honorRating} Honor Points ({currentUser.gamesWon} wins / {currentUser.gamesPlayed} games)
+                {currentUser.honorRating} {t.honorPointsLabel} ({currentUser.gamesWon} {t.matchesWon} / {currentUser.gamesPlayed} {t.matchesPlayed})
               </span>
             </div>
             <p className="text-xs text-slate-300 italic pt-1">"{currentUser.bio}"</p>
@@ -68,7 +68,7 @@ export const ProfilesView: React.FC = () => {
             onClick={() => setIsEditingBio(!isEditingBio)}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition-colors cursor-pointer"
           >
-            {isEditingBio ? 'Cancel' : 'Edit Bio'}
+            {isEditingBio ? t.cancel : t.editBio}
           </button>
         </div>
       </div>
@@ -86,7 +86,7 @@ export const ProfilesView: React.FC = () => {
             type="submit"
             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold cursor-pointer"
           >
-            Save Bio
+            {t.saveBioLabel}
           </button>
         </form>
       )}
@@ -124,7 +124,7 @@ export const ProfilesView: React.FC = () => {
                     <span>{player.sportsmanshipLevel}.0</span>
                   </span>
                   <span className="text-[11px] text-slate-400 block mt-0.5">
-                    {player.gamesWon}W · {player.gamesPlayed} matches
+                    {player.gamesWon} · {player.gamesPlayed} {t.matchesPlayed}
                   </span>
                 </div>
               </div>
