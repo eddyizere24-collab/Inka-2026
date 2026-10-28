@@ -58,7 +58,7 @@ test('i18n Validation: Dynamic message templates preserve matching placeholders'
   ] as const;
 
   const placeholders = (value: string) =>
-    (value.match(/\\{[^}]+\\}/g) ?? []).sort();
+    (value.match(/\{[^}]+\}/g) ?? []).sort();
 
   for (const key of templateKeys) {
     assert.deepEqual(
