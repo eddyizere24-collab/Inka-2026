@@ -18,7 +18,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   const { t } = usePlatform();
   const [selectedGame, setSelectedGame] = useState<GameType>(initialGame);
   const [timeControl, setTimeControl] = useState<TimeControl>('30s');
-  const [message, setMessage] = useState<string>('Ready for a respectful match of skill!');
+  const [message, setMessage] = useState<string>(t.defaultFriendlyMessage);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               {t.challenge_player}: {opponent.name}
             </h3>
             <p className="text-xs text-slate-400">
-              {opponent.city} · ★ {opponent.sportsmanshipLevel}.0 · {opponent.honorRating} Honor
+              {opponent.city} · ★ {opponent.sportsmanshipLevel}.0 · {opponent.honorRating} {t.honorPointsLabel}
             </p>
           </div>
         </div>
@@ -64,9 +64,9 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             <div className="grid grid-cols-3 gap-2.5">
               {(
                 [
-                  { id: 'dame', label: t.game_dame, desc: '10 Pieces · 8×8' },
-                  { id: 'igisoro', label: t.game_igisoro, desc: '32 Pits · 64 Seeds' },
-                  { id: 'biyari', label: t.game_biyari, desc: '8-Ball Billiards' },
+                  { id: 'dame', label: t.game_dame, desc: t.dameRulesShort },
+                  { id: 'igisoro', label: t.game_igisoro, desc: t.igisoroRulesShort },
+                  { id: 'biyari', label: t.game_biyari, desc: t.biyariRulesShort },
                 ] as const
               ).map((g) => (
                 <button
