@@ -31,14 +31,14 @@ export const SchedulingView: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold font-display text-white">{t.schedule_time}</h2>
         <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          Publish your playing hours or arrange matches with other skilled players across Rwanda.
+          {t.schedulingSubtitle}
         </p>
       </div>
 
       {saveNotice && (
         <div className="p-3 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-emerald-300 text-xs flex items-center gap-2">
           <Check className="w-4 h-4 text-emerald-400" />
-          <span>Your availability schedule has been published to the community.</span>
+          <span>{t.availabilitySavedNotice}</span>
         </div>
       )}
 
@@ -56,45 +56,45 @@ export const SchedulingView: React.FC = () => {
         <div className="p-6 bg-[#131923] border border-slate-800 rounded-2xl shadow-xl space-y-5">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-emerald-400" />
-            <h3 className="font-bold text-white text-base">Publish Your Availability</h3>
+            <h3 className="font-bold text-white text-base">{t.publishYourHours}</h3>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">
-            Let players know when you are open for a friendly contest. When someone challenges you during your published window, your device receives a real-time call alert.
+            {t.publishHoursDesc}
           </p>
 
           <form onSubmit={handleSaveAvailability} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Your Time Window:
+                {t.yourTimeWindowLabel}:
               </label>
               <input
                 type="text"
                 value={myWindow}
                 onChange={(e) => setMyWindow(e.target.value)}
-                placeholder="e.g. Daily 6:00 PM – 9:00 PM or Saturday 3:00 PM"
+                placeholder={t.yourTimeWindowPlaceholder}
                 className="w-full px-3 py-2 bg-[#0c1016] border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
               />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Preferred Game During This Window:
+                {t.preferredGameLabel}:
               </label>
               <select
                 value={myPreferredGame}
                 onChange={(e) => setMyPreferredGame(e.target.value as GameType)}
                 className="w-full px-3 py-2 bg-[#0c1016] border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
               >
-                <option value="dame">Dame (Checkers)</option>
-                <option value="igisoro">Igisoro (Mancala)</option>
-                <option value="biyari">Biyari (Eight-ball)</option>
+                <option value="dame">{t.dameTitle}</option>
+                <option value="igisoro">{t.igisoroTitle}</option>
+                <option value="biyari">{t.biyariTitle}</option>
               </select>
             </div>
 
             <div className="p-3 bg-[#0c1016] rounded-lg border border-slate-800/80 text-[11px] text-slate-400 flex items-start gap-2">
               <PhoneCall className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
               <span>
-                <strong>Call-Style Alerts:</strong> Challenges during your published time trigger an audible phone chime.
+                <strong>{t.callAlertNotice}</strong>
               </span>
             </div>
 
@@ -109,7 +109,7 @@ export const SchedulingView: React.FC = () => {
                 type="button"
                 onClick={triggerMockIncomingChallenge}
                 className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-xl text-xs font-medium border border-slate-700 cursor-pointer"
-                title="Test incoming call alert"
+                title={t.simulateIncomingCall}
               >
                 Test Ring
               </button>
@@ -122,9 +122,9 @@ export const SchedulingView: React.FC = () => {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-white text-base flex items-center gap-2">
               <Calendar className="w-4 h-4 text-emerald-400" />
-              <span>Community Published Availability</span>
+              <span>{t.activePlayersList}</span>
             </h3>
-            <span className="text-xs text-slate-400">{communityPlayers.length} active players</span>
+            <span className="text-xs text-slate-400">{communityPlayers.length} {t.activePlayers}</span>
           </div>
 
           <div className="space-y-3">
@@ -160,7 +160,7 @@ export const SchedulingView: React.FC = () => {
                     className="px-3.5 py-2 bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white rounded-lg text-xs font-semibold border border-slate-700 hover:border-emerald-500 transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
-                    <span>Arrange Match</span>
+                    <span>{t.arrangeMatch}</span>
                   </button>
                 </div>
               </div>
@@ -179,7 +179,7 @@ export const SchedulingView: React.FC = () => {
             const oppWindow = selectedOpponent.availability;
             setSelectedOpponent(null);
             setScheduledMatchAlert(
-              `Scheduled match agreed with ${oppName} for ${game.toUpperCase()} (${timeControl}) at ${oppWindow}.`
+              `${t.scheduledMatchConfirmation.replace('{player}', oppName).replace('{game}', game.toUpperCase()).replace('{time}', timeControl).replace('{window}', oppWindow)}`
             );
           }}
         />
