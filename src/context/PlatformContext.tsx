@@ -1,16 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { calculateSettlement } from '../utils/settlement';
+import { calculateHonorReward, MatchScoreResult } from '../utils/matchScoring';
 import { sounds } from '../utils/sound';
-import { Language, translations } from '../utils/i18n';
+import { Language, translations, TranslationSchema } from '../utils/i18n';
 
 export type GameType = 'dame' | 'igisoro' | 'biyari';
+export type TimeControl = 'casual' | '30s' | '60s';
 
 export interface PlayerProfile {
   id: string;
   name: string;
   city: string;
   avatarSeed: string;
-  rating: number;
+  honorRating: number;
+  sportsmanshipLevel: number; // 1 to 5 stars
   gamesPlayed: number;
   gamesWon: number;
   favGame: GameType;
@@ -20,14 +22,14 @@ export interface PlayerProfile {
   phone?: string;
 }
 
-export interface LedgerEntry {
+export interface MatchHistoryItem {
   id: string;
-  timestamp: string;
-  type: 'free_grant' | 'stake_locked' | 'settlement_payout' | 'slow_penalty' | 'cashout_sim';
-  amount: number; // positive or negative
-  balanceAfter: number;
-  description: string;
-  gameId?: string;
+  gameType: GameType;
+  opponentName: string;
+  result: 'win' | 'loss' | 'draw';
+  scoreSummary: string;
+  date: string;
+  honorEarned: number;
 }
 
 export interface SpectatorComment {
@@ -40,56 +42,52 @@ export interface SpectatorComment {
 export interface ActiveMatch {
   id: string;
   gameType: GameType;
+  timeControl: TimeControl;
   playerA: PlayerProfile;
   playerB: PlayerProfile;
-  stakeA: number;
-  stakeB: number;
   leader: 'A' | 'B' | null;
-  w: number;
-  holdingA: number;
-  holdingB: number;
-  status: 'negotiating' | 'playing' | 'paused' | 'settled';
+  advantage: number;
+  scoreA: number;
+  scoreB: number;
+  status: 'playing' | 'paused' | 'concluded';
   startTime: number;
   spectatorsCount: number;
   comments: SpectatorComment[];
   turn: 'A' | 'B';
   moveCount: number;
-  settlementReason?: string;
+  concludeReason?: string;
 }
 
-export interface IncomingRequest {
+export interface IncomingChallenge {
   id: string;
   challenger: PlayerProfile;
   gameType: GameType;
-  proposedStake: number;
+  timeControl: TimeControl;
+  message: string;
   timestamp: number;
-  status: 'ringing' | 'accepted' | 'declined';
 }
 
 interface PlatformContextType {
   lang: Language;
   setLang: (lang: Language) => void;
-  t: typeof translations.rw;
+  t: TranslationSchema;
   currentUser: PlayerProfile;
   updateCurrentUser: (updates: Partial<PlayerProfile>) => void;
-  inkaBalance: number;
-  setInkaBalance: (val: number | ((prev: number) => number)) => void;
-  ledger: LedgerEntry[];
-  addLedgerEntry: (entry: Omit<LedgerEntry, 'id' | 'timestamp' | 'balanceAfter'>) => void;
+  honorPoints: number;
+  matchHistory: MatchHistoryItem[];
   communityPlayers: PlayerProfile[];
   liveMatches: ActiveMatch[];
   currentMatch: ActiveMatch | null;
   setCurrentMatch: (match: ActiveMatch | null) => void;
-  startMatch: (gameType: GameType, opponent: PlayerProfile, stakeA: number, stakeB: number) => ActiveMatch;
-  settleMatch: (reason: string) => void;
-  updateMatchAdvantage: (leader: 'A' | 'B' | null, w: number) => void;
+  startMatch: (gameType: GameType, opponent: PlayerProfile, timeControl?: TimeControl) => ActiveMatch;
+  concludeMatch: (reason: string, isDraw?: boolean, winner?: 'A' | 'B') => void;
+  updateMatchScore: (scoreResult: MatchScoreResult) => void;
   addSpectatorComment: (matchId: string, comment: string) => void;
-  incomingRequest: IncomingRequest | null;
-  triggerMockIncomingRequest: () => void;
-  respondToIncomingRequest: (action: 'accept' | 'decline' | 'counter', counterStake?: number) => void;
+  incomingChallenge: IncomingChallenge | null;
+  triggerMockIncomingChallenge: () => void;
+  respondToIncomingChallenge: (action: 'accept' | 'decline') => void;
   isMuted: boolean;
   setIsMuted: (muted: boolean) => void;
-  claimFreeInka: (amount?: number) => void;
 }
 
 const PlatformContext = createContext<PlatformContextType | null>(null);
@@ -100,7 +98,8 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     name: 'Uwase Aline',
     city: 'Kigali (Nyarutarama)',
     avatarSeed: 'uwase',
-    rating: 1480,
+    honorRating: 1480,
+    sportsmanshipLevel: 5,
     gamesPlayed: 54,
     gamesWon: 38,
     favGame: 'dame',
@@ -114,7 +113,8 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     name: 'Kamali Jean-Paul',
     city: 'Huye',
     avatarSeed: 'kamali',
-    rating: 1530,
+    honorRating: 1530,
+    sportsmanshipLevel: 5,
     gamesPlayed: 72,
     gamesWon: 49,
     favGame: 'igisoro',
@@ -128,7 +128,8 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     name: 'Mugisha Patrick',
     city: 'Rubavu (Gisenyi)',
     avatarSeed: 'mugisha',
-    rating: 1390,
+    honorRating: 1390,
+    sportsmanshipLevel: 4,
     gamesPlayed: 41,
     gamesWon: 24,
     favGame: 'biyari',
@@ -142,7 +143,8 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     name: 'Keza Diane',
     city: 'Musanze',
     avatarSeed: 'keza',
-    rating: 1445,
+    honorRating: 1445,
+    sportsmanshipLevel: 5,
     gamesPlayed: 33,
     gamesWon: 22,
     favGame: 'igisoro',
@@ -156,7 +158,8 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     name: 'Kalisa Eric',
     city: 'Kigali (Kimihurura)',
     avatarSeed: 'kalisa',
-    rating: 1610,
+    honorRating: 1610,
+    sportsmanshipLevel: 5,
     gamesPlayed: 98,
     gamesWon: 74,
     favGame: 'dame',
@@ -168,15 +171,33 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
 ];
 
 export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLang] = useState<Language>('rw');
-  const [inkaBalance, setInkaBalance] = useState<number>(25.0);
+  // Read persisted language preference from localStorage, default to Kinyarwanda ('rw')
+  const [lang, setLangState] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('inka_language');
+      if (saved === 'rw' || saved === 'en' || saved === 'fr') {
+        return saved;
+      }
+    }
+    return 'rw';
+  });
+
+  const setLang = (newLang: Language) => {
+    setLangState(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('inka_language', newLang);
+    }
+  };
+
+  const [honorPoints, setHonorPoints] = useState<number>(240);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<PlayerProfile>({
     id: 'p-me',
     name: 'Habimana Claude',
     city: 'Kigali (Remera)',
     avatarSeed: 'habimana',
-    rating: 1420,
+    honorRating: 1420,
+    sportsmanshipLevel: 5,
     gamesPlayed: 28,
     gamesWon: 17,
     favGame: 'dame',
@@ -186,30 +207,40 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     phone: '+250 788 555 123',
   });
 
-  const [communityPlayers] = useState<PlayerProfile[]>(INITIAL_PLAYERS);
-  const [ledger, setLedger] = useState<LedgerEntry[]>([
+  const [matchHistory, setMatchHistory] = useState<MatchHistoryItem[]>([
     {
-      id: 'led-1',
-      timestamp: '2026-10-28 09:15',
-      type: 'free_grant',
-      amount: 25.0,
-      balanceAfter: 25.0,
-      description: 'Free Launch Phase Welcome Grant (No charge)',
+      id: 'hist-1',
+      gameType: 'dame',
+      opponentName: 'Uwase Aline',
+      result: 'win',
+      scoreSummary: 'Captured 10 vs 6 pieces',
+      date: '2026-10-28 10:30',
+      honorEarned: 30,
+    },
+    {
+      id: 'hist-2',
+      gameType: 'igisoro',
+      opponentName: 'Kamali Jean-Paul',
+      result: 'draw',
+      scoreSummary: '32 vs 32 seeds',
+      date: '2026-10-27 19:15',
+      honorEarned: 20,
     },
   ]);
+
+  const [communityPlayers] = useState<PlayerProfile[]>(INITIAL_PLAYERS);
 
   const [liveMatches, setLiveMatches] = useState<ActiveMatch[]>([
     {
       id: 'match-spec-1',
       gameType: 'dame',
+      timeControl: '30s',
       playerA: INITIAL_PLAYERS[4], // Kalisa
       playerB: INITIAL_PLAYERS[0], // Uwase
-      stakeA: 5,
-      stakeB: 3,
       leader: 'A',
-      w: 0.2,
-      holdingA: 5.6,
-      holdingB: 2.4,
+      advantage: 0.2,
+      scoreA: 4,
+      scoreB: 2,
       status: 'playing',
       startTime: Date.now() - 1000 * 60 * 12,
       spectatorsCount: 16,
@@ -218,20 +249,19 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       comments: [
         { id: 'c1', author: 'Kamali', text: 'Kalisa made a strong diagonal advance on column 4.', timestamp: '11:05' },
         { id: 'c2', author: 'Mugisha', text: 'Uwase has a trap prepared if he takes the bait.', timestamp: '11:07' },
-        { id: 'c3', author: 'Keza', text: 'The inka gradual settlement keeps both on edge!', timestamp: '11:10' },
+        { id: 'c3', author: 'Keza', text: 'Masterful play from both players!', timestamp: '11:10' },
       ],
     },
     {
       id: 'match-spec-2',
       gameType: 'igisoro',
+      timeControl: 'casual',
       playerA: INITIAL_PLAYERS[1], // Kamali
       playerB: INITIAL_PLAYERS[3], // Keza
-      stakeA: 10,
-      stakeB: 10,
       leader: 'B',
-      w: 0.25,
-      holdingA: 7.5,
-      holdingB: 12.5,
+      advantage: 0.25,
+      scoreA: 24,
+      scoreB: 40,
       status: 'playing',
       startTime: Date.now() - 1000 * 60 * 22,
       spectatorsCount: 29,
@@ -245,13 +275,15 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     {
       id: 'match-spec-3',
       gameType: 'biyari',
+      timeControl: '30s',
       playerA: INITIAL_PLAYERS[2], // Mugisha
       playerB: {
         id: 'p-guest',
         name: 'Gakuba Bosco',
         city: 'Gicumbi',
         avatarSeed: 'gakuba',
-        rating: 1350,
+        honorRating: 1350,
+        sportsmanshipLevel: 5,
         gamesPlayed: 19,
         gamesWon: 11,
         favGame: 'biyari',
@@ -259,12 +291,10 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         status: 'in_game',
         bio: 'Biyari lover.',
       },
-      stakeA: 4,
-      stakeB: 4,
       leader: 'A',
-      w: 0.43,
-      holdingA: 5.72,
-      holdingB: 2.28,
+      advantage: 0.4,
+      scoreA: 4,
+      scoreB: 2,
       status: 'playing',
       startTime: Date.now() - 1000 * 60 * 8,
       spectatorsCount: 11,
@@ -277,66 +307,31 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   ]);
 
   const [currentMatch, setCurrentMatch] = useState<ActiveMatch | null>(null);
-  const [incomingRequest, setIncomingRequest] = useState<IncomingRequest | null>(null);
-
-  const addLedgerEntry = (entry: Omit<LedgerEntry, 'id' | 'timestamp' | 'balanceAfter'>) => {
-    setInkaBalance((prev) => {
-      const newBal = Math.max(0, Math.round((prev + entry.amount) * 100) / 100);
-      const newEntry: LedgerEntry = {
-        id: `led-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: entry.type,
-        amount: entry.amount,
-        balanceAfter: newBal,
-        description: entry.description,
-        gameId: entry.gameId,
-      };
-      setLedger((l) => [newEntry, ...l]);
-      return newBal;
-    });
-  };
-
-  const claimFreeInka = (amount = 20) => {
-    addLedgerEntry({
-      type: 'free_grant',
-      amount,
-      description: 'Free Launch Phase Refill (No real money charged)',
-    });
-    sounds.playInkaChime();
-  };
+  const [incomingChallenge, setIncomingChallenge] = useState<IncomingChallenge | null>(null);
 
   const startMatch = (
     gameType: GameType,
     opponent: PlayerProfile,
-    stakeA: number,
-    stakeB: number
+    timeControl: TimeControl = '30s'
   ): ActiveMatch => {
-    // Lock stake for player A from balance
-    addLedgerEntry({
-      type: 'stake_locked',
-      amount: -stakeA,
-      description: `Agreed Stake locked for ${gameType.toUpperCase()} match vs ${opponent.name}`,
-    });
-
     const newMatch: ActiveMatch = {
       id: `match-${Date.now()}`,
       gameType,
+      timeControl,
       playerA: currentUser,
       playerB: opponent,
-      stakeA,
-      stakeB,
       leader: null,
-      w: 0,
-      holdingA: stakeA,
-      holdingB: stakeB,
+      advantage: 0,
+      scoreA: 0,
+      scoreB: 0,
       status: 'playing',
       startTime: Date.now(),
-      spectatorsCount: 3 + Math.floor(Math.random() * 8),
+      spectatorsCount: 4 + Math.floor(Math.random() * 8),
       comments: [
         {
           id: `c-init-${Date.now()}`,
-          author: 'System',
-          text: `Match began! Stakes agreed: ${currentUser.name} (${stakeA} inka), ${opponent.name} (${stakeB} inka).`,
+          author: 'INKA',
+          text: `Match started with honorable sportsmanship. Good luck!`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ],
@@ -349,48 +344,63 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return newMatch;
   };
 
-  const updateMatchAdvantage = useCallback((leader: 'A' | 'B' | null, w: number) => {
+  const updateMatchScore = useCallback((scoreResult: MatchScoreResult) => {
     setCurrentMatch((prev) => {
       if (!prev || prev.status !== 'playing') return prev;
-      if (prev.leader === leader && Math.abs(prev.w - w) < 0.001) return prev;
-
-      const settlement = calculateSettlement(
-        prev.stakeA,
-        prev.stakeB,
-        leader,
-        w
-      );
+      if (
+        prev.leader === scoreResult.leader &&
+        Math.abs(prev.advantage - scoreResult.advantage) < 0.001 &&
+        prev.scoreA === scoreResult.scoreA &&
+        prev.scoreB === scoreResult.scoreB
+      ) {
+        return prev;
+      }
 
       return {
         ...prev,
-        leader,
-        w,
-        holdingA: settlement.holdingA,
-        holdingB: settlement.holdingB,
+        leader: scoreResult.leader,
+        advantage: scoreResult.advantage,
+        scoreA: scoreResult.scoreA,
+        scoreB: scoreResult.scoreB,
       };
     });
   }, []);
 
-  const settleMatch = (reason: string) => {
+  const concludeMatch = (reason: string, isDraw = false, winner?: 'A' | 'B') => {
     if (!currentMatch) return;
 
-    const finalHoldingA = currentMatch.holdingA;
-    // Add back the settled holding to Player A's balance
-    addLedgerEntry({
-      type: 'settlement_payout',
-      amount: finalHoldingA,
-      description: `Settlement payout for ${currentMatch.gameType.toUpperCase()} (${reason}). Final holding: ${finalHoldingA} inka`,
-      gameId: currentMatch.id,
-    });
+    const isWin = winner === 'A' || (!isDraw && currentMatch.leader === 'A');
+    const reward = calculateHonorReward(isWin, isDraw, currentMatch.moveCount);
 
-    // Update matches list
-    const settledMatch: ActiveMatch = {
+    setHonorPoints((prev) => prev + reward.honorPoints);
+
+    // Record to match history
+    const historyEntry: MatchHistoryItem = {
+      id: `hist-${Date.now()}`,
+      gameType: currentMatch.gameType,
+      opponentName: currentMatch.playerB.name,
+      result: isWin ? 'win' : isDraw ? 'draw' : 'loss',
+      scoreSummary: `${currentMatch.scoreA} - ${currentMatch.scoreB}`,
+      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      honorEarned: reward.honorPoints,
+    };
+    setMatchHistory((prev) => [historyEntry, ...prev]);
+
+    // Update player games counter
+    setCurrentUser((prev) => ({
+      ...prev,
+      gamesPlayed: prev.gamesPlayed + 1,
+      gamesWon: isWin ? prev.gamesWon + 1 : prev.gamesWon,
+      honorRating: prev.honorRating + (isWin ? 15 : isDraw ? 5 : -5),
+    }));
+
+    const concludedMatch: ActiveMatch = {
       ...currentMatch,
-      status: 'settled',
-      settlementReason: reason,
+      status: 'concluded',
+      concludeReason: reason,
     };
 
-    setCurrentMatch(settledMatch);
+    setCurrentMatch(concludedMatch);
     sounds.playInkaChime();
   };
 
@@ -411,30 +421,27 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const triggerMockIncomingRequest = () => {
+  const triggerMockIncomingChallenge = () => {
     const challenger = INITIAL_PLAYERS[0]; // Uwase
-    setIncomingRequest({
+    setIncomingChallenge({
       id: `req-${Date.now()}`,
       challenger,
       gameType: 'dame',
-      proposedStake: 3,
+      timeControl: '30s',
+      message: 'Hello Habimana! Let us play a friendly game of Dame.',
       timestamp: Date.now(),
-      status: 'ringing',
     });
     sounds.startRingtone();
   };
 
-  const respondToIncomingRequest = (action: 'accept' | 'decline' | 'counter', counterStake?: number) => {
+  const respondToIncomingChallenge = (action: 'accept' | 'decline') => {
     sounds.stopRingtone();
-    if (!incomingRequest) return;
+    if (!incomingChallenge) return;
 
     if (action === 'accept') {
-      const challenger = incomingRequest.challenger;
-      const proposedStake = counterStake || incomingRequest.proposedStake;
-      // You stake 5, opponent stakes 3 (exact example from Appendix A!)
-      startMatch('dame', challenger, 5, proposedStake);
+      startMatch(incomingChallenge.gameType, incomingChallenge.challenger, incomingChallenge.timeControl);
     }
-    setIncomingRequest(null);
+    setIncomingChallenge(null);
   };
 
   const updateCurrentUser = (updates: Partial<PlayerProfile>) => {
@@ -453,24 +460,21 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         t: translations[lang],
         currentUser,
         updateCurrentUser,
-        inkaBalance,
-        setInkaBalance,
-        ledger,
-        addLedgerEntry,
+        honorPoints,
+        matchHistory,
         communityPlayers,
         liveMatches,
         currentMatch,
         setCurrentMatch,
         startMatch,
-        settleMatch,
-        updateMatchAdvantage,
+        concludeMatch,
+        updateMatchScore,
         addSpectatorComment,
-        incomingRequest,
-        triggerMockIncomingRequest,
-        respondToIncomingRequest,
+        incomingChallenge,
+        triggerMockIncomingChallenge,
+        respondToIncomingChallenge,
         isMuted,
         setIsMuted,
-        claimFreeInka,
       }}
     >
       {children}

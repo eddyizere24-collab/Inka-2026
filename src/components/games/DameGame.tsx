@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Crown, RotateCcw, MessageSquare, Award } from 'lucide-react';
+import { Crown, MessageSquare, Award, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
-import { SettlementBar } from './SettlementBar';
-import { calculateDameAdvantage } from '../../utils/settlement';
+import { GameHud } from './GameHud';
+import { calculateDameAdvantage } from '../../utils/matchScoring';
 import { sounds } from '../../utils/sound';
 
 type PieceColor = 'red' | 'black'; // red = Player A, black = Player B
@@ -16,18 +16,10 @@ interface Piece {
 }
 
 export const DameGame: React.FC = () => {
-  const { currentMatch, updateMatchAdvantage, settleMatch, setCurrentMatch } = usePlatform();
+  const { currentMatch, updateMatchScore, concludeMatch, setCurrentMatch, t } = usePlatform();
 
-  // 10 pieces per player as specified in Concept Document Section 3.2 & Appendix C.13
-  // Placed on dark squares:
-  // Player B (Black/Top): 10 pieces
-  // (0,1), (0,3), (0,5), (0,7) [4 pieces]
-  // (1,0), (1,2), (1,4), (1,6) [4 pieces]
-  // (2,1), (2,3)               [2 pieces] -> Total 10 pieces!
-  // Player A (Red/Bottom): 10 pieces
-  // (5,4), (5,6)               [2 pieces]
-  // (6,1), (6,3), (6,5), (6,7) [4 pieces]
-  // (7,0), (7,2), (7,4), (7,6) [4 pieces] -> Total 10 pieces!
+  // 10 pieces per player as specified for Rwandan Dame:
+  // Placed on dark squares of 8x8 board
   const getInitialPieces = (): Piece[] => {
     const pieces: Piece[] = [];
     let idCounter = 1;
@@ -64,8 +56,6 @@ export const DameGame: React.FC = () => {
   const [isSimulatedOpponentTurn, setIsSimulatedOpponentTurn] = useState<boolean>(false);
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
 
-  // Advantage calculation handled inside executeMove upon piece capture
-
   const getPieceAt = useCallback((row: number, col: number) => {
     return pieces.find((p) => p.row === row && p.col === col);
   }, [pieces]);
@@ -78,11 +68,9 @@ export const DameGame: React.FC = () => {
     if (piece.isKing) {
       directions.push([-1, -1], [-1, 1], [1, -1], [1, 1]);
     } else if (piece.color === 'red') {
-      // Moves up towards row 0
-      directions.push([-1, -1], [-1, 1]);
+      directions.push([-1, -1], [-1, 1]); // Moves up
     } else {
-      // Moves down towards row 7
-      directions.push([1, -1], [1, 1]);
+      directions.push([1, -1], [1, 1]); // Moves down
     }
 
     // Regular moves
@@ -100,7 +88,7 @@ export const DameGame: React.FC = () => {
     const jumpDirs = piece.isKing
       ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
       : piece.color === 'red'
-      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] // Checkers allows backward capture in classic rules
+      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
       : [[1, -1], [1, 1], [-1, -1], [-1, 1]];
 
     for (const [dr, dc] of jumpDirs) {
@@ -124,19 +112,19 @@ export const DameGame: React.FC = () => {
 
   const handleSquareClick = (row: number, col: number) => {
     if (currentMatch?.status !== 'playing') return;
-    if (turn === 'B' && !isPassAndPlay) return; // Wait for opponent
+    if (turn === 'B' && !isPassAndPlay) return;
 
     const clickedPiece = getPieceAt(row, col);
     const expectedColor = turn === 'A' ? 'red' : 'black';
 
-    // If clicked own piece, select it
+    // Select own piece
     if (clickedPiece && clickedPiece.color === expectedColor) {
       setSelectedPiece(clickedPiece);
       setValidMoves(getMovesForPiece(clickedPiece));
       return;
     }
 
-    // If destination square is valid
+    // Move to valid destination
     if (selectedPiece) {
       const move = validMoves.find((m) => m.row === row && m.col === col);
       if (move) {
@@ -162,13 +150,13 @@ export const DameGame: React.FC = () => {
 
       const isWinA = newCapA >= 10;
       const isWinB = newCapB >= 10;
-      const { leader, w } = calculateDameAdvantage(newCapA, newCapB, isWinA, isWinB);
-      updateMatchAdvantage(leader, w);
+      const scoreResult = calculateDameAdvantage(newCapA, newCapB, isWinA, isWinB);
+      updateMatchScore(scoreResult);
 
       if (isWinA) {
-        settleMatch(`Decisive Victory by ${currentMatch?.playerA.name} (All 10 pieces captured)`);
+        concludeMatch(`Decisive Victory by ${currentMatch?.playerA.name} (All 10 pieces captured)`, false, 'A');
       } else if (isWinB) {
-        settleMatch(`Decisive Victory by ${currentMatch?.playerB.name} (All 10 pieces captured)`);
+        concludeMatch(`Decisive Victory by ${currentMatch?.playerB.name} (All 10 pieces captured)`, false, 'B');
       }
     } else {
       sounds.playMove();
@@ -210,7 +198,6 @@ export const DameGame: React.FC = () => {
           }
         }
 
-        // Prioritize jump captures
         const jumpMoves = availableMoves.filter((am) => am.move.jumpedPiece);
         const chosen = jumpMoves.length > 0
           ? jumpMoves[Math.floor(Math.random() * jumpMoves.length)]
@@ -220,7 +207,7 @@ export const DameGame: React.FC = () => {
           executeMove(chosen.piece, chosen.move);
         }
         setIsSimulatedOpponentTurn(false);
-      }, 1200);
+      }, 1100);
 
       return () => clearTimeout(timer);
     }
@@ -230,14 +217,22 @@ export const DameGame: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Live Settlement Bar HUD */}
-      <SettlementBar
+      {/* Live Game HUD */}
+      <GameHud
         match={currentMatch}
         turn={turn}
-        onStop={() => settleMatch(`Voluntary stop by ${currentMatch.playerA.name}`)}
+        customStatsA={
+          <span className="text-emerald-400 font-mono">
+            {t.dame_captures}: {capturedByA}/10
+          </span>
+        }
+        customStatsB={
+          <span className="text-cyan-400 font-mono">
+            {t.dame_captures}: {capturedByB}/10
+          </span>
+        }
         onTimeout={(p) => {
-          sounds.playInkaChime();
-          // Apply slight penalty or timeout
+          sounds.playTimerWarning();
         }}
       />
 
@@ -245,7 +240,7 @@ export const DameGame: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Left Board Area */}
         <div className="lg:col-span-3 flex flex-col items-center">
-          {/* Mode Switcher: Pass & Play vs Live Online Opponent */}
+          {/* Mode Switcher */}
           <div className="w-full max-w-xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-slate-200">Dame: 10 Pieces Per Player</span>
@@ -258,7 +253,7 @@ export const DameGame: React.FC = () => {
                   type="checkbox"
                   checked={isPassAndPlay}
                   onChange={(e) => setIsPassAndPlay(e.target.checked)}
-                  className="rounded border-slate-700 bg-slate-800 text-amber-500"
+                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
                 />
                 <span>Pass & Play / 2-Player Seat</span>
               </label>
@@ -266,8 +261,8 @@ export const DameGame: React.FC = () => {
           </div>
 
           {/* Checkerboard */}
-          <div className="relative p-4 bg-[#231b14] border-4 border-[#3e2c1c] rounded-2xl shadow-2xl">
-            <div className="grid grid-cols-8 grid-rows-8 w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] border border-[#1b130a] rounded-lg overflow-hidden">
+          <div className="relative p-3 sm:p-4 bg-[#1e2736] border-4 border-[#2c394d] rounded-2xl shadow-2xl">
+            <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] border border-[#141b27] rounded-lg overflow-hidden">
               {Array.from({ length: 8 }).map((_, r) =>
                 Array.from({ length: 8 }).map((_, c) => {
                   const isDarkSquare = (r + c) % 2 === 1;
@@ -282,27 +277,27 @@ export const DameGame: React.FC = () => {
                       onClick={() => handleSquareClick(r, c)}
                       aria-label={`Square ${r},${c} ${piece ? piece.color + ' piece' : ''}`}
                       className={`relative flex items-center justify-center transition-colors ${
-                        isDarkSquare ? 'bg-[#503623]' : 'bg-[#e5d3b3]'
-                      } ${isValidMove ? 'ring-4 ring-amber-400/80 ring-inset cursor-pointer' : ''}`}
+                        isDarkSquare ? 'bg-[#1b2636]' : 'bg-[#e2e8f0]'
+                      } ${isValidMove ? 'ring-4 ring-emerald-400/80 ring-inset cursor-pointer' : ''}`}
                     >
                       {/* Highlight move dot */}
                       {isValidMove && !piece && (
-                        <div className="w-4 h-4 rounded-full bg-amber-400/60 shadow-md animate-pulse" />
+                        <div className="w-4 h-4 rounded-full bg-emerald-400/70 shadow-md animate-pulse" />
                       )}
 
                       {/* Piece rendering */}
                       {piece && (
                         <div
-                          className={`w-[32px] h-[32px] sm:w-[44px] sm:h-[44px] rounded-full shadow-lg flex items-center justify-center transition-transform ${
+                          className={`w-[28px] h-[28px] sm:w-[42px] sm:h-[42px] rounded-full shadow-lg flex items-center justify-center transition-transform ${
                             piece.color === 'red'
-                              ? 'bg-gradient-to-b from-amber-500 to-amber-700 border-2 border-amber-300 text-amber-100'
-                              : 'bg-gradient-to-b from-slate-700 to-slate-900 border-2 border-slate-500 text-slate-200'
+                              ? 'bg-gradient-to-b from-emerald-500 to-teal-700 border-2 border-emerald-300 text-white'
+                              : 'bg-gradient-to-b from-slate-700 to-slate-950 border-2 border-slate-500 text-slate-200'
                           } ${isSelected ? 'scale-110 ring-4 ring-white' : 'hover:scale-105'}`}
                         >
                           {piece.isKing ? (
-                            <Crown className="w-5 h-5 text-amber-200 fill-amber-300" />
+                            <Crown className="w-5 h-5 text-amber-300 fill-amber-300" />
                           ) : (
-                            <div className="w-4 h-4 rounded-full border border-white/20" />
+                            <div className="w-3.5 h-3.5 rounded-full border border-white/30" />
                           )}
                         </div>
                       )}
@@ -315,17 +310,17 @@ export const DameGame: React.FC = () => {
             {/* Turn status overlay pill */}
             <div className="mt-3 flex items-center justify-between text-xs text-slate-300 px-2">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <div className="w-3 h-3 rounded-full bg-emerald-500" />
                 <span>
-                  {currentMatch.playerA.name}: Captured <strong>{capturedByA}</strong> / 10
+                  {currentMatch.playerA.name}: <strong>{capturedByA}</strong> / 10
                 </span>
               </div>
-              <div className="font-mono text-amber-400">
+              <div className="font-mono text-emerald-400 font-medium">
                 {isSimulatedOpponentTurn ? 'Opponent calculating move...' : `Turn: ${turn === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name}`}
               </div>
               <div className="flex items-center gap-2">
                 <span>
-                  {currentMatch.playerB.name}: Captured <strong>{capturedByB}</strong> / 10
+                  {currentMatch.playerB.name}: <strong>{capturedByB}</strong> / 10
                 </span>
                 <div className="w-3 h-3 rounded-full bg-slate-700" />
               </div>
@@ -333,53 +328,52 @@ export const DameGame: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Match Sidebar: Match details, formula recap, and post-game spectator feedback */}
+        {/* Right Match Sidebar */}
         <div className="space-y-4">
-          <div className="p-4 bg-[#141a22] border border-slate-800 rounded-xl space-y-3">
-            <h4 className="text-sm font-bold text-slate-200 font-display">
-              Settlement Invariant (Section 7.3)
+          <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
+            <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>{t.fair_play}</span>
             </h4>
             <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
-              <p>
-                As captures occur, the advantage variable <code>w</code> updates:
-              </p>
-              <div className="p-2.5 bg-[#0e131a] rounded-lg font-mono text-[11px] text-amber-300 space-y-1">
-                <div>Net Difference: {Math.abs(capturedByA - capturedByB)} pieces</div>
-                <div>Advantage (w): {currentMatch.w.toFixed(2)}</div>
-                <div>Current Holding: {currentMatch.holdingA.toFixed(2)} inka</div>
+              <p>{t.zero_wagering_rule}</p>
+              <div className="p-2.5 bg-[#0e131b] rounded-lg font-mono text-[11px] text-emerald-300 space-y-1">
+                <div>Net Captures: {Math.abs(capturedByA - capturedByB)} pieces</div>
+                <div>Advantage (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
+                <div>Leader: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : 'Tied'}</div>
               </div>
               <p className="text-[11px] text-slate-500">
-                Notice: Kings count equally in the inka valuation formula per platform specification.
+                100% free skill competition. No wagering, betting pools, or financial risk.
               </p>
             </div>
           </div>
 
-          {/* Post-match summary or spectator comments if settled */}
-          {currentMatch.status === 'settled' ? (
-            <div className="p-4 bg-emerald-950/30 border border-emerald-800/50 rounded-xl text-emerald-200 space-y-3 animate-in fade-in">
+          {/* Post-match summary or spectator comments if concluded */}
+          {currentMatch.status === 'concluded' ? (
+            <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3 animate-in fade-in">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
-                <Award className="w-4 h-4 text-emerald-400" />
-                <span>Match Concluded & Settled</span>
+                <Award className="w-5 h-5 text-emerald-400" />
+                <span>Match Concluded</span>
               </div>
               <p className="text-xs text-slate-300">
-                {currentMatch.settlementReason}
+                {currentMatch.concludeReason || 'Match finished with mutual honor and sportsmanship.'}
               </p>
-              <div className="p-3 bg-[#10141a] rounded-lg text-xs font-mono text-amber-300 flex justify-between">
-                <span>Final Holding:</span>
-                <strong className="text-white">{currentMatch.holdingA.toFixed(2)} Inka</strong>
+              <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
+                <span>Sportsmanship Honors:</span>
+                <strong className="text-white">+10 Honor Points</strong>
               </div>
 
-              {/* Reveal spectator comments (Section 8.3 & Appendix A) */}
-              <div className="pt-2 border-t border-emerald-900/60">
+              {/* Reveal spectator comments */}
+              <div className="pt-2 border-t border-emerald-800/60">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 mb-2">
-                  <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Spectator Feedback (Now Revealed):</span>
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{t.spectators_watching} ({currentMatch.comments.length}):</span>
                 </div>
                 <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
                   {currentMatch.comments.map((c) => (
                     <div key={c.id} className="text-[11px] bg-[#161c24] p-2 rounded border border-slate-800">
-                      <span className="font-semibold text-slate-300">{c.author}:</span>{' '}
-                      <span className="text-slate-400">{c.text}</span>
+                      <span className="font-semibold text-emerald-300">{c.author}:</span>{' '}
+                      <span className="text-slate-300">{c.text}</span>
                     </div>
                   ))}
                 </div>
@@ -387,17 +381,16 @@ export const DameGame: React.FC = () => {
 
               <button
                 onClick={() => setCurrentMatch(null)}
-                className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
+                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
                 Return to Lobby
               </button>
             </div>
           ) : (
-            <div className="p-4 bg-[#141a22] border border-slate-800 rounded-xl text-xs text-slate-400 space-y-2">
-              <div className="font-semibold text-slate-200">Spectator Room Status</div>
+            <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl text-xs text-slate-400 space-y-2">
+              <div className="font-semibold text-slate-200">{t.live_spectators}</div>
               <p>
-                {currentMatch.spectatorsCount} people are watching this match live. Under platform rules,
-                spectator comments are withheld until completion to eliminate outside advice.
+                {currentMatch.spectatorsCount} {t.spectators_watching}. {t.spectator_comments_hidden}
               </p>
             </div>
           )}

@@ -2,22 +2,15 @@ import React, { useState } from 'react';
 import {
   Volume2,
   VolumeX,
-  Languages,
-  Coins,
-  Play,
-  Eye,
-  Calendar,
-  Wallet,
-  BookOpen,
-  Users,
   ArrowLeft,
-  Sparkles,
+  Award,
 } from 'lucide-react';
 import { PlatformProvider, usePlatform, GameType } from './context/PlatformContext';
+import { InkaLogo } from './components/brand/InkaLogo';
 import { LobbyView } from './components/views/LobbyView';
 import { SpectatorView } from './components/views/SpectatorView';
 import { SchedulingView } from './components/views/SchedulingView';
-import { WalletView } from './components/views/WalletView';
+import { HonorsView } from './components/views/HonorsView';
 import { RulesView } from './components/views/RulesView';
 import { ProfilesView } from './components/views/ProfilesView';
 import { DameGame } from './components/games/DameGame';
@@ -25,7 +18,7 @@ import { IgisoroGame } from './components/games/IgisoroGame';
 import { BiyariGame } from './components/games/BiyariGame';
 import { IncomingCallModal } from './components/modals/IncomingCallModal';
 
-type ActiveNav = 'lobby' | 'spectator' | 'schedule' | 'wallet' | 'rules' | 'community';
+type ActiveNav = 'lobby' | 'spectator' | 'schedule' | 'honors' | 'rules' | 'community';
 
 const MainShell: React.FC = () => {
   const [activeNav, setActiveNav] = useState<ActiveNav>('lobby');
@@ -33,20 +26,19 @@ const MainShell: React.FC = () => {
     lang,
     setLang,
     t,
-    inkaBalance,
+    honorPoints,
     isMuted,
     setIsMuted,
     currentMatch,
     setCurrentMatch,
-    claimFreeInka,
   } = usePlatform();
 
   // If in active match, render the game view
   if (currentMatch) {
     return (
-      <div className="min-h-screen bg-[#0c1015] bg-rwandan-pattern text-slate-100 flex flex-col">
+      <div className="min-h-screen bg-[#0a0e14] bg-rwandan-pattern text-slate-100 flex flex-col">
         {/* Game Top Header */}
-        <header className="h-16 px-4 sm:px-8 border-b border-slate-800 bg-[#10151d]/90 backdrop-blur-md flex items-center justify-between sticky top-0 z-40">
+        <header className="h-16 px-4 sm:px-8 border-b border-slate-800/80 bg-[#101620]/95 backdrop-blur-md flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setCurrentMatch(null)}
@@ -56,25 +48,28 @@ const MainShell: React.FC = () => {
               <span>Back to Lobby</span>
             </button>
             <div className="h-4 w-px bg-slate-800 hidden sm:block" />
-            <span className="font-display font-bold text-white text-sm sm:text-base hidden sm:inline">
-              Rwandan Skill-Games · {currentMatch.gameType.toUpperCase()}
-            </span>
+            <div className="hidden sm:flex items-center gap-2">
+              <InkaLogo variant="symbol" size="sm" />
+              <span className="font-display font-bold text-white text-sm sm:text-base">
+                INKA · {currentMatch.gameType.toUpperCase()}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Audio Toggle */}
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              className="p-2 rounded-lg bg-[#18212e] hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer border border-slate-700/80"
               aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
             >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
             </button>
 
-            {/* Wallet pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] border border-slate-700/80 rounded-xl text-xs font-mono text-amber-300">
-              <Coins className="w-3.5 h-3.5 text-amber-400" />
-              <span>{inkaBalance.toFixed(2)} inka</span>
+            {/* Honor Points pill */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] border border-emerald-500/40 rounded-xl text-xs font-mono text-emerald-300">
+              <Award className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{honorPoints} Honor</span>
             </div>
           </div>
         </header>
@@ -92,86 +87,81 @@ const MainShell: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0c1015] bg-rwandan-pattern text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#0a0e14] bg-rwandan-pattern text-slate-100 flex flex-col">
       {/* Top Bar Contract (Strict 3 Zones) */}
-      <header className="h-16 px-4 sm:px-8 border-b border-slate-800/80 bg-[#10151d]/90 backdrop-blur-md flex items-center justify-between gap-6 sticky top-0 z-40">
-        {/* Zone 1: Brand title, single line */}
+      <header className="h-16 px-4 sm:px-8 border-b border-slate-800/80 bg-[#101620]/95 backdrop-blur-md flex items-center justify-between gap-6 sticky top-0 z-40">
+        {/* Zone 1: Official Brand Logo & Name */}
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => setActiveNav('lobby')}
             className="flex items-center gap-2.5 text-left focus:outline-none cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-700 flex items-center justify-center font-bold text-white shadow-md">
-              <span className="font-display text-sm tracking-wider">RW</span>
-            </div>
-            <span className="text-base sm:text-lg font-bold font-display tracking-tight text-white whitespace-nowrap">
-              Rwandan Skill-Games
-            </span>
+            <InkaLogo variant="full" size="md" />
           </button>
         </div>
 
-        {/* Zone 2: Clean 4–5 single-line Nav Links */}
-        <nav className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-300">
+        {/* Zone 2: Clean 5–6 single-line Nav Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-300">
           <button
             onClick={() => setActiveNav('lobby')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'lobby' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'lobby' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Play Now
+            {t.nav_play}
           </button>
           <button
             onClick={() => setActiveNav('spectator')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'spectator' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'spectator' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Live Arena
+            {t.nav_spectator}
           </button>
           <button
             onClick={() => setActiveNav('schedule')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'schedule' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'schedule' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Schedule
+            {t.nav_schedule}
           </button>
           <button
-            onClick={() => setActiveNav('wallet')}
+            onClick={() => setActiveNav('honors')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'wallet' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'honors' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Inka Wallet
+            {t.nav_honors}
           </button>
           <button
             onClick={() => setActiveNav('rules')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'rules' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'rules' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Rules & Math
+            {t.nav_rules}
           </button>
           <button
             onClick={() => setActiveNav('community')}
             className={`whitespace-nowrap transition-colors cursor-pointer ${
-              activeNav === 'community' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeNav === 'community' ? 'text-emerald-400 font-bold' : 'hover:text-white'
             }`}
           >
-            Players
+            {t.nav_community}
           </button>
         </nav>
 
-        {/* Zone 3: 1 Primary Action + Utility Controls */}
+        {/* Zone 3: Trilingual selector + Audio toggle + Honor points badge */}
         <div className="flex items-center gap-2.5 shrink-0">
           {/* Trilingual Selector */}
-          <div className="flex items-center bg-[#18212e] p-1 rounded-lg border border-slate-700/80 text-[11px] font-mono">
+          <div className="flex items-center bg-[#18212e] p-1 rounded-xl border border-slate-700/80 text-[11px] font-mono">
             {(['rw', 'en', 'fr'] as const).map((code) => (
               <button
                 key={code}
                 onClick={() => setLang(code)}
-                className={`px-2 py-0.5 rounded uppercase font-semibold transition-colors ${
-                  lang === code ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                className={`px-2.5 py-1 rounded-lg uppercase font-bold transition-all cursor-pointer ${
+                  lang === code ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
                 {code}
@@ -182,72 +172,72 @@ const MainShell: React.FC = () => {
           {/* Sound Toggle */}
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="p-2 rounded-lg bg-[#18212e] hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors"
+            className="p-2 rounded-xl bg-[#18212e] hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer"
             aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
           </button>
 
-          {/* Inka Wallet Balance & Quick Claim */}
+          {/* Honors Points Badge */}
           <button
-            onClick={() => setActiveNav('wallet')}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] hover:bg-[#222c3c] border border-amber-500/40 rounded-xl text-xs font-mono text-amber-300 transition-colors cursor-pointer"
+            onClick={() => setActiveNav('honors')}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] hover:bg-[#222c3c] border border-emerald-500/40 rounded-xl text-xs font-mono text-emerald-300 transition-colors cursor-pointer shadow-sm"
           >
-            <Coins className="w-3.5 h-3.5 text-amber-400" />
-            <span>{inkaBalance.toFixed(2)} Inka</span>
+            <Award className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{honorPoints} {t.nav_honors.split(' ')[0]}</span>
           </button>
         </div>
       </header>
 
       {/* Mobile Sub-Navigation Bar */}
-      <div className="md:hidden flex items-center overflow-x-auto gap-2 px-4 py-2.5 bg-[#121720] border-b border-slate-800 text-xs">
+      <div className="lg:hidden flex items-center overflow-x-auto gap-2 px-4 py-2.5 bg-[#101620] border-b border-slate-800 text-xs">
         <button
           onClick={() => setActiveNav('lobby')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'lobby' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'lobby' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Play Now
+          {t.nav_play}
         </button>
         <button
           onClick={() => setActiveNav('spectator')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'spectator' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'spectator' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Live Arena
+          {t.nav_spectator}
         </button>
         <button
           onClick={() => setActiveNav('schedule')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'schedule' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'schedule' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Schedule
+          {t.nav_schedule}
         </button>
         <button
-          onClick={() => setActiveNav('wallet')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'wallet' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          onClick={() => setActiveNav('honors')}
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'honors' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Inka ({inkaBalance.toFixed(0)})
+          {t.nav_honors} ({honorPoints})
         </button>
         <button
           onClick={() => setActiveNav('rules')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'rules' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'rules' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Rules
+          {t.nav_rules}
         </button>
         <button
           onClick={() => setActiveNav('community')}
-          className={`px-3 py-1 rounded-lg whitespace-nowrap ${
-            activeNav === 'community' ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-400'
+          className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer transition-colors ${
+            activeNav === 'community' ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-slate-400'
           }`}
         >
-          Players
+          {t.nav_community}
         </button>
       </div>
 
@@ -256,27 +246,27 @@ const MainShell: React.FC = () => {
         {activeNav === 'lobby' && <LobbyView onSelectGame={(g) => {}} />}
         {activeNav === 'spectator' && <SpectatorView />}
         {activeNav === 'schedule' && <SchedulingView />}
-        {activeNav === 'wallet' && <WalletView />}
+        {activeNav === 'honors' && <HonorsView />}
         {activeNav === 'rules' && <RulesView />}
         {activeNav === 'community' && <ProfilesView />}
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800/80 bg-[#0a0d12] px-6 py-8 text-xs text-slate-500">
+      <footer className="mt-auto border-t border-slate-800/80 bg-[#080b0f] px-6 py-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-400">Rwandan Skill-Games Platform</span>
+            <span className="font-bold text-slate-300">INKA</span>
             <span>·</span>
             <span>Igisoro · Dame · Biyari</span>
             <span>·</span>
-            <span>Launch Edition 2026</span>
+            <span>Official 2026 Edition</span>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Human-vs-Human Only</span>
+            <span>Strictly Human-vs-Human</span>
             <span>·</span>
-            <span>Gradual Inka Settlement</span>
+            <span>Pure Skill Advantage</span>
             <span>·</span>
-            <span>No Spectator Betting</span>
+            <span>Zero Wagering</span>
           </div>
         </div>
       </footer>

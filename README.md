@@ -1,46 +1,41 @@
-# Rwandan Skill-Games Platform
+# INKA
 ### *Igisoro · Dame · Biyari*
-> **"Play. Relax the mind. Compete with skill. Meet people."**
+> **"Kina. Ruhura mu mutwe. Rushanwa ku bwenge. Menyane n'abandi."**
+> *(Play. Relax the mind. Compete with intellect. Connect with friends.)*
 
-A modern, authentic web application for traditional Rwandan skill games, based on the **Rwandan Skill-Games Platform Concept Document (Narrative Edition)**.
-
----
-
-## 1. Overview & Guiding Principles
-
-The platform connects real people to compete in games of pure skill, relax after work, and build friendships. 
-
-* **Strictly Human-vs-Human**: Every match is between two human beings. Automated opponents and bots are prohibited.
-* **The Inka Unit**: The term *inka* refers to the small playing pieces, seeds, or balls used in the games (not cattle). It serves as the account unit for stakes and gradual settlement.
-* **Gradual Mathematical Settlement (Section 7)**: Stakes do not transfer all at once at the end. Instead, the platform continuously tracks the advantage value $w \in [0, 1.0]$. The inka holdings adjust continuously:
-  $$\text{Player A Current Holding} = a + (w \times b)$$
-  $$\text{Player B Current Holding} = b \times (1 - w)$$
-  *(where $a$ is Player A's stake, $b$ is Player B's stake, and total pool $a + b$ is strictly conserved).*
-* **Freedom to Stop (Section 7.8)**: Any player may stop at any time and immediately retain the inka shown by their current standing. The opponent cannot compel them to continue.
-* **Spectator Community & Isolation (Section 8)**: Spectators watch public games in real time and converse in a live chat. However, to prevent outside coaching, active players cannot see spectator comments until the match concludes. Spectator betting is excluded to preserve skill-game integrity and prevent collusion.
-* **Call-Style Alerts (Section 5.3)**: Players who publish their playing availability receive an audible phone-ring alert when an opponent challenges them.
-* **Trilingual**: Native support for **Kinyarwanda (`rw`)**, **English (`en`)**, and **French (`fr`)**.
+An authentic, modern web platform celebrating traditional Rwandan skill games. Officially branded as **INKA**, inspired by Rwandan heritage, community connection, intellectual play, and genuine sportsmanship.
 
 ---
 
-## 2. The Three Games
+## 1. The INKA Identity & Philosophy
+
+* **Brand Meaning**: In Rwanda, *Inka* (the sacred cow) symbolizes prosperity, deep friendship, trust, and communal respect. In games, *inka* historically refers to the smooth playing stones, seeds, and markers used on boards. INKA celebrates this cultural heritage through warm, friendly, and dignified gameplay.
+* **100% Free Skill Platform**: INKA has completely eliminated financial wagering, cow staking, money transfer, and cashouts. Play is 100% free for everyone, governed by intellect and sportsmanship.
+* **Match Scoring & Advantage Engine**: Replaces gambling formulas with a pure skill advantage metric $w \in [0, 1.0]$ indicating match dominance based on net captures, seed counts, and pocketed balls.
+* **Sportsmanship & Honor System**: Players earn honor points and level up sportsmanship stars (1 to 5 stars) through polite play, mutual draws, and fair matches.
+* **Strictly Human-vs-Human**: Every match is played against a verified human community member. Computer bots and AI players are strictly excluded.
+* **Freedom to Conclude Gracefully**: Either player may propose a draw or conclude a match anytime with dignity.
+* **Spectator Integrity**: Spectators watch games live in silence without coaching. Comments remain isolated until the final move is made.
+* **Trilingual Localization**: Full parity across **Kinyarwanda (`rw`, default)**, **English (`en`)**, and **French (`fr`)**, verified by automated test suites.
+
+---
+
+## 2. The Three Traditional Games
 
 1. **Dame (Checkers / Draughts)**:
-   - Foundation game designed to establish shared platform systems.
    - 10 pieces per player on an 8×8 board (20 pieces total).
-   - Equal inka valuation for all pieces including kings (called *dames*).
-   - Net captured pieces divided by 10 sets the advantage $w$; decisive win yields $w = 1.0$.
+   - Equal scoring for all pieces including crowned kings (*dames*).
+   - Net captured pieces determine the advantage $w \in [0, 1.0]$. Decisive victory clears all 10 opponent pieces.
 
 2. **Igisoro (Traditional Rwandan Mancala)**:
-   - Authentic 4 rows × 8 pits board (32 pits total, 64 inka seeds).
-   - South player controls rows 2 & 3; North player controls rows 0 & 1.
-   - Sowing mechanics with opposing front-row and back-row captures.
+   - 4 rows × 8 pits board (32 pits total, 64 traditional seeds).
+   - Sowing mechanics in counter-clockwise loops with front-row and back-row captures (*Gusiba*).
    - Advantage evaluated by seed fraction: $w = |2p - 1|$.
 
-3. **Biyari (Eight-Ball Pool)**:
-   - Interactive top-down 2D canvas with cushion bounces, elastic ball-to-ball collisions, and pocket detection.
-   - Cue stick aiming, trajectory guidelines, and shot power meter.
-   - Target ball tracking (solids vs stripes) advancing towards the decisive 8-ball finish.
+3. **Biyari (Eight-Ball Billiards)**:
+   - Interactive 2D physics canvas simulation with cushion bounces and elastic collisions.
+   - Cue stick aiming, trajectory guideline, and shot power meter.
+   - Potted target balls advance advantage towards the decisive 8-ball finish.
 
 ---
 
@@ -48,84 +43,66 @@ The platform connects real people to compete in games of pure skill, relax after
 
 ```text
 ├── public/
-│   └── assets/aistudio/
-│       └── Rwandan_Skill_Games_Platform_Full_English_Concept_6e45eb7f.pdf
+│   ├── favicon.svg               # Bespoke INKA cow emblem & Inyambo horn favicon
+│   └── assets/aistudio/          # Documentation and reference assets
 ├── src/
 │   ├── components/
+│   │   ├── brand/
+│   │   │   └── InkaLogo.tsx       # Vector SVG logo system (full, compact, symbol)
 │   │   ├── games/
-│   │   │   ├── BiyariGame.tsx        # 2D canvas eight-ball pool game
-│   │   │   ├── DameGame.tsx          # 10-piece-per-side checkers game
-│   │   │   ├── IgisoroGame.tsx       # 32-pit Rwandan mancala game
-│   │   │   └── SettlementBar.tsx     # Live HUD showing gradual inka shift & timer
+│   │   │   ├── BiyariGame.tsx     # 2D canvas eight-ball pool game
+│   │   │   ├── DameGame.tsx       # 10-piece-per-side checkers game
+│   │   │   ├── IgisoroGame.tsx    # 32-pit Rwandan mancala game
+│   │   │   └── GameHud.tsx        # Sportsmanship HUD, timer & advantage gauge
 │   │   ├── modals/
-│   │   │   ├── IncomingCallModal.tsx # Ringing phone-call style challenge alert
-│   │   │   └── StakeNegotiationModal.tsx # Unequal stakes & counter-proposal dialog
+│   │   │   ├── ChallengeModal.tsx # Friendly match invitation & time controls
+│   │   │   └── IncomingCallModal.tsx # Ringing phone-call style challenge alert
 │   │   └── views/
-│   │       ├── LobbyView.tsx         # Play-Now matching & games showcase
-│   │       ├── ProfilesView.tsx      # Player roster with illustrated avatars
-│   │       ├── RulesView.tsx         # Interactive settlement formula simulator & 24 rules
-│   │       ├── SchedulingView.tsx    # Availability publisher & scheduler
-│   │       ├── SpectatorView.tsx     # Live Arena stream, spectator chat, challenge CTA
-│   │       └── WalletView.tsx        # Inka audit ledger & future MoMo preview
+│   │       ├── HonorsView.tsx     # Sportsmanship trophies, ratings & match history
+│   │       ├── LobbyView.tsx      # Play-Now matchmaking & games showcase
+│   │       ├── ProfilesView.tsx   # Player roster with illustrated avatars
+│   │       ├── RulesView.tsx      # The 6 INKA Principles & interactive simulator
+│   │       ├── SchedulingView.tsx # Availability publisher & match scheduler
+│   │       └── SpectatorView.tsx  # Live Arena stream, chat isolation & challenge CTA
 │   ├── context/
-│   │   └── PlatformContext.tsx       # State management for matches, wallet, ledger, and alerts
+│   │   └── PlatformContext.tsx    # Context state for matches, honors, alerts & language
 │   ├── utils/
-│   │   ├── i18n.ts                   # Trilingual translations (Kinyarwanda, English, French)
-│   │   ├── settlement.ts             # Mathematical settlement engine & advantage formulas
-│   │   ├── settlement.test.ts        # Unit test suite for settlement math
-│   │   └── sound.ts                  # Web Audio API synthesizer (moves, seeds, pool, ringtone)
-│   ├── App.tsx                       # Main application shell with Top Bar Contract
-│   ├── index.css                     # Tailwind CSS & Imigongo cultural theme tokens
-│   └── main.tsx                      # React root entry point
-├── .env.example                      # Safe environment variable template
-├── .gitignore                        # Git ignore patterns
-├── index.html                        # Application entry point & Google Fonts
-├── metadata.json                     # Applet metadata
-├── package.json                      # Dependencies and npm scripts
-├── tsconfig.json                     # TypeScript compiler configuration
-├── vercel.json                       # Vercel deployment configuration
-└── vite.config.ts                    # Vite build configuration
+│   │   ├── i18n.ts                # Trilingual dictionary (RW, EN, FR)
+│   │   ├── i18n.test.ts           # 100% dictionary key parity unit tests
+│   │   ├── matchScoring.ts        # Skill advantage engine & honor calculation
+│   │   ├── matchScoring.test.ts   # Advantage formulas unit test suite
+│   │   └── sound.ts               # Web Audio API synthesizer (moves, seeds, pool chime)
+│   ├── App.tsx                    # Main app shell with Top Bar Contract
+│   ├── index.css                  # Tailwind CSS styling
+│   └── main.tsx                   # React root entry point
+├── index.html                     # HTML5 entry point & metadata
+├── metadata.json                  # AI Studio applet metadata
+├── package.json                   # Dependencies, scripts and test commands
+├── tsconfig.json                  # TypeScript configuration
+└── vite.config.ts                 # Vite build setup
 ```
 
 ---
 
-## 4. Prerequisites & Installation
-
-### Prerequisites
-* **Node.js**: `v18.0.0` or higher (Node 20+ recommended).
-* **Package Manager**: `npm`, `bun`, or `pnpm`.
+## 4. Local Development & Testing
 
 ### Installation
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd rwandan-skill-games-platform
-
-# Install dependencies
 npm install
 ```
-
----
-
-## 5. Local Development & Testing
 
 ### Run Development Server
 ```bash
 npm run dev
 ```
-The application will start on `http://localhost:3000`.
+Accessible at `http://localhost:3000`.
 
-### Run Unit Tests
-The settlement engine includes automated unit tests covering all 7 worked examples from page 9 of the concept document:
+### Run Automated Unit Tests
+Automated tests verify mathematical advantage formulas, 8-ball victory conditions, and 100% trilingual dictionary parity:
 ```bash
 npm test
-# Or directly via Node test runner:
-npx tsx --test src/utils/settlement.test.ts
-```
-
-### Type Checking & Linting
-```bash
-npm run lint
+# Or directly via Node.js test runner:
+npx tsx --test src/utils/matchScoring.test.ts src/utils/i18n.test.ts
 ```
 
 ### Production Build
@@ -136,26 +113,5 @@ Build outputs are written to the `dist/` directory.
 
 ---
 
-## 6. Hosting & Deployment
-
-### Deploying to Vercel
-The repository includes `vercel.json` configured for Single-Page Applications:
-1. Connect your repository to [Vercel](https://vercel.com).
-2. Framework Preset: **Vite**.
-3. Build Command: `npm run build`.
-4. Output Directory: `dist`.
-5. Deploy.
-
-### Deploying to Container Platforms (Cloud Run / Render / Railway)
-The project can also be served using any static web server (such as Nginx, Caddy, or Node.js Express):
-```bash
-npm run build
-npx serve dist -s -l 3000
-```
-
----
-
-## 7. Financial Responsibility & Compliance Notice
-
-* **Launch Phase**: The platform operates in **100% Free Access Mode** (`VITE_LAUNCH_PHASE="free"`). Inka are provided without fee to build an active, friendly community.
-* **Future Paid Phase (Section 6.3 - 6.5)**: Any future integration of real-money inka purchase or redemption through MTN Mobile Money or Airtel Money requires prior licensing, legal clearance under Rwandan law, strict identity verification (KYC), daily cashout caps, and anti-fraud monitoring. Real-money transactions must remain disabled until full regulatory approval is obtained.
+## 5. Deployment
+The project is ready for immediate deployment on Vercel, Cloud Run, Render, or any standard static or Node host.

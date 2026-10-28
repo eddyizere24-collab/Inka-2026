@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Award, Target, RotateCcw } from 'lucide-react';
+import { Award, Target, RotateCcw, ShieldCheck } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
-import { SettlementBar } from './SettlementBar';
-import { calculateBiyariAdvantage } from '../../utils/settlement';
+import { GameHud } from './GameHud';
+import { calculateBiyariAdvantage } from '../../utils/matchScoring';
 import { sounds } from '../../utils/sound';
 
 interface Ball {
@@ -19,7 +19,7 @@ interface Ball {
 }
 
 export const BiyariGame: React.FC = () => {
-  const { currentMatch, updateMatchAdvantage, settleMatch, setCurrentMatch } = usePlatform();
+  const { currentMatch, updateMatchScore, concludeMatch, setCurrentMatch, t } = usePlatform();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Table dimensions (standard 2:1 aspect ratio)
@@ -42,7 +42,6 @@ export const BiyariGame: React.FC = () => {
   const [turn, setTurn] = useState<'A' | 'B'>('A');
   const [aimAngle, setAimAngle] = useState<number>(0);
   const [shotPower, setShotPower] = useState<number>(45);
-  const [isShooting, setIsShooting] = useState<boolean>(false);
   const [ballsMoving, setBallsMoving] = useState<boolean>(false);
 
   // Potted counts
@@ -59,8 +58,8 @@ export const BiyariGame: React.FC = () => {
     // Cue ball on left spot
     list.push({
       id: 0,
-      x: TABLE_WIDTH * 0.28,
-      y: TABLE_HEIGHT * 0.5,
+      x: TABLE_WIDTH * 0.25,
+      y: TABLE_HEIGHT / 2,
       vx: 0,
       vy: 0,
       radius: BALL_RADIUS,
@@ -70,94 +69,90 @@ export const BiyariGame: React.FC = () => {
       number: 0,
     });
 
-    // 8-ball rack on right spot
-    const rackStartX = TABLE_WIDTH * 0.7;
-    const rackStartY = TABLE_HEIGHT * 0.5;
+    // Triangle apex at 70% table width
+    const startX = TABLE_WIDTH * 0.7;
+    const startY = TABLE_HEIGHT / 2;
     const spacing = BALL_RADIUS * 2 + 1;
 
-    // Simple 10-ball / 8-ball cluster for crisp browser canvas performance
-    const ballConfigs = [
-      { num: 1, type: 'solid' as const, color: '#eab308' },
-      { num: 9, type: 'stripe' as const, color: '#eab308' },
-      { num: 8, type: 'eight' as const, color: '#111827' },
-      { num: 2, type: 'solid' as const, color: '#3b82f6' },
-      { num: 10, type: 'stripe' as const, color: '#3b82f6' },
-      { num: 3, type: 'solid' as const, color: '#ef4444' },
-      { num: 11, type: 'stripe' as const, color: '#ef4444' },
-      { num: 4, type: 'solid' as const, color: '#8b5cf6' },
-      { num: 12, type: 'stripe' as const, color: '#8b5cf6' },
-      { num: 5, type: 'solid' as const, color: '#f97316' },
+    // 10 object balls for snappy skill games
+    const ballDefs: { color: string; type: 'solid' | 'stripe' | 'eight'; num: number }[] = [
+      { color: '#eab308', type: 'solid', num: 1 },
+      { color: '#3b82f6', type: 'solid', num: 2 },
+      { color: '#ef4444', type: 'solid', num: 3 },
+      { color: '#a855f7', type: 'solid', num: 4 },
+      { color: '#f97316', type: 'solid', num: 5 },
+      { color: '#0f172a', type: 'eight', num: 8 },
+      { color: '#10b981', type: 'stripe', num: 9 },
+      { color: '#06b6d4', type: 'stripe', num: 10 },
+      { color: '#ec4899', type: 'stripe', num: 11 },
+      { color: '#84cc16', type: 'stripe', num: 12 },
     ];
 
-    let configIdx = 0;
+    let bIdx = 0;
     for (let col = 0; col < 4; col++) {
-      const colX = rackStartX + col * (spacing * 0.866);
-      const colStartY = rackStartY - (col * spacing) / 2;
       for (let row = 0; row <= col; row++) {
-        if (configIdx < ballConfigs.length) {
-          const cfg = ballConfigs[configIdx++];
-          list.push({
-            id: cfg.num,
-            x: colX,
-            y: colStartY + row * spacing,
-            vx: 0,
-            vy: 0,
-            radius: BALL_RADIUS,
-            color: cfg.color,
-            type: cfg.type,
-            isPotted: false,
-            number: cfg.num,
-          });
-        }
+        if (bIdx >= ballDefs.length) break;
+        const b = ballDefs[bIdx];
+        const x = startX + col * (spacing * 0.866);
+        const y = startY + (row - col / 2) * spacing;
+        list.push({
+          id: bIdx + 1,
+          x,
+          y,
+          vx: 0,
+          vy: 0,
+          radius: BALL_RADIUS,
+          color: b.color,
+          type: b.type,
+          isPotted: false,
+          number: b.num,
+        });
+        bIdx++;
       }
     }
 
     ballsRef.current = list;
     setPottedA(0);
     setPottedB(0);
-  }, []);
+    setBallsMoving(false);
+  }, [TABLE_WIDTH, TABLE_HEIGHT, BALL_RADIUS]);
 
+  // Set initial balls
   useEffect(() => {
     initBalls();
   }, [initBalls]);
 
-  // Update advantage w whenever balls are potted
+  // Canvas physics and rendering loop
   useEffect(() => {
-    const { leader, w } = calculateBiyariAdvantage(pottedA, pottedB);
-    updateMatchAdvantage(leader, w);
-  }, [pottedA, pottedB, updateMatchAdvantage]);
-
-  // Main canvas animation and physics engine
-  useEffect(() => {
-    let animId: number;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let animId: number;
+
     const updatePhysics = () => {
       const balls = ballsRef.current;
       let anyMoving = false;
 
-      // Update positions & friction
       for (const b of balls) {
         if (b.isPotted) continue;
 
+        // Apply velocity
         b.x += b.vx;
         b.y += b.vy;
 
-        // Table felt friction deceleration
+        // Friction
         b.vx *= 0.985;
         b.vy *= 0.985;
 
-        if (Math.hypot(b.vx, b.vy) < 0.05) {
-          b.vx = 0;
-          b.vy = 0;
-        } else {
-          anyMoving = true;
-        }
+        // Stop micro-movements
+        if (Math.abs(b.vx) < 0.05) b.vx = 0;
+        if (Math.abs(b.vy) < 0.05) b.vy = 0;
 
-        // Cushion bounce
+        if (b.vx !== 0 || b.vy !== 0) anyMoving = true;
+
+        // Cushion bounce (boundaries)
         const minX = CUSHION + b.radius;
         const maxX = TABLE_WIDTH - CUSHION - b.radius;
         const minY = CUSHION + b.radius;
@@ -165,47 +160,63 @@ export const BiyariGame: React.FC = () => {
 
         if (b.x < minX) {
           b.x = minX;
-          b.vx = -b.vx * 0.8;
+          b.vx *= -0.85;
           sounds.playBilliardStrike();
         } else if (b.x > maxX) {
           b.x = maxX;
-          b.vx = -b.vx * 0.8;
+          b.vx *= -0.85;
           sounds.playBilliardStrike();
         }
 
         if (b.y < minY) {
           b.y = minY;
-          b.vy = -b.vy * 0.8;
+          b.vy *= -0.85;
           sounds.playBilliardStrike();
         } else if (b.y > maxY) {
           b.y = maxY;
-          b.vy = -b.vy * 0.8;
+          b.vy *= -0.85;
           sounds.playBilliardStrike();
         }
 
-        // Pocket check
+        // Pocket detection
         for (const p of pockets) {
           const dist = Math.hypot(b.x - p.x, b.y - p.y);
-          if (dist < POCKET_RADIUS) {
+          if (dist < POCKET_RADIUS && !b.isPotted) {
             b.isPotted = true;
             b.vx = 0;
             b.vy = 0;
-            sounds.playPocketDrop();
+            sounds.playBilliardPocket();
 
             if (b.type === 'cue') {
-              // Scratch: respawn cue ball after stop
+              // Scratch: respawn cue ball on head spot
               setTimeout(() => {
-                b.x = TABLE_WIDTH * 0.28;
-                b.y = TABLE_HEIGHT * 0.5;
+                b.x = TABLE_WIDTH * 0.25;
+                b.y = TABLE_HEIGHT / 2;
+                b.vx = 0;
+                b.vy = 0;
                 b.isPotted = false;
               }, 600);
             } else if (b.type === 'eight') {
-              // 8-ball potted: whoever potted it decisively settles or scratches
-              settleMatch(`8-Ball legally potted by ${turn === 'A' ? currentMatch?.playerA.name : currentMatch?.playerB.name}! Decisive Win.`);
+              const winner = turn === 'A' ? 'A' : 'B';
+              concludeMatch(
+                `8-Ball legally potted by ${winner === 'A' ? currentMatch?.playerA.name : currentMatch?.playerB.name}! Decisive Win.`,
+                false,
+                winner
+              );
             } else if (b.type === 'solid') {
-              setPottedA((prev) => prev + 1);
+              setPottedA((prev) => {
+                const nextA = prev + 1;
+                const scoreResult = calculateBiyariAdvantage(nextA, pottedB, nextA >= 5, false);
+                updateMatchScore(scoreResult);
+                return nextA;
+              });
             } else if (b.type === 'stripe') {
-              setPottedB((prev) => prev + 1);
+              setPottedB((prev) => {
+                const nextB = prev + 1;
+                const scoreResult = calculateBiyariAdvantage(pottedA, nextB, false, nextB >= 5);
+                updateMatchScore(scoreResult);
+                return nextB;
+              });
             }
           }
         }
@@ -224,18 +235,15 @@ export const BiyariGame: React.FC = () => {
           const minDist = b1.radius + b2.radius;
 
           if (dist < minDist && dist > 0) {
-            // Normal & Tangent vectors
             const nx = dx / dist;
             const ny = dy / dist;
 
-            // Separate overlapping balls
             const overlap = (minDist - dist) / 2;
             b1.x -= nx * overlap;
             b1.y -= ny * overlap;
             b2.x += nx * overlap;
             b2.y += ny * overlap;
 
-            // Velocities along normal
             const kx = b1.vx - b2.vx;
             const ky = b1.vy - b2.vy;
             const p = 2 * (nx * kx + ny * ky) / 2;
@@ -254,17 +262,16 @@ export const BiyariGame: React.FC = () => {
     };
 
     const render = () => {
-      // Clear table
       ctx.clearRect(0, 0, TABLE_WIDTH, TABLE_HEIGHT);
 
       // Wooden Table Rails
-      ctx.fillStyle = '#3a2012';
+      ctx.fillStyle = '#1e2838';
       ctx.beginPath();
       ctx.roundRect(0, 0, TABLE_WIDTH, TABLE_HEIGHT, 16);
       ctx.fill();
 
       // Green Felt Bed
-      ctx.fillStyle = '#0b5336';
+      ctx.fillStyle = '#064e3b';
       ctx.beginPath();
       ctx.roundRect(
         CUSHION,
@@ -277,11 +284,11 @@ export const BiyariGame: React.FC = () => {
 
       // Draw Pockets
       for (const p of pockets) {
-        ctx.fillStyle = '#111827';
+        ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#2d180b';
+        ctx.strokeStyle = '#1e293b';
         ctx.lineWidth = 3;
         ctx.stroke();
       }
@@ -294,7 +301,7 @@ export const BiyariGame: React.FC = () => {
         const targetY = cueBall.y + Math.sin(aimAngle) * aimLength;
 
         // Dashed trajectory guideline
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -328,20 +335,17 @@ export const BiyariGame: React.FC = () => {
         ctx.fillStyle = b.color;
         ctx.fill();
 
-        // Inner ring for stripes
         if (b.type === 'stripe') {
           ctx.strokeStyle = '#FFFFFF';
           ctx.lineWidth = 3;
           ctx.stroke();
         }
 
-        // Shading / 3D highlight
         ctx.beginPath();
         ctx.arc(b.x - b.radius * 0.3, b.y - b.radius * 0.3, b.radius * 0.3, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.fill();
 
-        // 8-ball marker
         if (b.type === 'eight') {
           ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 8px monospace';
@@ -361,9 +365,8 @@ export const BiyariGame: React.FC = () => {
     loop();
 
     return () => cancelAnimationFrame(animId);
-  }, [pockets, ballsMoving, aimAngle, shotPower, currentMatch?.status, currentMatch?.playerA.name, currentMatch?.playerB.name, settleMatch, turn]);
+  }, [pockets, ballsMoving, aimAngle, shotPower, currentMatch?.status, currentMatch?.playerA.name, currentMatch?.playerB.name, concludeMatch, turn, pottedA, pottedB, updateMatchScore]);
 
-  // Handle aiming on mouse move or touch
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (ballsMoving) return;
     const canvas = canvasRef.current;
@@ -389,7 +392,6 @@ export const BiyariGame: React.FC = () => {
     cueBall.vy = Math.sin(aimAngle) * speed;
     sounds.playBilliardStrike();
 
-    // Alternate turn
     setTurn((prev) => (prev === 'A' ? 'B' : 'A'));
   };
 
@@ -397,11 +399,19 @@ export const BiyariGame: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SettlementBar
+      <GameHud
         match={currentMatch}
         turn={turn}
-        onStop={() => settleMatch(`Voluntary stop by ${currentMatch.playerA.name}`)}
-        onTimeout={() => sounds.playInkaChime()}
+        customStatsA={
+          <span className="text-emerald-400 font-mono">
+            {t.biyari_potted}: {pottedA}/5
+          </span>
+        }
+        customStatsB={
+          <span className="text-cyan-400 font-mono">
+            {t.biyari_potted}: {pottedB}/5
+          </span>
+        }
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
@@ -409,13 +419,13 @@ export const BiyariGame: React.FC = () => {
         <div className="lg:col-span-3 flex flex-col items-center">
           <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">Biyari: Eight-Ball Pool</span>
+              <span className="font-semibold text-slate-200">Biyari: Eight-Ball Skill Billiards</span>
               <span className="text-slate-500">·</span>
               <span>Aim cursor over table & adjust shot power</span>
             </div>
             <button
               onClick={initBalls}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1"
+              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Rack Balls</span>
@@ -423,7 +433,7 @@ export const BiyariGame: React.FC = () => {
           </div>
 
           {/* Billiard Table Canvas */}
-          <div className="p-3 bg-[#1a0f08] border-4 border-[#412716] rounded-2xl shadow-2xl overflow-hidden max-w-full">
+          <div className="p-3 bg-[#131a24] border-4 border-[#243144] rounded-2xl shadow-2xl overflow-hidden max-w-full">
             <canvas
               ref={canvasRef}
               width={TABLE_WIDTH}
@@ -434,10 +444,10 @@ export const BiyariGame: React.FC = () => {
             />
           </div>
 
-          {/* Controls Bar: Power meter and Take Shot */}
-          <div className="mt-4 w-full max-w-2xl p-4 bg-[#141a22] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4">
+          {/* Controls Bar */}
+          <div className="mt-4 w-full max-w-2xl p-4 bg-[#141a24] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 min-w-[200px]">
-              <Target className="w-4 h-4 text-amber-400 shrink-0" />
+              <Target className="w-4 h-4 text-emerald-400 shrink-0" />
               <label className="text-xs text-slate-300 whitespace-nowrap">Cue Power:</label>
               <input
                 type="range"
@@ -446,16 +456,16 @@ export const BiyariGame: React.FC = () => {
                 value={shotPower}
                 onChange={(e) => setShotPower(parseInt(e.target.value))}
                 disabled={ballsMoving}
-                className="w-full accent-amber-500 h-2 bg-slate-800 rounded cursor-pointer"
+                className="w-full accent-emerald-500 h-2 bg-slate-800 rounded cursor-pointer"
               />
-              <span className="text-xs font-mono text-amber-400 w-10 text-right">{shotPower}%</span>
+              <span className="text-xs font-mono text-emerald-400 w-10 text-right">{shotPower}%</span>
             </div>
 
             <button
               type="button"
               onClick={executeShot}
               disabled={ballsMoving || currentMatch.status !== 'playing'}
-              className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-lg shadow-amber-950 transition-all cursor-pointer whitespace-nowrap"
+              className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap"
             >
               {ballsMoving ? 'Balls Rolling...' : 'Strike Cue Ball'}
             </button>
@@ -464,39 +474,40 @@ export const BiyariGame: React.FC = () => {
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="p-4 bg-[#141a22] border border-slate-800 rounded-xl space-y-3">
-            <h4 className="text-sm font-bold text-slate-200 font-display">
-              Biyari Potted Tracker
+          <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
+            <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>Biyari Score Tracker</span>
             </h4>
             <div className="text-xs text-slate-400 space-y-2">
-              <div className="flex justify-between items-center p-2 bg-[#0e131a] rounded">
+              <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
                 <span>{currentMatch.playerA.name} (Solids):</span>
-                <span className="font-mono font-bold text-amber-300">{pottedA} / 5</span>
+                <span className="font-mono font-bold text-emerald-400">{pottedA} / 5</span>
               </div>
-              <div className="flex justify-between items-center p-2 bg-[#0e131a] rounded">
+              <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
                 <span>{currentMatch.playerB.name} (Stripes):</span>
-                <span className="font-mono font-bold text-blue-300">{pottedB} / 5</span>
+                <span className="font-mono font-bold text-cyan-400">{pottedB} / 5</span>
               </div>
               <p className="text-[11px] text-slate-500 pt-1">
-                Advantage increases with each ball potted towards the 8-ball endgame.
+                Advantage increases with each ball potted. Pot all group balls, then call the 8-ball for decisive win!
               </p>
             </div>
           </div>
 
-          {currentMatch.status === 'settled' && (
-            <div className="p-4 bg-emerald-950/30 border border-emerald-800/50 rounded-xl text-emerald-200 space-y-3">
+          {currentMatch.status === 'concluded' && (
+            <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
-                <Award className="w-4 h-4 text-emerald-400" />
-                <span>Match Settled</span>
+                <Award className="w-5 h-5 text-emerald-400" />
+                <span>Match Concluded</span>
               </div>
-              <p className="text-xs text-slate-300">{currentMatch.settlementReason}</p>
-              <div className="p-3 bg-[#10141a] rounded-lg text-xs font-mono text-amber-300 flex justify-between">
-                <span>Final Inka Received:</span>
-                <strong className="text-white">{currentMatch.holdingA.toFixed(2)} Inka</strong>
+              <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
+              <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
+                <span>Sportsmanship Honors:</span>
+                <strong className="text-white">+10 Honor Points</strong>
               </div>
               <button
                 onClick={() => setCurrentMatch(null)}
-                className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
+                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
                 Return to Lobby
               </button>

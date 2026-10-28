@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="inkaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="inkaTurq" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="inkaGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background rounded badge -->
+  <rect width="64" height="64" rx="16" fill="url(#bgGlow)" stroke="#334155" stroke-width="1.5" />
+
+  <!-- Stylized Royal Rwandan Inyambo Horns (Elegant Golden Crescent Curves) -->
+  <path d="M14 26 C12 14, 20 6, 28 10 C25 14, 22 18, 22 26 Z" fill="url(#inkaGold)" />
+  <path d="M50 26 C52 14, 44 6, 36 10 C39 14, 42 18, 42 26 Z" fill="url(#inkaGold)" />
+
+  <!-- Friendly Cow Head / Silhouette -->
+  <path d="M22 26 C22 23, 42 23, 42 26 C45 28, 48 33, 46 39 C44 45, 39 50, 32 50 C25 50, 20 45, 18 39 C16 33, 19 28, 22 26 Z" fill="#F8FAFC" />
+
+  <!-- Ears (Soft & Friendly) -->
+  <path d="M19 27 C13 26, 10 30, 13 33 C16 35, 18 31, 19 27 Z" fill="url(#inkaTurq)" />
+  <path d="M45 27 C51 26, 54 30, 51 33 C48 35, 46 31, 45 27 Z" fill="url(#inkaTurq)" />
+
+  <!-- Forehead Star Mark (Symbol of Friendship & Play) -->
+  <path d="M32 28 L33.5 31.5 L37 32 L34 34.5 L35 38 L32 36 L29 38 L30 34.5 L27 32 L30.5 31.5 Z" fill="url(#inkaGold)" />
+
+  <!-- Friendly Eyes -->
+  <ellipse cx="26" cy="35" rx="2.5" ry="3" fill="#0F172A" />
+  <circle cx="27" cy="34" r="1" fill="#FFFFFF" />
+
+  <ellipse cx="38" cy="35" rx="2.5" ry="3" fill="#0F172A" />
+  <circle cx="39" cy="34" r="1" fill="#FFFFFF" />
+
+  <!-- Soft Friendly Muzzle & Gentle Smile -->
+  <path d="M24 40 C24 38, 40 38, 40 40 C41 44, 38 48, 32 48 C26 48, 23 44, 24 40 Z" fill="#FDE68A" />
+  <circle cx="29" cy="42" r="1.2" fill="#B45309" />
+  <circle cx="35" cy="42" r="1.2" fill="#B45309" />
+  <path d="M29 45 Q32 47.5 35 45" stroke="#92400E" stroke-width="1.2" stroke-linecap="round" fill="none" />
+</svg>

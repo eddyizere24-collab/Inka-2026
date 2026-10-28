@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Award, MessageSquare, Info } from 'lucide-react';
+import { Award, Info, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
-import { SettlementBar } from './SettlementBar';
-import { calculateIgisoroAdvantage } from '../../utils/settlement';
+import { GameHud } from './GameHud';
+import { calculateIgisoroAdvantage } from '../../utils/matchScoring';
 import { sounds } from '../../utils/sound';
 
 /**
@@ -11,21 +11,14 @@ import { sounds } from '../../utils/sound';
  * Rows 0, 1: Player B (North)
  * Rows 2, 3: Player A (South)
  * Row 1 and Row 2 are the front rows where captures take place.
- * Total 64 inka / seeds.
+ * Total 64 seeds.
  */
 export const IgisoroGame: React.FC = () => {
-  const { currentMatch, updateMatchAdvantage, settleMatch, setCurrentMatch } = usePlatform();
+  const { currentMatch, updateMatchScore, concludeMatch, setCurrentMatch, t } = usePlatform();
 
-  // Initial distribution: 64 seeds distributed across the board (4 seeds per pit on initial 16 pits)
+  // Initial distribution: 64 seeds distributed across the board (2 in each pit)
   const getInitialBoard = () => {
-    // 4 rows x 8 cols
-    const board: number[][] = Array.from({ length: 4 }, () => Array(8).fill(0));
-    // Classic traditional setup: 4 seeds in each of the 8 pits for both players' front rows, or 2 in each pit
-    for (let r = 0; r < 4; r++) {
-      for (let c = 0; c < 8; c++) {
-        board[r][c] = 2; // 32 * 2 = 64 seeds total
-      }
-    }
+    const board: number[][] = Array.from({ length: 4 }, () => Array(8).fill(2));
     return board;
   };
 
@@ -33,7 +26,7 @@ export const IgisoroGame: React.FC = () => {
   const [turn, setTurn] = useState<'A' | 'B'>('A');
   const [sowingPit, setSowingPit] = useState<{ r: number; c: number } | null>(null);
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>('Select a pit on your side with 2+ inka seeds to sow.');
+  const [statusMessage, setStatusMessage] = useState<string>('Select a pit on your side with 2+ seeds to sow.');
 
   // Count seeds for player A (rows 2, 3) and player B (rows 0, 1)
   const getSeedCounts = useCallback(() => {
@@ -48,16 +41,13 @@ export const IgisoroGame: React.FC = () => {
 
   const { seedsA, seedsB } = getSeedCounts();
 
-  // Advantage calculation handled inside executeSow upon board change
-
-  // Order of sowing for Player A: loop across rows 2 and 3
-  // Row 2 goes left to right: (2,0) -> (2,7), then Row 3 goes right to left: (3,7) -> (3,0)
+  // Sowing path for Player A (rows 2 and 3)
   const getPlayerAPath = () => [
     { r: 2, c: 0 }, { r: 2, c: 1 }, { r: 2, c: 2 }, { r: 2, c: 3 }, { r: 2, c: 4 }, { r: 2, c: 5 }, { r: 2, c: 6 }, { r: 2, c: 7 },
     { r: 3, c: 7 }, { r: 3, c: 6 }, { r: 3, c: 5 }, { r: 3, c: 4 }, { r: 3, c: 3 }, { r: 3, c: 2 }, { r: 3, c: 1 }, { r: 3, c: 0 },
   ];
 
-  // Order of sowing for Player B: loop across rows 0 and 1
+  // Sowing path for Player B (rows 0 and 1)
   const getPlayerBPath = () => [
     { r: 1, c: 7 }, { r: 1, c: 6 }, { r: 1, c: 5 }, { r: 1, c: 4 }, { r: 1, c: 3 }, { r: 1, c: 2 }, { r: 1, c: 1 }, { r: 1, c: 0 },
     { r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 }, { r: 0, c: 3 }, { r: 0, c: 4 }, { r: 0, c: 5 }, { r: 0, c: 6 }, { r: 0, c: 7 },
@@ -73,7 +63,7 @@ export const IgisoroGame: React.FC = () => {
 
     // Must have at least 2 seeds to sow in Igisoro
     if (board[r][c] < 2) {
-      setStatusMessage('In Igisoro, you can only sow from a pit with 2 or more inka seeds.');
+      setStatusMessage('In Igisoro, you can only sow from a pit with 2 or more seeds.');
       return;
     }
 
@@ -99,7 +89,7 @@ export const IgisoroGame: React.FC = () => {
 
     const lastPit = path[currentIdx];
 
-    // Rwandan Igisoro Capture Rule (Gusiba / Umutwe):
+    // Rwandan Igisoro Capture Rule (Gusiba):
     // If the last seed drops into an occupied front-row pit (Row 2 for A, Row 1 for B),
     // and the opponent's opposing front-row pit contains seeds, the player captures them!
     let captured = 0;
@@ -115,7 +105,7 @@ export const IgisoroGame: React.FC = () => {
         }
         newBoard[2][lastPit.c] += captured;
         sounds.playCapture();
-        setStatusMessage(`${currentMatch?.playerA.name} captured ${captured} inka seeds from opponent's pits!`);
+        setStatusMessage(`${currentMatch?.playerA.name} captured ${captured} seeds from opponent pits!`);
       }
     } else if (playerTurn === 'B' && lastPit.r === 1 && newBoard[1][lastPit.c] > 1) {
       const oppCol = lastPit.c;
@@ -128,7 +118,7 @@ export const IgisoroGame: React.FC = () => {
         }
         newBoard[1][lastPit.c] += captured;
         sounds.playCapture();
-        setStatusMessage(`${currentMatch?.playerB.name} captured ${captured} inka seeds from opponent's pits!`);
+        setStatusMessage(`${currentMatch?.playerB.name} captured ${captured} seeds from opponent pits!`);
       }
     }
 
@@ -145,204 +135,237 @@ export const IgisoroGame: React.FC = () => {
 
     const isWinA = newSeedsB === 0;
     const isWinB = newSeedsA === 0;
-    const { leader, w } = calculateIgisoroAdvantage(newSeedsA, newSeedsB, isWinA, isWinB);
-    updateMatchAdvantage(leader, w);
+    const scoreResult = calculateIgisoroAdvantage(newSeedsA, newSeedsB, isWinA, isWinB);
+    updateMatchScore(scoreResult);
 
     if (isWinA) {
-      settleMatch(`Decisive Igisoro Victory by ${currentMatch?.playerA.name}! Opponent cleared.`);
+      concludeMatch(`Decisive Igisoro Victory by ${currentMatch?.playerA.name}! Opponent cleared.`, false, 'A');
     } else if (isWinB) {
-      settleMatch(`Decisive Igisoro Victory by ${currentMatch?.playerB.name}! Opponent cleared.`);
+      concludeMatch(`Decisive Igisoro Victory by ${currentMatch?.playerB.name}! Opponent cleared.`, false, 'B');
     }
 
     const nextTurn = playerTurn === 'A' ? 'B' : 'A';
     setTurn(nextTurn);
   };
 
-  // Simulated friendly live opponent turn
+  // Simulated friendly opponent move (if not pass-and-play)
   useEffect(() => {
     if (turn === 'B' && !isPassAndPlay && currentMatch?.status === 'playing') {
       const timer = setTimeout(() => {
-        // Find valid pits for Player B (rows 0, 1) with >= 2 seeds
-        const validPits: { r: number; c: number; count: number }[] = [];
+        // Collect eligible pits for Player B (rows 0 and 1 with >= 2 seeds)
+        const candidates: { r: number; c: number; seeds: number }[] = [];
         for (let r = 0; r <= 1; r++) {
           for (let c = 0; c < 8; c++) {
             if (board[r][c] >= 2) {
-              validPits.push({ r, c, count: board[r][c] });
+              candidates.push({ r, c, seeds: board[r][c] });
             }
           }
         }
 
-        if (validPits.length > 0) {
-          // Choose strategically or random valid
-          const chosen = validPits[Math.floor(Math.random() * validPits.length)];
+        if (candidates.length > 0) {
+          const chosen = candidates[Math.floor(Math.random() * candidates.length)];
           executeSow(chosen.r, chosen.c, 'B');
         } else {
-          // B has no valid move, A wins decisive
-          settleMatch(`No valid sows remaining for ${currentMatch.playerB.name}`);
+          // If Player B has no move with 2+ seeds, Player A wins
+          concludeMatch(`${currentMatch?.playerB.name} has no valid moves remaining. Victory for ${currentMatch?.playerA.name}!`, false, 'A');
         }
-      }, 1500);
+      }, 1200);
 
       return () => clearTimeout(timer);
     }
-  }, [turn, isPassAndPlay, currentMatch?.status, board]);
+  }, [turn, isPassAndPlay, currentMatch?.status, board, concludeMatch]);
 
   if (!currentMatch) return null;
 
   return (
     <div className="space-y-6">
-      {/* Live Settlement Bar HUD */}
-      <SettlementBar
+      <GameHud
         match={currentMatch}
         turn={turn}
-        onStop={() => settleMatch(`Voluntary stop by ${currentMatch.playerA.name}`)}
-        onTimeout={() => sounds.playInkaChime()}
+        customStatsA={
+          <span className="text-emerald-400 font-mono">
+            {t.seeds_count}: {seedsA}/64
+          </span>
+        }
+        customStatsB={
+          <span className="text-cyan-400 font-mono">
+            {t.seeds_count}: {seedsB}/64
+          </span>
+        }
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        {/* Igisoro Carved Board */}
+        {/* Left Mancala Board */}
         <div className="lg:col-span-3 flex flex-col items-center">
+          {/* Controls */}
           <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">Igisoro: 32 Pits (4×8)</span>
-              <span className="text-slate-500">·</span>
-              <span>64 Inka Seeds</span>
+              <span className="font-semibold text-slate-200">Igisoro: 32 Pits, 64 Traditional Seeds</span>
             </div>
-            <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
-              <input
-                type="checkbox"
-                checked={isPassAndPlay}
-                onChange={(e) => setIsPassAndPlay(e.target.checked)}
-                className="rounded border-slate-700 bg-slate-800 text-amber-500"
-              />
-              <span>Pass & Play / 2-Player Seat</span>
-            </label>
+            <div>
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={isPassAndPlay}
+                  onChange={(e) => setIsPassAndPlay(e.target.checked)}
+                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
+                />
+                <span>Pass & Play / 2-Player Seat</span>
+              </label>
+            </div>
           </div>
 
-          {/* Carved Wood Mancala Board */}
-          <div className="w-full max-w-2xl p-6 bg-gradient-to-b from-[#2e1d13] via-[#3d2719] to-[#2b1b11] border-4 border-[#523522] rounded-3xl shadow-2xl space-y-4">
-            {/* North Player (Player B) Side Header */}
-            <div className="flex items-center justify-between px-2 text-xs text-[#d1b89d]">
-              <span className="font-semibold">{currentMatch.playerB.name} (North)</span>
-              <span className="font-mono text-amber-300">{seedsB} Seeds ({((seedsB / 64) * 100).toFixed(0)}%)</span>
+          {/* Wooden Board Container */}
+          <div className="w-full max-w-2xl bg-[#1d2533] border-4 border-[#2b384d] rounded-3xl p-4 sm:p-6 shadow-2xl">
+            {/* North Player (Player B) */}
+            <div className="flex items-center justify-between mb-2 px-3 text-xs">
+              <span className="text-slate-400 font-semibold">{currentMatch.playerB.name} (North Territory)</span>
+              <span className="font-mono text-cyan-400 font-medium">{seedsB} Seeds ({((seedsB / 64) * 100).toFixed(0)}%)</span>
             </div>
 
-            {/* The 4 Rows of 8 Pits */}
-            <div className="space-y-3 p-3 bg-[#1d120a]/80 rounded-2xl border border-[#442b1a]">
-              {board.map((row, r) => {
-                const isPlayerA = r >= 2;
-                const isFrontRow = r === 1 || r === 2;
-
-                return (
-                  <div key={r} className="relative">
-                    {/* Front-row divider accent */}
-                    {r === 2 && (
-                      <div className="my-2 border-t border-dashed border-[#5a3a24] text-center">
-                        <span className="px-2 bg-[#1d120a] text-[10px] text-[#a88a6d] font-mono tracking-wider">
-                          FRONT CAPTURE LINE
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-8 gap-2">
-                      {row.map((count, c) => {
-                        const canSow = (turn === 'A' && isPlayerA && count >= 2) ||
-                                       (turn === 'B' && !isPlayerA && count >= 2 && isPassAndPlay);
-                        const isSowing = sowingPit?.r === r && sowingPit?.c === c;
-
-                        return (
-                          <button
-                            key={`${r}-${c}`}
-                            type="button"
-                            onClick={() => handlePitClick(r, c)}
-                            aria-label={`Pit Row ${r} Col ${c}, ${count} seeds`}
-                            disabled={!canSow && currentMatch.status === 'playing'}
-                            className={`h-14 sm:h-16 rounded-2xl flex flex-col items-center justify-center p-1 relative transition-all duration-150 ${
-                              isFrontRow ? 'bg-[#311f14]' : 'bg-[#26170d]'
-                            } border ${
-                              canSow
-                                ? 'border-amber-400/80 shadow-md shadow-amber-950/40 hover:scale-105 cursor-pointer ring-2 ring-amber-500/40'
-                                : 'border-[#432918] opacity-90'
-                            } ${isSowing ? 'bg-amber-800/40 ring-4 ring-amber-400' : ''}`}
-                          >
-                            {/* Seeds visual clusters */}
-                            <div className="flex flex-wrap items-center justify-center gap-0.5 max-w-[36px] max-h-[28px] overflow-hidden">
-                              {Array.from({ length: Math.min(count, 8) }).map((_, i) => (
-                                <div
-                                  key={i}
-                                  className="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-[#eedcbe] to-[#bda37d] border border-[#785b3b] shadow-inner"
-                                />
-                              ))}
-                              {count > 8 && (
-                                <span className="text-[9px] text-[#eedcbe] font-mono font-bold">+</span>
-                              )}
-                            </div>
-
-                            {/* Numerical count */}
-                            <span
-                              className={`text-xs font-mono font-bold mt-1 ${
-                                count > 0 ? 'text-[#f5e6d3]' : 'text-slate-600'
-                              }`}
-                            >
-                              {count}
-                            </span>
-                          </button>
-                        );
-                      })}
+            {/* 4 Rows of 8 Pits */}
+            <div className="space-y-2.5">
+              {/* Row 0: Player B Back */}
+              <div className="grid grid-cols-8 gap-2">
+                {board[0].map((count, c) => (
+                  <button
+                    key={`0-${c}`}
+                    type="button"
+                    disabled={turn !== 'B' || count < 2 || !isPassAndPlay}
+                    onClick={() => handlePitClick(0, c)}
+                    aria-label={`Pit Row 0 Col ${c}, ${count} seeds`}
+                    className={`aspect-square rounded-2xl bg-[#141b26] border-2 border-[#2b3749] flex flex-col items-center justify-center relative transition-all shadow-inner ${
+                      turn === 'B' && count >= 2 && isPassAndPlay ? 'hover:border-cyan-400 cursor-pointer' : ''
+                    } ${sowingPit?.r === 0 && sowingPit?.c === c ? 'ring-2 ring-cyan-400' : ''}`}
+                  >
+                    <span className="text-xs sm:text-sm font-bold text-slate-200">{count}</span>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
+                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-sm" />
+                      ))}
                     </div>
-                  </div>
-                );
-              })}
+                  </button>
+                ))}
+              </div>
+
+              {/* Row 1: Player B Front (Battle Row) */}
+              <div className="grid grid-cols-8 gap-2 pb-1 border-b border-[#2d3a4e]">
+                {board[1].map((count, c) => (
+                  <button
+                    key={`1-${c}`}
+                    type="button"
+                    disabled={turn !== 'B' || count < 2 || !isPassAndPlay}
+                    onClick={() => handlePitClick(1, c)}
+                    aria-label={`Pit Row 1 Col ${c}, ${count} seeds`}
+                    className={`aspect-square rounded-2xl bg-[#151c27] border-2 border-[#2b3749] flex flex-col items-center justify-center relative transition-all shadow-inner ${
+                      turn === 'B' && count >= 2 && isPassAndPlay ? 'hover:border-cyan-400 cursor-pointer' : ''
+                    } ${sowingPit?.r === 1 && sowingPit?.c === c ? 'ring-2 ring-cyan-400' : ''}`}
+                  >
+                    <span className="text-xs sm:text-sm font-bold text-slate-200">{count}</span>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
+                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-sm" />
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Row 2: Player A Front (Battle Row) */}
+              <div className="grid grid-cols-8 gap-2 pt-1">
+                {board[2].map((count, c) => (
+                  <button
+                    key={`2-${c}`}
+                    type="button"
+                    disabled={turn !== 'A' || count < 2}
+                    onClick={() => handlePitClick(2, c)}
+                    aria-label={`Pit Row 2 Col ${c}, ${count} seeds`}
+                    className={`aspect-square rounded-2xl bg-[#141c26] border-2 border-[#2a384b] flex flex-col items-center justify-center relative transition-all shadow-inner ${
+                      turn === 'A' && count >= 2 ? 'hover:border-emerald-400 hover:scale-105 cursor-pointer ring-1 ring-emerald-500/30' : ''
+                    } ${sowingPit?.r === 2 && sowingPit?.c === c ? 'ring-2 ring-emerald-400' : ''}`}
+                  >
+                    <span className="text-xs sm:text-sm font-bold text-white">{count}</span>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
+                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm" />
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Row 3: Player A Back */}
+              <div className="grid grid-cols-8 gap-2">
+                {board[3].map((count, c) => (
+                  <button
+                    key={`3-${c}`}
+                    type="button"
+                    disabled={turn !== 'A' || count < 2}
+                    onClick={() => handlePitClick(3, c)}
+                    aria-label={`Pit Row 3 Col ${c}, ${count} seeds`}
+                    className={`aspect-square rounded-2xl bg-[#141c26] border-2 border-[#2a384b] flex flex-col items-center justify-center relative transition-all shadow-inner ${
+                      turn === 'A' && count >= 2 ? 'hover:border-emerald-400 hover:scale-105 cursor-pointer ring-1 ring-emerald-500/30' : ''
+                    } ${sowingPit?.r === 3 && sowingPit?.c === c ? 'ring-2 ring-emerald-400' : ''}`}
+                  >
+                    <span className="text-xs sm:text-sm font-bold text-white">{count}</span>
+                    <div className="flex gap-0.5 mt-0.5">
+                      {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
+                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm" />
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* South Player (Player A) Side Header */}
-            <div className="flex items-center justify-between px-2 text-xs text-[#d1b89d]">
-              <span className="font-semibold">{currentMatch.playerA.name} (South)</span>
-              <span className="font-mono text-amber-300">{seedsA} Seeds ({((seedsA / 64) * 100).toFixed(0)}%)</span>
+            {/* South Player (Player A) */}
+            <div className="flex items-center justify-between mt-3 px-3 text-xs">
+              <span className="text-emerald-400 font-semibold">{currentMatch.playerA.name} (South Territory)</span>
+              <span className="font-mono text-emerald-400 font-medium">{seedsA} Seeds ({((seedsA / 64) * 100).toFixed(0)}%)</span>
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-amber-200/90 font-mono bg-[#161c24] px-4 py-2 rounded-xl border border-slate-800">
+          <div className="mt-3 text-xs text-emerald-300 font-mono bg-[#141a24] px-4 py-2 rounded-xl border border-slate-800">
             {statusMessage}
           </div>
         </div>
 
         {/* Right Info Sidebar */}
         <div className="space-y-4">
-          <div className="p-4 bg-[#141a22] border border-slate-800 rounded-xl space-y-3">
+          <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
             <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
-              <Info className="w-4 h-4 text-amber-400" />
-              <span>Igisoro Advantage Formula</span>
+              <Info className="w-4 h-4 text-emerald-400" />
+              <span>{t.igisoro_rule}</span>
             </h4>
             <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
               <p>
-                From Concept Document Section 7.6: Let <code>p</code> be the fraction of all 64 seeds
-                controlled by a player.
+                In Igisoro, players sow seeds in counter-clockwise loops. When the final seed lands in an occupied front pit with opponent seeds directly opposite, a capture occurs.
               </p>
-              <div className="p-2.5 bg-[#0e131a] rounded-lg font-mono text-[11px] text-amber-300 space-y-1">
-                <div>A Seeds: {seedsA} / 64 (p = {(seedsA / 64).toFixed(2)})</div>
-                <div>Formula: w = |2p - 1| = {currentMatch.w.toFixed(2)}</div>
-                <div>Current Holding: {currentMatch.holdingA.toFixed(2)} inka</div>
+              <div className="p-2.5 bg-[#0e131b] rounded-lg font-mono text-[11px] text-emerald-300 space-y-1">
+                <div>A Seeds: {seedsA} / 64 ({(seedsA / 64 * 100).toFixed(0)}%)</div>
+                <div>Advantage (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
+                <div>Leader: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : 'Level'}</div>
               </div>
               <p className="text-[11px] text-slate-500">
-                Captures happen when your last seed lands in an occupied front pit with opponent seeds opposite!
+                Play continues until one side has no seeds or no legal sowing moves remaining.
               </p>
             </div>
           </div>
 
-          {currentMatch.status === 'settled' && (
-            <div className="p-4 bg-emerald-950/30 border border-emerald-800/50 rounded-xl text-emerald-200 space-y-3">
+          {currentMatch.status === 'concluded' && (
+            <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
-                <Award className="w-4 h-4 text-emerald-400" />
-                <span>Match Settled</span>
+                <Award className="w-5 h-5 text-emerald-400" />
+                <span>Match Concluded</span>
               </div>
-              <p className="text-xs text-slate-300">{currentMatch.settlementReason}</p>
-              <div className="p-3 bg-[#10141a] rounded-lg text-xs font-mono text-amber-300 flex justify-between">
-                <span>Final Inka Received:</span>
-                <strong className="text-white">{currentMatch.holdingA.toFixed(2)} Inka</strong>
+              <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
+              <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
+                <span>Sportsmanship Honors:</span>
+                <strong className="text-white">+10 Honor Points</strong>
               </div>
               <button
                 onClick={() => setCurrentMatch(null)}
-                className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
+                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
                 Return to Lobby
               </button>
