@@ -186,6 +186,7 @@ export interface TranslationSchema {
   targetGroupPotting: string;
   playerAOnEightBall: string;
   playerBOnEightBall: string;
+  bothPlayersOnEightBall: string;
   piecesUnit: string;
   levelStanding: string;
   dameBoardLabel: string;
@@ -505,6 +506,7 @@ export const translations: Record<Language, TranslationSchema> = {
     targetGroupPotting: "Kwinjiza imipira y’itsinda",
     playerAOnEightBall: "Umukinnyi A agiye gukina umupira wa 8",
     playerBOnEightBall: "Umukinnyi B agiye gukina umupira wa 8",
+    bothPlayersOnEightBall: "Abakinnyi bombi bageze ku mupira wa 8",
     piecesUnit: "ibice",
     levelStanding: "Barangana",
     dameBoardLabel: "Ikibaho cya 8×8",
@@ -823,6 +825,7 @@ export const translations: Record<Language, TranslationSchema> = {
     targetGroupPotting: "Clearing the target group",
     playerAOnEightBall: "Player A is on the 8-ball",
     playerBOnEightBall: "Player B is on the 8-ball",
+    bothPlayersOnEightBall: "Both players are on the 8-ball",
     piecesUnit: "pieces",
     levelStanding: "Tied",
     dameBoardLabel: "8×8 board",
@@ -1141,6 +1144,7 @@ export const translations: Record<Language, TranslationSchema> = {
     targetGroupPotting: "Empocher les billes du groupe",
     playerAOnEightBall: "Le joueur A vise la bille 8",
     playerBOnEightBall: "Le joueur B vise la bille 8",
+    bothPlayersOnEightBall: "Les deux joueurs sont sur la bille 8",
     piecesUnit: "pièces",
     levelStanding: "À égalité",
     dameBoardLabel: "Plateau 8×8",
