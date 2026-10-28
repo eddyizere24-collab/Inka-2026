@@ -54,7 +54,7 @@ export const SpectatorView: React.FC = () => {
             <span>{requestSentNotice}</span>
           </div>
           <button onClick={() => setRequestSentNotice(null)} className="text-emerald-400 hover:text-white cursor-pointer">
-            Dismiss
+            {t.close}
           </button>
         </div>
       )}
@@ -231,13 +231,13 @@ export const SpectatorView: React.FC = () => {
               type="text"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Comment on tactics or sportsmanship..."
+              placeholder={t.chatInputPlaceholder}
               className="flex-1 px-3 py-2 bg-[#0c1016] border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
             />
             <button
               type="submit"
               className="p-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors cursor-pointer"
-              aria-label="Send comment"
+              aria-label={t.send}
             >
               <Send className="w-4 h-4" />
             </button>
