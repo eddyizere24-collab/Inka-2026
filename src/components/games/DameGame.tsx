@@ -338,9 +338,9 @@ export const DameGame: React.FC = () => {
             <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
               <p>{t.zero_wagering_rule}</p>
               <div className="p-2.5 bg-[#0e131b] rounded-lg font-mono text-[11px] text-emerald-300 space-y-1">
-                <div>Net Captures: {Math.abs(capturedByA - capturedByB)} pieces</div>
-                <div>Advantage (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
-                <div>Leader: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : 'Tied'}</div>
+                <div>{t.netCaptureDifference}: {Math.abs(capturedByA - capturedByB)} {t.piecesUnit}</div>
+                <div>{t.skillAdvantageLabel} (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
+                <div>{t.leaderLabel}: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : t.levelStanding}</div>
               </div>
               <p className="text-[11px] text-slate-500">
                 {t.freeSkillCompetitionNotice}
