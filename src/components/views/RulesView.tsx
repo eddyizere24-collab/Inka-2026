@@ -23,7 +23,7 @@ export const RulesView: React.FC = () => {
 
   const dameResult = calculateDameAdvantage(dameCapA, dameCapB, dameCapA >= 10, dameCapB >= 10);
   const igisoroResult = calculateIgisoroAdvantage(seedsA, seedsB, seedsB === 0, seedsA === 0);
-  const biyariResult = calculateBiyariAdvantage(biyariA, biyariB, biyariA >= 5, biyariB >= 5);
+  const biyariResult = calculateBiyariAdvantage(biyariA, biyariB);
 
   const CORE_PRINCIPLES = [
     {
@@ -204,12 +204,12 @@ export const RulesView: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  {t.playerASolidsPottedLabel}: <span className="font-mono text-emerald-400 font-bold">{biyariA}</span> / 5
+                  {t.playerASolidsPottedLabel}: <span className="font-mono text-emerald-400 font-bold">{biyariA}</span> / 7
                 </label>
                 <input
                   type="range"
                   min="0"
-                  max="5"
+                  max="7"
                   value={biyariA}
                   onChange={(e) => setBiyariA(parseInt(e.target.value))}
                   className="w-full accent-emerald-500 cursor-pointer"
@@ -218,12 +218,12 @@ export const RulesView: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  {t.playerBStripesPottedLabel}: <span className="font-mono text-cyan-400 font-bold">{biyariB}</span> / 5
+                  {t.playerBStripesPottedLabel}: <span className="font-mono text-cyan-400 font-bold">{biyariB}</span> / 7
                 </label>
                 <input
                   type="range"
                   min="0"
-                  max="5"
+                  max="7"
                   value={biyariB}
                   onChange={(e) => setBiyariB(parseInt(e.target.value))}
                   className="w-full accent-cyan-500 cursor-pointer"
@@ -239,7 +239,7 @@ export const RulesView: React.FC = () => {
               <div>
                 <span className="text-slate-400">{t.endgameStageLabel}:</span>{' '}
                 <strong className="text-amber-300">
-                  {biyariA >= 5 ? t.playerAOnEightBall : biyariB >= 5 ? t.playerBOnEightBall : t.targetGroupPotting}
+                  {biyariA >= 7 ? t.playerAOnEightBall : biyariB >= 7 ? t.playerBOnEightBall : t.targetGroupPotting}
                 </strong>
               </div>
             </div>
