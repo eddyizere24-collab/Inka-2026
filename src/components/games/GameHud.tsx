@@ -240,7 +240,7 @@ export const GameHud: React.FC<GameHudProps> = ({
                 onClick={() => {
                   setShowStopModal(false);
                   if (onFriendlyStop) onFriendlyStop();
-                  else concludeMatch('Friendly match conclusion with mutual honor', false, match.leader || undefined);
+                  else concludeMatch(t.friendlyMatchConclusion, false, match.leader || undefined);
                 }}
                 className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md cursor-pointer"
               >
@@ -306,7 +306,7 @@ export const GameHud: React.FC<GameHudProps> = ({
                 onClick={() => {
                   setShowDrawModal(false);
                   if (onProposeDraw) onProposeDraw();
-                  else concludeMatch('Mutual draw agreed with honor', true);
+                  else concludeMatch(t.mutualDrawAgreed, true);
                 }}
                 className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-md cursor-pointer"
               >
