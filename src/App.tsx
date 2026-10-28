@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Volume2,
   VolumeX,
@@ -32,20 +32,6 @@ const MainShell: React.FC = () => {
     currentMatch,
     setCurrentMatch,
   } = usePlatform();
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.title = t.documentTitle;
-
-    const updateMeta = (selector: string, content: string) => {
-      const element = document.querySelector<HTMLMetaElement>(selector);
-      if (element) element.content = content;
-    };
-
-    updateMeta('meta[name="description"]', t.metaDescription);
-    updateMeta('meta[property="og:title"]', t.documentTitle);
-    updateMeta('meta[property="og:description"]', t.metaDescription);
-  }, [lang, t]);
 
   // If in active match, render the game view
   if (currentMatch) {
