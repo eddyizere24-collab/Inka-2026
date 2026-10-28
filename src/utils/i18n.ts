@@ -167,7 +167,6 @@ export interface TranslationSchema {
   muteSound: string;
   unmuteSound: string;
   editionLabel: string;
-  humanVsHuman: string;
   skillAdvantage: string;
   zeroWageringFooter: string;
   levelLabel: string;
@@ -486,7 +485,6 @@ export const translations: Record<Language, TranslationSchema> = {
     muteSound: "Zimya ijwi",
     unmuteSound: "Fungura ijwi",
     editionLabel: "Inyandiko ya 2026",
-    humanVsHuman: "Abakinnyi bakina hagati yabo",
     skillAdvantage: "Inyungu ishingiye ku buhanga",
     zeroWageringFooter: "Nta gutega cyangwa kwimura amafaranga",
     levelLabel: "Urwego",
@@ -804,7 +802,6 @@ export const translations: Record<Language, TranslationSchema> = {
     muteSound: "Mute sound",
     unmuteSound: "Unmute sound",
     editionLabel: "2026 edition",
-    humanVsHuman: "Human vs. human",
     skillAdvantage: "Skill advantage",
     zeroWageringFooter: "No betting or money transfers",
     levelLabel: "Level",
@@ -1122,7 +1119,6 @@ export const translations: Record<Language, TranslationSchema> = {
     muteSound: "Couper le son",
     unmuteSound: "Réactiver le son",
     editionLabel: "Édition 2026",
-    humanVsHuman: "Joueur contre joueur",
     skillAdvantage: "Avantage lié à l’adresse",
     zeroWageringFooter: "Aucun pari ni transfert d’argent",
     levelLabel: "Niveau",
