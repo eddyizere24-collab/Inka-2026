@@ -27,28 +27,28 @@ export const RulesView: React.FC = () => {
 
   const CORE_PRINCIPLES = [
     {
-      title: '1. Ubucuti n’Ubumwe (Friendship & Connection)',
-      desc: 'Games are cultural vessels designed to connect people across Rwanda, strengthen bonds of friendship, and inspire mutual respect.',
+      title: t.rule1Title,
+      desc: t.rule1Desc,
     },
     {
-      title: '2. Umwimerere w’Umuco (Authentic Rwandan Heritage)',
-      desc: 'Preserving the traditional mechanics of Igisoro and Rwandan Dame with meticulous fidelity to ancestral rules.',
+      title: t.rule2Title,
+      desc: t.rule2Desc,
     },
     {
-      title: '3. Zero Wagering & Pure Skill (Gukina Ku Bwenge)',
-      desc: 'No money stakes, no cow betting, and no financial risk. Play is 100% free and governed entirely by intellect, tactics, and sportsmanship.',
+      title: t.rule3Title,
+      desc: t.rule3Desc,
     },
     {
-      title: '4. Strictly Human-vs-Human (Abantu Ku Bindi)',
-      desc: 'Zero artificial intelligence bots or computer fakes. Every opponent you challenge is a verified human player.',
+      title: t.rule4Title,
+      desc: t.rule4Desc,
     },
     {
-      title: '5. Ubwiyunge n’Ubwisanzure (Freedom to Conclude)',
-      desc: 'Any player may pause or conclude a match with dignity. Sportsmanship honor points are awarded equally for graceful play.',
+      title: t.rule5Title,
+      desc: t.rule5Desc,
     },
     {
-      title: '6. Intego y’Umutuzo (Quiet Spectator Focus)',
-      desc: 'Spectators observe in silence without outside advice or coaching. Tactical commentary is only revealed after the final move.',
+      title: t.rule6Title,
+      desc: t.rule6Desc,
     },
   ];
 
@@ -66,7 +66,7 @@ export const RulesView: React.FC = () => {
       <section className="p-6 bg-[#131923] border border-slate-800 rounded-3xl shadow-xl space-y-6">
         <div className="flex items-center gap-2.5 pb-4 border-b border-slate-800">
           <BookOpen className="w-5 h-5 text-emerald-400" />
-          <h3 className="font-bold text-white text-lg">The Six INKA Core Principles</h3>
+          <h3 className="font-bold text-white text-lg">{t.philosophyTitle}</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,7 +84,7 @@ export const RulesView: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <Calculator className="w-5 h-5 text-emerald-400" />
-            <h3 className="font-bold text-white text-lg">Interactive Skill Advantage Engine</h3>
+            <h3 className="font-bold text-white text-lg">{t.advantageGauge}</h3>
           </div>
           <span className="text-xs text-emerald-400 font-mono">
             Normalized skill advantage w ∈ [0.0, 1.0]
@@ -95,9 +95,9 @@ export const RulesView: React.FC = () => {
         <div className="flex gap-2 border-b border-slate-800 pb-2">
           {(
             [
-              { id: 'dame', label: 'Dame (Checkers)' },
-              { id: 'igisoro', label: 'Igisoro (Mancala)' },
-              { id: 'biyari', label: 'Biyari (Billiards)' },
+              { id: 'dame', label: t.dameTitle },
+              { id: 'igisoro', label: t.igisoroTitle },
+              { id: 'biyari', label: t.biyariTitle },
             ] as const
           ).map((tab) => (
             <button
@@ -149,16 +149,16 @@ export const RulesView: React.FC = () => {
 
             <div className="p-4 bg-[#0e131b] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
               <div>
-                <span className="text-slate-400">Net Capture Difference:</span>{' '}
-                <strong className="text-white">{Math.abs(dameCapA - dameCapB)} pieces</strong>
+                <span className="text-slate-400">{t.netCaptureDifference}:</span>{' '}
+                <strong className="text-white">{Math.abs(dameCapA - dameCapB)} {t.piecesUnit}</strong>
               </div>
               <div>
-                <span className="text-slate-400">Skill Advantage (w):</span>{' '}
+                <span className="text-slate-400">{t.skillAdvantageLabel} (w):</span>{' '}
                 <strong className="text-emerald-400">{dameResult.w.toFixed(2)} ({(dameResult.w * 100).toFixed(0)}%)</strong>
               </div>
               <div>
-                <span className="text-slate-400">Leader:</span>{' '}
-                <strong className="text-amber-300">{dameResult.leader ? `Player ${dameResult.leader}` : 'Level Standing'}</strong>
+                <span className="text-slate-400">{t.leaderLabel}:</span>{' '}
+                <strong className="text-amber-300">{dameResult.leader ? `${t.leaderLabel} ${dameResult.leader}` : t.levelStanding}</strong>
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export const RulesView: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-2">
-                Player A Seeds: <span className="font-mono text-emerald-400 font-bold">{seedsA}</span> / 64 (Player B holds {seedsB})
+                {t.playerASeedsLabel}: <span className="font-mono text-emerald-400 font-bold">{seedsA}</span> / 64 ({t.playerBHoldsLabel} {seedsB})
               </label>
               <input
                 type="range"
@@ -183,15 +183,15 @@ export const RulesView: React.FC = () => {
 
             <div className="p-4 bg-[#0e131b] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
               <div>
-                <span className="text-slate-400">Seed Ratio (p):</span>{' '}
+                <span className="text-slate-400">{t.seedRatioLabel} (p):</span>{' '}
                 <strong className="text-white">{(seedsA / 64).toFixed(3)}</strong>
               </div>
               <div>
-                <span className="text-slate-400">Formula w = |2p - 1|:</span>{' '}
+                <span className="text-slate-400">{t.formulaLabel} w = |2p - 1|:</span>{' '}
                 <strong className="text-emerald-400">{igisoroResult.w.toFixed(2)}</strong>
               </div>
               <div>
-                <span className="text-slate-400">Leader:</span>{' '}
+                <span className="text-slate-400">{t.leaderLabel}:</span>{' '}
                 <strong className="text-amber-300">{igisoroResult.leader ? `Player ${igisoroResult.leader}` : 'Level Standing'}</strong>
               </div>
             </div>
@@ -204,7 +204,7 @@ export const RulesView: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  Player A Solids Potted: <span className="font-mono text-emerald-400 font-bold">{biyariA}</span> / 5
+                  {t.playerASolidsPottedLabel}: <span className="font-mono text-emerald-400 font-bold">{biyariA}</span> / 5
                 </label>
                 <input
                   type="range"
@@ -218,7 +218,7 @@ export const RulesView: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  Player B Stripes Potted: <span className="font-mono text-cyan-400 font-bold">{biyariB}</span> / 5
+                  {t.playerBStripesPottedLabel}: <span className="font-mono text-cyan-400 font-bold">{biyariB}</span> / 5
                 </label>
                 <input
                   type="range"
@@ -233,13 +233,13 @@ export const RulesView: React.FC = () => {
 
             <div className="p-4 bg-[#0e131b] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
               <div>
-                <span className="text-slate-400">Advantage (w):</span>{' '}
+                <span className="text-slate-400">{t.skillAdvantageLabel} (w):</span>{' '}
                 <strong className="text-emerald-400">{biyariResult.w.toFixed(2)}</strong>
               </div>
               <div>
-                <span className="text-slate-400">Endgame Stage:</span>{' '}
+                <span className="text-slate-400">{t.endgameStageLabel}:</span>{' '}
                 <strong className="text-amber-300">
-                  {biyariA >= 5 ? 'Player A on 8-Ball' : biyariB >= 5 ? 'Player B on 8-Ball' : 'Target Group Potting'}
+                  {biyariA >= 5 ? t.playerAOnEightBall : biyariB >= 5 ? t.playerBOnEightBall : t.targetGroupPotting}
                 </strong>
               </div>
             </div>
@@ -251,10 +251,10 @@ export const RulesView: React.FC = () => {
       <section className="p-6 bg-[#131923] border border-slate-800 rounded-3xl shadow-xl space-y-4">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
-          <h3 className="font-bold text-white text-lg">Zero-Wagering & Cultural Integrity Charter</h3>
+          <h3 className="font-bold text-white text-lg">{t.rule3Title}</h3>
         </div>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-          INKA honors traditional Rwandan intellectual pastimes by completely detaching gameplay from commercial gambling or financial wagering. Playing Dame, Igisoro, or Biyari on INKA is free for all citizens and cultural admirers worldwide. Players earn sportsmanship honors, elevate community standing, and forge genuine friendships.
+          {t.rule3Desc}
         </p>
       </section>
     </div>
