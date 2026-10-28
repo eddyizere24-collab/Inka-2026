@@ -124,7 +124,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
                   {t.game_igisoro}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  {t.igisoro_rule}. Traditional 4×8 pit board with 64 seeds. Sowing occurs in rhythmic loops with sweeping front-row captures.
+                  {t.igisoroDesc}
                 </p>
               </div>
             </div>
@@ -151,7 +151,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
                   {t.game_biyari}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  {t.biyari_rule}. 2D physics canvas simulation. Set aim angle, cue power, pocket solids or stripes, and legally pot the 8-ball.
+                  {t.biyariDesc}
                 </p>
               </div>
             </div>
