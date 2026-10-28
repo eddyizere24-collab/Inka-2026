@@ -210,6 +210,7 @@ export interface TranslationSchema {
   profileUpdatedLabel: string;
   versusHistoryLabel: string;
 
+  playerLabel: string;
   normalizedAdvantageLabel: string;
   playerACapturesLabel: string;
   playerBCapturesLabel: string;
@@ -482,6 +483,7 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Umwirondoro wawe wavuguruwe.",
     versusHistoryLabel: "na",
 
+    playerLabel: "Umukinnyi",
     normalizedAdvantageLabel: "Igipimo cy’inyungu y’ubuhanga",
     playerACapturesLabel: "Ibice Umukinnyi A yafashe",
     playerBCapturesLabel: "Ibice Umukinnyi B yafashe",
@@ -753,6 +755,7 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Your profile has been updated.",
     versusHistoryLabel: "vs",
 
+    playerLabel: "Player",
     normalizedAdvantageLabel: "Normalized skill advantage",
     playerACapturesLabel: "Player A captures",
     playerBCapturesLabel: "Player B captures",
@@ -1024,6 +1027,7 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Votre profil a été mis à jour.",
     versusHistoryLabel: "contre",
 
+    playerLabel: "Joueur",
     normalizedAdvantageLabel: "Avantage de jeu normalisé",
     playerACapturesLabel: "Pièces capturées par le joueur A",
     playerBCapturesLabel: "Pièces capturées par le joueur B",
