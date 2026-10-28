@@ -210,6 +210,11 @@ export interface TranslationSchema {
   profileUpdatedLabel: string;
   versusHistoryLabel: string;
 
+  timeNoLimit: string;
+  timeOfficial30s: string;
+  timeRelaxed60s: string;
+  friendlyMatchConclusion: string;
+  mutualDrawAgreed: string;
   playerLabel: string;
   normalizedAdvantageLabel: string;
   playerACapturesLabel: string;
@@ -483,6 +488,11 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Umwirondoro wawe wavuguruwe.",
     versusHistoryLabel: "na",
 
+    timeNoLimit: "Nta gihe ntarengwa",
+    timeOfficial30s: "Amasegonda 30 kuri buri ntambwe",
+    timeRelaxed60s: "Amasegonda 60 kuri buri ntambwe",
+    friendlyMatchConclusion: "Umukino urangijwe mu bwubahane",
+    mutualDrawAgreed: "Abakinnyi bemeranyije kunganya mu bwubahane",
     playerLabel: "Umukinnyi",
     normalizedAdvantageLabel: "Igipimo cy’inyungu y’ubuhanga",
     playerACapturesLabel: "Ibice Umukinnyi A yafashe",
@@ -755,6 +765,11 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Your profile has been updated.",
     versusHistoryLabel: "vs",
 
+    timeNoLimit: "No timer limit",
+    timeOfficial30s: "Official 30-second move limit",
+    timeRelaxed60s: "Relaxed 60-second move limit",
+    friendlyMatchConclusion: "Friendly match concluded with mutual respect",
+    mutualDrawAgreed: "Players agreed to a respectful draw",
     playerLabel: "Player",
     normalizedAdvantageLabel: "Normalized skill advantage",
     playerACapturesLabel: "Player A captures",
@@ -1027,6 +1042,11 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Votre profil a été mis à jour.",
     versusHistoryLabel: "contre",
 
+    timeNoLimit: "Sans limite de temps",
+    timeOfficial30s: "Limite officielle de 30 secondes par coup",
+    timeRelaxed60s: "Limite souple de 60 secondes par coup",
+    friendlyMatchConclusion: "Partie amicale terminée dans le respect mutuel",
+    mutualDrawAgreed: "Les joueurs ont accepté une nulle dans le respect",
     playerLabel: "Joueur",
     normalizedAdvantageLabel: "Avantage de jeu normalisé",
     playerACapturesLabel: "Pièces capturées par le joueur A",
