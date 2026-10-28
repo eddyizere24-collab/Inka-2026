@@ -215,6 +215,8 @@ export interface TranslationSchema {
   timeRelaxed60s: string;
   friendlyMatchConclusion: string;
   mutualDrawAgreed: string;
+  documentTitle: string;
+  metaDescription: string;
   playerLabel: string;
   normalizedAdvantageLabel: string;
   playerACapturesLabel: string;
@@ -493,6 +495,8 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Amasegonda 60 kuri buri ntambwe",
     friendlyMatchConclusion: "Umukino urangijwe mu bwubahane",
     mutualDrawAgreed: "Abakinnyi bemeranyije kunganya mu bwubahane",
+    documentTitle: "INKA · Imikino y’Ubuhanga",
+    metaDescription: "INKA ni urubuga rw’imikino y’ubuhanga: Igisoro, Dame na Biyari. Kina ku buntu, menyana n’abandi kandi ukine mu bwubahane.",
     playerLabel: "Umukinnyi",
     normalizedAdvantageLabel: "Igipimo cy’inyungu y’ubuhanga",
     playerACapturesLabel: "Ibice Umukinnyi A yafashe",
@@ -770,6 +774,8 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Relaxed 60-second move limit",
     friendlyMatchConclusion: "Friendly match concluded with mutual respect",
     mutualDrawAgreed: "Players agreed to a respectful draw",
+    documentTitle: "INKA · Skill Games",
+    metaDescription: "INKA is a free skill-games platform for Igisoro, Dame, and Biyari. Play, connect with others, and enjoy respectful competition.",
     playerLabel: "Player",
     normalizedAdvantageLabel: "Normalized skill advantage",
     playerACapturesLabel: "Player A captures",
@@ -1047,6 +1053,8 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Limite souple de 60 secondes par coup",
     friendlyMatchConclusion: "Partie amicale terminée dans le respect mutuel",
     mutualDrawAgreed: "Les joueurs ont accepté une nulle dans le respect",
+    documentTitle: "INKA · Jeux d’adresse",
+    metaDescription: "INKA est une plateforme gratuite de jeux d’adresse proposant l’Igisoro, le Dame et le Biyari. Jouez, rencontrez d’autres joueurs et partagez une compétition respectueuse.",
     playerLabel: "Joueur",
     normalizedAdvantageLabel: "Avantage de jeu normalisé",
     playerACapturesLabel: "Pièces capturées par le joueur A",
