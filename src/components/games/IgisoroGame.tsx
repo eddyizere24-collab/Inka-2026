@@ -26,7 +26,7 @@ export const IgisoroGame: React.FC = () => {
   const [turn, setTurn] = useState<'A' | 'B'>('A');
   const [sowingPit, setSowingPit] = useState<{ r: number; c: number } | null>(null);
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>('Select a pit on your side with 2+ seeds to sow.');
+  const [statusMessage, setStatusMessage] = useState<string>(t.igisoroSelectPitInstruction);
 
   // Count seeds for player A (rows 2, 3) and player B (rows 0, 1)
   const getSeedCounts = useCallback(() => {
@@ -63,7 +63,7 @@ export const IgisoroGame: React.FC = () => {
 
     // Must have at least 2 seeds to sow in Igisoro
     if (board[r][c] < 2) {
-      setStatusMessage('In Igisoro, you can only sow from a pit with 2 or more seeds.');
+      setStatusMessage(t.igisoroInvalidPitInstruction);
       return;
     }
 
@@ -105,7 +105,7 @@ export const IgisoroGame: React.FC = () => {
         }
         newBoard[2][lastPit.c] += captured;
         sounds.playCapture();
-        setStatusMessage(`${currentMatch?.playerA.name} captured ${captured} seeds from opponent pits!`);
+        setStatusMessage(t.igisoroCaptureMessage.replace('{player}', currentMatch?.playerA.name ?? '').replace('{count}', String(captured)));
       }
     } else if (playerTurn === 'B' && lastPit.r === 1 && newBoard[1][lastPit.c] > 1) {
       const oppCol = lastPit.c;
@@ -118,7 +118,7 @@ export const IgisoroGame: React.FC = () => {
         }
         newBoard[1][lastPit.c] += captured;
         sounds.playCapture();
-        setStatusMessage(`${currentMatch?.playerB.name} captured ${captured} seeds from opponent pits!`);
+        setStatusMessage(t.igisoroCaptureMessage.replace('{player}', currentMatch?.playerB.name ?? '').replace('{count}', String(captured)));
       }
     }
 
@@ -139,9 +139,9 @@ export const IgisoroGame: React.FC = () => {
     updateMatchScore(scoreResult);
 
     if (isWinA) {
-      concludeMatch(`Decisive Igisoro Victory by ${currentMatch?.playerA.name}! Opponent cleared.`, false, 'A');
+      concludeMatch(t.igisoroVictoryReason.replace('{player}', currentMatch?.playerA.name ?? ''), false, 'A');
     } else if (isWinB) {
-      concludeMatch(`Decisive Igisoro Victory by ${currentMatch?.playerB.name}! Opponent cleared.`, false, 'B');
+      concludeMatch(t.igisoroVictoryReason.replace('{player}', currentMatch?.playerB.name ?? ''), false, 'B');
     }
 
     const nextTurn = playerTurn === 'A' ? 'B' : 'A';
@@ -167,7 +167,7 @@ export const IgisoroGame: React.FC = () => {
           executeSow(chosen.r, chosen.c, 'B');
         } else {
           // If Player B has no move with 2+ seeds, Player A wins
-          concludeMatch(`${currentMatch?.playerB.name} has no valid moves remaining. Victory for ${currentMatch?.playerA.name}!`, false, 'A');
+          concludeMatch(t.igisoroNoMovesVictoryReason.replace('{player}', currentMatch?.playerB.name ?? '').replace('{winner}', currentMatch?.playerA.name ?? ''), false, 'A');
         }
       }, 1200);
 
