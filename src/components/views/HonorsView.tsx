@@ -8,40 +8,40 @@ export const HonorsView: React.FC = () => {
   const badges = [
     {
       id: 'fair_play',
-      name: 'Guardian of Inka',
-      desc: 'Maintained 100% sportsmanship rating across all matches',
+      name: t.badgeFairPlayGuardian,
+      desc: t.badgeFairPlayGuardianDesc,
       icon: ShieldCheck,
       color: 'from-emerald-500 to-teal-700',
       unlocked: true,
     },
     {
       id: 'master_sower',
-      name: 'Master Sower',
-      desc: 'Successfully executed advanced sweeping captures in Igisoro',
+      name: t.badgeMasterSower,
+      desc: t.badgeMasterSowerDesc,
       icon: Trophy,
       color: 'from-amber-500 to-yellow-700',
       unlocked: true,
     },
     {
       id: 'dame_strategist',
-      name: 'Dame Strategist',
-      desc: 'Crowned 3 or more kings in a single Dame championship round',
+      name: t.badgeDameStrategist,
+      desc: t.badgeDameStrategistDesc,
       icon: Award,
       color: 'from-cyan-500 to-blue-700',
       unlocked: true,
     },
     {
       id: 'clean_cue',
-      name: 'Clean Cue',
-      desc: 'Flawlessly cleared all table solids without scratching the cue ball',
+      name: t.badgeCleanCue,
+      desc: t.badgeCleanCueDesc,
       icon: Sparkles,
       color: 'from-purple-500 to-indigo-700',
       unlocked: true,
     },
     {
       id: 'friendly_rival',
-      name: 'Noble Companion',
-      desc: 'Agreed to mutual draws and friendly conclusions with respect',
+      name: t.badgeFriendlyRival,
+      desc: t.badgeFriendlyRivalDesc,
       icon: HeartHandshake,
       color: 'from-rose-500 to-pink-700',
       unlocked: true,
@@ -55,10 +55,10 @@ export const HonorsView: React.FC = () => {
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{t.fair_play} · 100% Free Cultural Skill Gaming</span>
+            <span>{t.fair_play} · {t.noWageringBadge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
-            {t.honor_rating} & Sportsmanship Hall
+            {t.honorsTitle} · {t.fair_play}
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             {t.inka_philosophy} {t.zero_wagering_rule}
@@ -77,7 +77,7 @@ export const HonorsView: React.FC = () => {
             {Array.from({ length: currentUser.sportsmanshipLevel }).map((_, i) => (
               <Star key={i} className="w-3.5 h-3.5 fill-current" />
             ))}
-            <span className="ml-1 text-slate-400">Level {currentUser.sportsmanshipLevel}.0</span>
+            <span className="ml-1 text-slate-400">{t.levelLabel} {currentUser.sportsmanshipLevel}.0</span>
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@ export const HonorsView: React.FC = () => {
       <div>
         <h3 className="text-lg font-bold font-display text-white mb-4 flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-400" />
-          <span>Player Badges & Achievements</span>
+          <span>{t.achievementsTitle}</span>
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {badges.map((b) => {
@@ -121,7 +121,7 @@ export const HonorsView: React.FC = () => {
 
         {matchHistory.length === 0 ? (
           <div className="p-8 bg-[#141a24] border border-slate-800 rounded-2xl text-center text-slate-400 text-xs">
-            No matches completed yet. Challenge an active player in the lobby or arena to earn honor points!
+            {t.noMatchesCompletedLabel}
           </div>
         ) : (
           <div className="bg-[#141a24] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
@@ -138,13 +138,13 @@ export const HonorsView: React.FC = () => {
                           : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
                       }`}
                     >
-                      {item.result === 'win' ? 'WIN' : item.result === 'loss' ? 'LOSS' : 'DRAW'}
+                      {item.result === 'win' ? t.matchOutcomeWin : item.result === 'loss' ? t.matchOutcomeLoss : t.matchOutcomeDraw}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-100 text-sm">vs {item.opponentName}</span>
+                        <span className="font-semibold text-slate-100 text-sm">{t.versusHistoryLabel} {item.opponentName}</span>
                         <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-                          {item.gameType}
+                          {item.gameType === 'dame' ? t.dameTitle : item.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
                         </span>
                       </div>
                       <p className="text-xs text-slate-400">{item.scoreSummary}</p>
@@ -154,7 +154,7 @@ export const HonorsView: React.FC = () => {
                   <div className="flex items-center gap-4 text-xs font-mono">
                     <span className="text-slate-400">{item.date}</span>
                     <span className="px-2.5 py-1 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 font-semibold">
-                      +{item.honorEarned} Honor
+                      +{item.honorEarned} {t.honorPointsLabel}
                     </span>
                   </div>
                 </div>
@@ -168,20 +168,20 @@ export const HonorsView: React.FC = () => {
       <div className="p-6 bg-[#121822] border border-[#232d3d] rounded-2xl space-y-3">
         <h4 className="text-base font-bold font-display text-white flex items-center gap-2">
           <HeartHandshake className="w-5 h-5 text-emerald-400" />
-          <span>The INKA Sportsmanship Creed</span>
+          <span>{t.fairPlayPledge}</span>
         </h4>
         <div className="text-xs text-slate-300 space-y-2 leading-relaxed">
           <p>
-            1. <strong>Play for Culture and Camaraderie:</strong> Games in Rwanda are centuries-old communal arts meant to build bonds, sharpen intellect, and celebrate companionship.
+            1. <strong>{t.rule1Title}:</strong> {t.rule1Desc}
           </p>
           <p>
-            2. <strong>Zero Financial Wagering:</strong> INKA does not host, permit, or simulate financial betting, real-money payouts, or staking.
+            2. <strong>{t.rule3Title}:</strong> {t.rule3Desc}
           </p>
           <p>
-            3. <strong>Freedom to Conclude Gracefully:</strong> Either player may propose a draw or conclude a match anytime with dignity.
+            3. <strong>{t.rule5Title}:</strong> {t.rule5Desc}
           </p>
           <p>
-            4. <strong>Spectator Integrity:</strong> Spectators enjoy the artistic mastery of players in silence. Comments remain hidden until the final move is played.
+            4. <strong>{t.rule6Title}:</strong> {t.rule6Desc}
           </p>
         </div>
       </div>
