@@ -228,6 +228,7 @@ export interface TranslationSchema {
   igisoroInvalidPitInstruction: string;
   igisoroCaptureMessage: string;
   playerConcededReason: string;
+  timeoutVictoryReason: string;
   biyariEightBallVictoryReason: string;
   squareAccessibleLabel: string;
   pieceLabel: string;
@@ -546,6 +547,7 @@ export const translations: Record<Language, TranslationSchema> = {
     igisoroInvalidPitInstruction: "Mu Gisoro, ukina uhereye ku mwobo urimo isoro nibura ebyiri.",
     igisoroCaptureMessage: "{player} yafashe isoro {count} z’umukeba!",
     playerConcededReason: "{player} yemeye guhagarika umukino mu bwubahane.",
+    timeoutVictoryReason: "Igihe cyo gukina cya {player} kirangiye; {winner} aratsinze.",
     biyariEightBallVictoryReason: "Umukinnyi {player} yinjije umupira wa 8 mu buryo bwemewe aratsinda.",
     squareAccessibleLabel: "Akazu {row}, inkingi {col}, {piece}",
     pieceLabel: "igice",
@@ -863,6 +865,7 @@ export const translations: Record<Language, TranslationSchema> = {
     igisoroInvalidPitInstruction: "In Igisoro, you can only sow from a pit with at least two seeds.",
     igisoroCaptureMessage: "{player} captured {count} seeds from the opponent!",
     playerConcededReason: "{player} conceded the match respectfully.",
+    timeoutVictoryReason: "Time ran out for {player}; {winner} wins.",
     biyariEightBallVictoryReason: "{player} legally potted the 8-ball and won.",
     squareAccessibleLabel: "Square row {row}, column {col}, {piece}",
     pieceLabel: "piece",
@@ -1180,6 +1183,7 @@ export const translations: Record<Language, TranslationSchema> = {
     igisoroInvalidPitInstruction: "Au jeu d’Igisoro, vous ne pouvez jouer qu’à partir d’un trou contenant au moins deux graines.",
     igisoroCaptureMessage: "{player} a capturé {count} graines à l’adversaire !",
     playerConcededReason: "{player} a concédé la partie avec respect.",
+    timeoutVictoryReason: "Le temps de {player} est écoulé ; {winner} gagne.",
     biyariEightBallVictoryReason: "{player} a empoché légalement la bille 8 et remporte la partie.",
     squareAccessibleLabel: "Case ligne {row}, colonne {col}, {piece}",
     pieceLabel: "pièce",
