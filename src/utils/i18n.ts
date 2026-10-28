@@ -215,6 +215,19 @@ export interface TranslationSchema {
   timeRelaxed60s: string;
   friendlyMatchConclusion: string;
   mutualDrawAgreed: string;
+  watchLiveMatchesDescription: string;
+  moveNumberLabel: string;
+  currentTurnWithLabel: string;
+  dameVictoryReason: string;
+  igisoroVictoryReason: string;
+  igisoroNoMovesVictoryReason: string;
+  igisoroSelectPitInstruction: string;
+  igisoroInvalidPitInstruction: string;
+  igisoroCaptureMessage: string;
+  playerConcededReason: string;
+  biyariEightBallVictoryReason: string;
+  squareAccessibleLabel: string;
+  pieceLabel: string;
   documentTitle: string;
   metaDescription: string;
   playerLabel: string;
@@ -495,6 +508,19 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Amasegonda 60 kuri buri ntambwe",
     friendlyMatchConclusion: "Umukino urangijwe mu bwubahane",
     mutualDrawAgreed: "Abakinnyi bemeranyije kunganya mu bwubahane",
+    watchLiveMatchesDescription: "Reba imikino iri kubera ubu kandi ugire ibiganiro byiza n’abandi bareba.",
+    moveNumberLabel: "Intambwe",
+    currentTurnWithLabel: "Igihe cyo gukina kiri kuri {player}",
+    dameVictoryReason: "{player} yatsinze Dame; ibice 10 by’umukeba byafashwe.",
+    igisoroVictoryReason: "{player} yatsinze Igisoro; umukeba nta soro asigaranye.",
+    igisoroNoMovesVictoryReason: "{player} nta ntambwe yemewe asigaranye; {winner} aratsinze.",
+    igisoroSelectPitInstruction: "Hitamo umwobo uri ku ruhande rwawe urimo isoro nibura ebyiri.",
+    igisoroInvalidPitInstruction: "Mu Gisoro, ukina uhereye ku mwobo urimo isoro nibura ebyiri.",
+    igisoroCaptureMessage: "{player} yafashe isoro {count} z’umukeba!",
+    playerConcededReason: "{player} yemeye guhagarika umukino mu bwubahane.",
+    biyariEightBallVictoryReason: "Umukinnyi {player} yinjije umupira wa 8 mu buryo bwemewe aratsinda.",
+    squareAccessibleLabel: "Akazu {row}, inkingi {col}, {piece}",
+    pieceLabel: "igice",
     documentTitle: "INKA · Imikino y’Ubuhanga",
     metaDescription: "INKA ni urubuga rw’imikino y’ubuhanga: Igisoro, Dame na Biyari. Kina ku buntu, menyana n’abandi kandi ukine mu bwubahane.",
     playerLabel: "Umukinnyi",
@@ -774,6 +800,19 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Relaxed 60-second move limit",
     friendlyMatchConclusion: "Friendly match concluded with mutual respect",
     mutualDrawAgreed: "Players agreed to a respectful draw",
+    watchLiveMatchesDescription: "Watch live matches and discuss the games respectfully with other spectators.",
+    moveNumberLabel: "Move",
+    currentTurnWithLabel: "Current turn: {player}",
+    dameVictoryReason: "{player} wins Dame after capturing all 10 opposing pieces.",
+    igisoroVictoryReason: "{player} wins Igisoro after clearing the opponent’s seeds.",
+    igisoroNoMovesVictoryReason: "{player} has no legal move remaining; {winner} wins.",
+    igisoroSelectPitInstruction: "Select a pit on your side containing at least two seeds.",
+    igisoroInvalidPitInstruction: "In Igisoro, you can only sow from a pit with at least two seeds.",
+    igisoroCaptureMessage: "{player} captured {count} seeds from the opponent!",
+    playerConcededReason: "{player} conceded the match respectfully.",
+    biyariEightBallVictoryReason: "{player} legally potted the 8-ball and won.",
+    squareAccessibleLabel: "Square row {row}, column {col}, {piece}",
+    pieceLabel: "piece",
     documentTitle: "INKA · Skill Games",
     metaDescription: "INKA is a free skill-games platform for Igisoro, Dame, and Biyari. Play, connect with others, and enjoy respectful competition.",
     playerLabel: "Player",
@@ -1053,6 +1092,19 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Limite souple de 60 secondes par coup",
     friendlyMatchConclusion: "Partie amicale terminée dans le respect mutuel",
     mutualDrawAgreed: "Les joueurs ont accepté une nulle dans le respect",
+    watchLiveMatchesDescription: "Regardez les parties en direct et échangez respectueusement avec les autres spectateurs.",
+    moveNumberLabel: "Coup",
+    currentTurnWithLabel: "Au tour de {player}",
+    dameVictoryReason: "{player} remporte la partie de Dame après avoir capturé les 10 pièces adverses.",
+    igisoroVictoryReason: "{player} remporte l’Igisoro après avoir épuisé les graines adverses.",
+    igisoroNoMovesVictoryReason: "{player} n’a plus de coup légal ; {winner} remporte la partie.",
+    igisoroSelectPitInstruction: "Choisissez un trou de votre côté contenant au moins deux graines.",
+    igisoroInvalidPitInstruction: "Au jeu d’Igisoro, vous ne pouvez jouer qu’à partir d’un trou contenant au moins deux graines.",
+    igisoroCaptureMessage: "{player} a capturé {count} graines à l’adversaire !",
+    playerConcededReason: "{player} a concédé la partie avec respect.",
+    biyariEightBallVictoryReason: "{player} a empoché légalement la bille 8 et remporte la partie.",
+    squareAccessibleLabel: "Case ligne {row}, colonne {col}, {piece}",
+    pieceLabel: "pièce",
     documentTitle: "INKA · Jeux d’adresse",
     metaDescription: "INKA est une plateforme gratuite de jeux d’adresse proposant l’Igisoro, le Dame et le Biyari. Jouez, rencontrez d’autres joueurs et partagez une compétition respectueuse.",
     playerLabel: "Joueur",
