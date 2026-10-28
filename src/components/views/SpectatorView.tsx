@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Eye, MessageSquare, Send, ShieldAlert, UserPlus, Info, Check, Award } from 'lucide-react';
-import { usePlatform, ActiveMatch, PlayerProfile, TimeControl, GameType } from '../../context/PlatformContext';
+import { usePlatform, ActiveMatch, PlayerProfile, TimeControl, GameType, getLocalizedCommentText } from '../../context/PlatformContext';
 import { ChallengeModal } from '../modals/ChallengeModal';
 
 export const SpectatorView: React.FC = () => {
-  const { liveMatches, addSpectatorComment, currentUser, t } = usePlatform();
+  const { liveMatches, addSpectatorComment, currentUser, lang, t } = usePlatform();
   const [selectedMatch, setSelectedMatch] = useState<ActiveMatch>(liveMatches[0]);
   const [newComment, setNewComment] = useState<string>('');
   const [challengedPlayer, setChallengedPlayer] = useState<PlayerProfile | null>(null);
@@ -220,7 +220,7 @@ export const SpectatorView: React.FC = () => {
                   <span className="font-semibold text-emerald-300">{c.author}</span>
                   <span className="text-[10px] text-slate-500">{c.timestamp}</span>
                 </div>
-                <p className="text-slate-300 leading-relaxed">{c.text}</p>
+                <p className="text-slate-300 leading-relaxed">{getLocalizedCommentText(c, lang)}</p>
               </div>
             ))}
           </div>
