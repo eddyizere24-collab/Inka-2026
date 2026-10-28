@@ -24,14 +24,14 @@ export const ProfilesView: React.FC = () => {
       <div>
         <h2 className="text-2xl font-bold font-display text-white">{t.nav_community}</h2>
         <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          Simple, respectful player directory. Illustrated badges and verified sportsmanship levels.
+          {t.profileDirectoryDesc}
         </p>
       </div>
 
       {savedNotice && (
         <div className="p-3 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-emerald-300 text-xs flex items-center gap-2">
           <Check className="w-4 h-4 text-emerald-400" />
-          <span>Your profile information has been updated.</span>
+          <span>{t.profileUpdatedLabel}</span>
         </div>
       )}
 
@@ -75,7 +75,7 @@ export const ProfilesView: React.FC = () => {
 
       {isEditingBio && (
         <form onSubmit={handleSaveBio} className="p-4 bg-[#141b24] border border-slate-800 rounded-2xl space-y-3">
-          <label className="block text-xs font-medium text-slate-300">Update Profile Bio:</label>
+          <label className="block text-xs font-medium text-slate-300">{t.editBio}:</label>
           <input
             type="text"
             value={bioText}
@@ -95,7 +95,7 @@ export const ProfilesView: React.FC = () => {
       <div className="space-y-4">
         <h3 className="font-bold text-white text-lg flex items-center gap-2">
           <Users className="w-5 h-5 text-emerald-400" />
-          <span>Active Rwandan Players</span>
+          <span>{t.activePlayers}</span>
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
