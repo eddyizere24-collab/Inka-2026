@@ -5,6 +5,7 @@ export interface InkaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   showTagline?: boolean;
+  taglineText?: string;
 }
 
 export const InkaEmblem: React.FC<{ size?: number; className?: string }> = ({
@@ -112,6 +113,7 @@ export const InkaLogo: React.FC<InkaLogoProps> = ({
   size = 'md',
   className = '',
   showTagline = true,
+  taglineText, 
 }) => {
   const pixelSizes = {
     sm: 28,
@@ -149,7 +151,7 @@ export const InkaLogo: React.FC<InkaLogoProps> = ({
 
         {variant === 'full' && showTagline && size !== 'sm' && (
           <span className="text-[10px] text-emerald-400/90 font-medium tracking-wider uppercase mt-1">
-            Igisoro · Dame · Biyari
+            {taglineText ?? 'Igisoro · Dame · Biyari'}
           </span>
         )}
       </div>
