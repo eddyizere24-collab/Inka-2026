@@ -128,7 +128,7 @@ export const GameHud: React.FC<GameHudProps> = ({
             <div className="flex items-center justify-end gap-2">
               {turn === 'B' && (
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 animate-pulse">
-                  {t.turnYourTurn}
+                  {t.turnOpponentTurn}
                 </span>
               )}
               <span className="font-semibold text-slate-100 text-sm sm:text-base">{match.playerB.name}</span>
