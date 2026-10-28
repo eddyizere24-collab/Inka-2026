@@ -513,11 +513,11 @@ export const BiyariGame: React.FC = () => {
             <div className="text-xs text-slate-400 space-y-2">
               <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
                 <span>{currentMatch.playerA.name} ({t.playerASolidsPottedLabel}):</span>
-                <span className="font-mono font-bold text-emerald-400">{pottedA} / 5</span>
+                <span className="font-mono font-bold text-emerald-400">{pottedA} / 7</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
                 <span>{currentMatch.playerB.name} ({t.playerBStripesPottedLabel}):</span>
-                <span className="font-mono font-bold text-cyan-400">{pottedB} / 5</span>
+                <span className="font-mono font-bold text-cyan-400">{pottedB} / 7</span>
               </div>
               <p className="text-[11px] text-slate-500 pt-1">
                 {t.biyariScoringHelp}
