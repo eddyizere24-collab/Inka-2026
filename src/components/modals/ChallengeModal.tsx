@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, ShieldCheck, Clock, Award, Sparkles } from 'lucide-react';
 import { usePlatform, GameType, TimeControl, PlayerProfile } from '../../context/PlatformContext';
 
@@ -15,10 +15,15 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   onClose,
   onStart,
 }) => {
-  const { t } = usePlatform();
+  const { lang, t } = usePlatform();
   const [selectedGame, setSelectedGame] = useState<GameType>(initialGame);
   const [timeControl, setTimeControl] = useState<TimeControl>('30s');
   const [message, setMessage] = useState<string>(t.defaultFriendlyMessage);
+  const [hasEditedMessage, setHasEditedMessage] = useState(false);
+
+  useEffect(() => {
+    if (!hasEditedMessage) setMessage(t.defaultFriendlyMessage);
+  }, [lang, t.defaultFriendlyMessage, hasEditedMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,7 +132,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             <input
               type="text"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => { setMessage(e.target.value); setHasEditedMessage(true); }}
               className="w-full bg-[#18212e] border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
               placeholder={t.friendlyMessagePlaceholder}
             />
