@@ -69,7 +69,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
             <button
               onClick={triggerMockIncomingChallenge}
               className="px-5 py-3 bg-[#18212e] hover:bg-[#202c3d] text-emerald-300 border border-emerald-500/30 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer shadow-md"
-              title="Test real-time challenge alert modal"
+              title={t.simulateIncomingCall}
             >
               <PhoneCall className="w-4 h-4 text-emerald-400" />
               <span>{t.simulateIncomingCall}</span>
