@@ -130,6 +130,9 @@ export const BiyariGame: React.FC = () => {
     cueBallScratchedThisShotRef.current = false;
     setPottedA(0);
     setPottedB(0);
+    setTurn('A');
+    setAimAngle(0);
+    setShotPower(45);
     setBallsMoving(false);
   }, [TABLE_WIDTH, TABLE_HEIGHT, BALL_RADIUS]);
 
