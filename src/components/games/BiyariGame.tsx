@@ -419,16 +419,16 @@ export const BiyariGame: React.FC = () => {
         <div className="lg:col-span-3 flex flex-col items-center">
           <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">Biyari: Eight-Ball Skill Billiards</span>
+              <span className="font-semibold text-slate-200">{t.biyariTitle}</span>
               <span className="text-slate-500">·</span>
-              <span>Aim cursor over table & adjust shot power</span>
+              <span>{t.aimShotInstruction}</span>
             </div>
             <button
               onClick={initBalls}
               className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>Rack Balls</span>
+              <span>{t.rackBalls}</span>
             </button>
           </div>
 
@@ -448,7 +448,7 @@ export const BiyariGame: React.FC = () => {
           <div className="mt-4 w-full max-w-2xl p-4 bg-[#141a24] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 min-w-[200px]">
               <Target className="w-4 h-4 text-emerald-400 shrink-0" />
-              <label className="text-xs text-slate-300 whitespace-nowrap">Cue Power:</label>
+              <label className="text-xs text-slate-300 whitespace-nowrap">{t.cuePowerLabel}:</label>
               <input
                 type="range"
                 min="10"
@@ -467,7 +467,7 @@ export const BiyariGame: React.FC = () => {
               disabled={ballsMoving || currentMatch.status !== 'playing'}
               className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap"
             >
-              {ballsMoving ? 'Balls Rolling...' : 'Strike Cue Ball'}
+              {ballsMoving ? t.ballsRollingLabel : t.strikeCueBall}
             </button>
           </div>
         </div>
@@ -477,19 +477,19 @@ export const BiyariGame: React.FC = () => {
           <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
             <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Biyari Score Tracker</span>
+              <span>{t.biyariTitle}</span>
             </h4>
             <div className="text-xs text-slate-400 space-y-2">
               <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
-                <span>{currentMatch.playerA.name} (Solids):</span>
+                <span>{currentMatch.playerA.name} ({t.playerASolidsPottedLabel}):</span>
                 <span className="font-mono font-bold text-emerald-400">{pottedA} / 5</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
-                <span>{currentMatch.playerB.name} (Stripes):</span>
+                <span>{currentMatch.playerB.name} ({t.playerBStripesPottedLabel}):</span>
                 <span className="font-mono font-bold text-cyan-400">{pottedB} / 5</span>
               </div>
               <p className="text-[11px] text-slate-500 pt-1">
-                Advantage increases with each ball potted. Pot all group balls, then call the 8-ball for decisive win!
+                {t.biyariScoringHelp}
               </p>
             </div>
           </div>
@@ -498,12 +498,12 @@ export const BiyariGame: React.FC = () => {
             <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
                 <Award className="w-5 h-5 text-emerald-400" />
-                <span>Match Concluded</span>
+                <span>{t.matchConcluded}</span>
               </div>
               <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
               <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
-                <span>Sportsmanship Honors:</span>
-                <strong className="text-white">+10 Honor Points</strong>
+                <span>{t.honorPointsAwarded}:</span>
+                <strong className="text-white">+10 {t.honorPointsLabel}</strong>
               </div>
               <button
                 onClick={() => setCurrentMatch(null)}
