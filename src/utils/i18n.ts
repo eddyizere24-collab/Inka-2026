@@ -229,6 +229,13 @@ export interface TranslationSchema {
   squareAccessibleLabel: string;
   pieceLabel: string;
   incomingChallengeMessage: string;
+  demoHistoryDameSummary: string;
+  demoHistoryIgisoroSummary: string;
+  demoComment1: string;
+  demoComment2: string;
+  demoComment3: string;
+  demoComment4: string;
+  demoComment5: string;
   defaultProfileBio: string;
   defaultAvailability: string;
   demoBioUwase: string;
@@ -537,6 +544,13 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Akazu {row}, inkingi {col}, {piece}",
     pieceLabel: "igice",
     incomingChallengeMessage: "Muraho {player}! Reka dukine umukino wa {game} mu bwubahane.",
+    demoHistoryDameSummary: "Yafashe ibice 10 kuri 6 by’umukeba",
+    demoHistoryIgisoroSummary: "Isoro 32 kuri 32",
+    demoComment1: "Kalisa yateye intambwe ikomeye mu nkingi ya kane.",
+    demoComment2: "Uwase afite umutego ashobora gukoresha umukeba awuguyemo.",
+    demoComment3: "Abakinnyi bombi barimo kugaragaza ubuhanga buhebuje!",
+    demoComment4: "Keza yakusanyije isoro z’imbere mu buryo bwiza.",
+    demoComment5: "Kamali arinda imyobo y’inyuma abigiranye ubuhanga.",
     defaultProfileBio: "Nkunda gukina Dame n’Igisoro, nkishimira gukina mu mutuzo no kubaha abandi.",
     defaultAvailability: "Buri munsi saa 17:00–21:00",
     demoBioUwase: "Ni umuhanga muri Dame, akunda kwibasira umukeba yitonze kandi yihuse. Ahora yiteguye gukina mu bwubahane.",
@@ -844,6 +858,13 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Square row {row}, column {col}, {piece}",
     pieceLabel: "piece",
     incomingChallengeMessage: "Hello {player}! Let’s play a friendly game of {game}.",
+    demoHistoryDameSummary: "Captured 10 vs 6 pieces",
+    demoHistoryIgisoroSummary: "32 vs 32 seeds",
+    demoComment1: "Kalisa made a strong diagonal advance on column 4.",
+    demoComment2: "Uwase has a trap prepared if the opponent takes the bait.",
+    demoComment3: "Masterful play from both players!",
+    demoComment4: "Keza cleared the front row with a beautiful sow.",
+    demoComment5: "Kamali is defending the back pits skillfully.",
     defaultProfileBio: "I enjoy Dame and Igisoro, and value calm, respectful play.",
     defaultAvailability: "Daily, 5:00 PM–9:00 PM",
     demoBioUwase: "An experienced Dame player who enjoys quick counter-attacks and respectful matches.",
@@ -1151,6 +1172,13 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Case ligne {row}, colonne {col}, {piece}",
     pieceLabel: "pièce",
     incomingChallengeMessage: "Bonjour {player} ! Jouons une partie amicale de {game}.",
+    demoHistoryDameSummary: "10 pièces capturées contre 6",
+    demoHistoryIgisoroSummary: "32 graines contre 32",
+    demoComment1: "Kalisa a effectué une forte avancée diagonale sur la quatrième colonne.",
+    demoComment2: "Uwase a préparé un piège si l’adversaire tombe dedans.",
+    demoComment3: "Les deux joueurs font preuve d’une maîtrise remarquable !",
+    demoComment4: "Keza a vidé la rangée avant avec un semis remarquable.",
+    demoComment5: "Kamali défend habilement les trous arrière.",
     defaultProfileBio: "J’aime jouer au Dame et à l’Igisoro, dans le calme et le respect.",
     defaultAvailability: "Tous les jours, de 17 h à 21 h",
     demoBioUwase: "Joueuse expérimentée de Dame, elle aime les contre-attaques rapides et les parties respectueuses.",
