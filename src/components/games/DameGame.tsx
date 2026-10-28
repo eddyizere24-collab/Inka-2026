@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Crown, MessageSquare, Award, ShieldCheck, HeartHandshake } from 'lucide-react';
-import { usePlatform } from '../../context/PlatformContext';
+import { usePlatform, getLocalizedCommentText } from '../../context/PlatformContext';
 import { GameHud } from './GameHud';
 import { calculateDameAdvantage } from '../../utils/matchScoring';
 import { sounds } from '../../utils/sound';
@@ -16,7 +16,7 @@ interface Piece {
 }
 
 export const DameGame: React.FC = () => {
-  const { currentMatch, updateMatchScore, concludeMatch, setCurrentMatch, t } = usePlatform();
+  const { currentMatch, updateMatchScore, concludeMatch, setCurrentMatch, lang, t } = usePlatform();
 
   // 10 pieces per player as specified for Rwandan Dame:
   // Placed on dark squares of 8x8 board
@@ -373,7 +373,7 @@ export const DameGame: React.FC = () => {
                   {currentMatch.comments.map((c) => (
                     <div key={c.id} className="text-[11px] bg-[#161c24] p-2 rounded border border-slate-800">
                       <span className="font-semibold text-emerald-300">{c.author}:</span>{' '}
-                      <span className="text-slate-300">{c.text}</span>
+                      <span className="text-slate-300">{getLocalizedCommentText(c, lang)}</span>
                     </div>
                   ))}
                 </div>
