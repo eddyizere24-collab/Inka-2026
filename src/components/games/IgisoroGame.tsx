@@ -28,6 +28,10 @@ export const IgisoroGame: React.FC = () => {
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>(t.igisoroSelectPitInstruction);
 
+  useEffect(() => {
+    setStatusMessage(t.igisoroSelectPitInstruction);
+  }, [t.igisoroSelectPitInstruction]);
+
   // Count seeds for player A (rows 2, 3) and player B (rows 0, 1)
   const getSeedCounts = useCallback(() => {
     let seedsA = 0;
