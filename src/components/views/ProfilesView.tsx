@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users, Award, MapPin, Clock, Play, Check, Star } from 'lucide-react';
-import { usePlatform, PlayerProfile } from '../../context/PlatformContext';
+import { usePlatform, PlayerProfile, getLocalizedProfileBio, getLocalizedProfileAvailability } from '../../context/PlatformContext';
 import { ChallengeModal } from '../modals/ChallengeModal';
 
 export const ProfilesView: React.FC = () => {
-  const { communityPlayers, currentUser, updateCurrentUser, startMatch, t } = usePlatform();
+  const { communityPlayers, currentUser, updateCurrentUser, startMatch, lang, t } = usePlatform();
   const [selectedOpponent, setSelectedOpponent] = useState<PlayerProfile | null>(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
-  const [bioText, setBioText] = useState(currentUser.bio);
-  const [savedNotice, setSavedNotice] = useState(false);
+  const [bioText, setBioText] = useState(getLocalizedProfileBio(currentUser, lang));
+  const [savedNotice, setSavedNotice] = useState(false);\n\n  useEffect(() => {\n    if (!isEditingBio) setBioText(getLocalizedProfileBio(currentUser, lang));\n  }, [currentUser, lang, isEditingBio]);
 
   const handleSaveBio = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ export const ProfilesView: React.FC = () => {
                 {currentUser.honorRating} {t.honorPointsLabel} ({currentUser.gamesWon} {t.matchesWon} / {currentUser.gamesPlayed} {t.matchesPlayed})
               </span>
             </div>
-            <p className="text-xs text-slate-300 italic pt-1">"{currentUser.bio}"</p>
+            <p className="text-xs text-slate-300 italic pt-1">"{getLocalizedProfileBio(currentUser, lang)}"</p>
           </div>
         </div>
 
@@ -130,13 +130,13 @@ export const ProfilesView: React.FC = () => {
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed bg-[#0c1016] p-3 rounded-xl border border-slate-800/80">
-                "{player.bio}"
+                "{getLocalizedProfileBio(player, lang)}"
               </p>
 
               <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-1.5 text-slate-400 font-mono text-[11px]">
                   <Clock className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>{player.availability}</span>
+                  <span>{getLocalizedProfileAvailability(player, lang)}</span>
                 </div>
 
                 <button
