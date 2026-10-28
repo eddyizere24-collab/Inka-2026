@@ -231,9 +231,6 @@ export const DameGame: React.FC = () => {
             {t.dame_captures}: {capturedByB}/10
           </span>
         }
-        onTimeout={(p) => {
-          sounds.playTimerWarning();
-        }}
       />
 
       {/* Match Layout */}
