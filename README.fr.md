@@ -34,6 +34,7 @@
 - Table de billard rendue sur canvas, avec collisions entre les billes, rebonds sur les bandes et six poches.
 - Le jeu standard utilise 15 billes de jeu : 7 pleines, 7 rayées et la bille numéro 8.
 - Un joueur doit empocher les 7 billes de son groupe avant de pouvoir gagner en empochant légalement la bille 8.
+- L'adversaire est une simulation locale simple ; l'option **Pass and Play** permet à deux personnes de jouer à tour de rôle sur le même appareil.
 - Il s'agit d'une simulation visuelle qui doit être testée et améliorée avant d'être considérée comme une implémentation complète des règles du billard.
 
 ## 3. Contenu du prototype
