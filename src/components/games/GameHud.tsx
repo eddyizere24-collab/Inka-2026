@@ -80,7 +80,7 @@ export const GameHud: React.FC<GameHudProps> = ({
               <span className="font-semibold text-slate-100 text-sm sm:text-base">{match.playerA.name}</span>
               {turn === 'A' && (
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 animate-pulse">
-                  {t.nav_play.toUpperCase()}
+                  {t.turnYourTurn}
                 </span>
               )}
             </div>
@@ -128,7 +128,7 @@ export const GameHud: React.FC<GameHudProps> = ({
             <div className="flex items-center justify-end gap-2">
               {turn === 'B' && (
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 animate-pulse">
-                  {t.nav_play.toUpperCase()}
+                  {t.turnYourTurn}
                 </span>
               )}
               <span className="font-semibold text-slate-100 text-sm sm:text-base">{match.playerB.name}</span>
