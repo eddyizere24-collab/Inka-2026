@@ -83,7 +83,7 @@ export const SpectatorView: React.FC = () => {
                 </span>
               </div>
               <div className="font-semibold text-white text-sm">
-                {m.playerA.name} <span className="text-slate-500 font-normal">vs</span> {m.playerB.name}
+                {m.playerA.name} <span className="text-slate-500 font-normal">{t.versusLabel}</span> {m.playerB.name}
               </div>
               <div className="text-xs text-slate-400 mt-1 flex justify-between font-mono">
                 <span>{m.timeControl}</span>
@@ -159,7 +159,7 @@ export const SpectatorView: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-200">
-                  {selectedMatch.gameType.toUpperCase()} Stream in Progress
+                  {selectedMatch.gameType === 'dame' ? t.dameTitle : selectedMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle} · {t.gameStreamInProgress}
                 </p>
                 <p className="text-xs text-slate-400 max-w-sm mt-1">
                   Advantage: <span className="font-mono text-emerald-400">{(selectedMatch.advantage * 100).toFixed(0)}%</span>. Current turn is with{' '}
@@ -201,7 +201,7 @@ export const SpectatorView: React.FC = () => {
               <h4 className="text-sm font-bold text-white">{t.spectatorChatTitle}</h4>
             </div>
             <span className="text-[11px] text-slate-500 font-mono">
-              {selectedMatch.spectatorsCount} watching
+              {selectedMatch.spectatorsCount} {t.spectatorsWatching}
             </span>
           </div>
 
