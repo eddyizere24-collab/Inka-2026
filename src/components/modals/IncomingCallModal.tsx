@@ -29,7 +29,7 @@ export const IncomingCallModal: React.FC = () => {
           {t.incoming_call}
         </h3>
         <p className="text-xs text-slate-400 mb-5">
-          Live real-time match invitation
+          {t.incomingChallengeSubtitle}
         </p>
 
         <div className="p-4 bg-[#10151d] rounded-xl border border-slate-800 mb-5 text-left space-y-3">
@@ -45,11 +45,11 @@ export const IncomingCallModal: React.FC = () => {
             </div>
             <div className="text-right">
               <span className="text-xs uppercase tracking-wider text-emerald-400 font-bold block">
-                {gameType.toUpperCase()}
+                {gameType === 'dame' ? t.dameTitle : gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
               </span>
               <span className="text-xs text-slate-400 flex items-center justify-end gap-1 mt-0.5">
                 <Clock className="w-3 h-3 text-amber-400" />
-                <span>{timeControl}</span>
+                <span>{timeControl === 'casual' ? t.time_casual : timeControl === '30s' ? t.time_30s : t.time_60s}</span>
               </span>
             </div>
           </div>
