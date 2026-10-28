@@ -32,12 +32,19 @@ export const getLocalizedProfileBio = (player: PlayerProfile, lang: Language): s
 export const getLocalizedProfileAvailability = (player: PlayerProfile, lang: Language): string =>
   player.availabilityIsCustom ? player.availability : player.localizedAvailability?.[lang] ?? player.availability;
 
+export const getLocalizedMatchSummary = (item: MatchHistoryItem, lang: Language): string =>
+  item.localizedScoreSummary?.[lang] ?? item.scoreSummary;
+
+export const getLocalizedCommentText = (comment: SpectatorComment, lang: Language): string =>
+  comment.localizedText?.[lang] ?? comment.text;
+
 export interface MatchHistoryItem {
   id: string;
   gameType: GameType;
   opponentName: string;
   result: 'win' | 'loss' | 'draw';
   scoreSummary: string;
+  localizedScoreSummary?: Record<Language, string>;
   date: string;
   honorEarned: number;
 }
@@ -46,6 +53,7 @@ export interface SpectatorComment {
   id: string;
   author: string;
   text: string;
+  localizedText?: Record<Language, string>;
   timestamp: string;
 }
 
@@ -260,7 +268,8 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       gameType: 'dame',
       opponentName: 'Uwase Aline',
       result: 'win',
-      scoreSummary: 'Captured 10 vs 6 pieces',
+      scoreSummary: translations.en.demoHistoryDameSummary,
+      localizedScoreSummary: { rw: translations.rw.demoHistoryDameSummary, en: translations.en.demoHistoryDameSummary, fr: translations.fr.demoHistoryDameSummary },
       date: '2026-10-28 10:30',
       honorEarned: 30,
     },
@@ -269,7 +278,8 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       gameType: 'igisoro',
       opponentName: 'Kamali Jean-Paul',
       result: 'draw',
-      scoreSummary: '32 vs 32 seeds',
+      scoreSummary: translations.en.demoHistoryIgisoroSummary,
+      localizedScoreSummary: { rw: translations.rw.demoHistoryIgisoroSummary, en: translations.en.demoHistoryIgisoroSummary, fr: translations.fr.demoHistoryIgisoroSummary },
       date: '2026-10-27 19:15',
       honorEarned: 20,
     },
@@ -294,9 +304,9 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       turn: 'B',
       moveCount: 14,
       comments: [
-        { id: 'c1', author: 'Kamali', text: 'Kalisa made a strong diagonal advance on column 4.', timestamp: '11:05' },
-        { id: 'c2', author: 'Mugisha', text: 'Uwase has a trap prepared if he takes the bait.', timestamp: '11:07' },
-        { id: 'c3', author: 'Keza', text: 'Masterful play from both players!', timestamp: '11:10' },
+        { id: 'c1', author: 'Kamali', text: translations.en.demoComment1, localizedText: { rw: translations.rw.demoComment1, en: translations.en.demoComment1, fr: translations.fr.demoComment1 }, timestamp: '11:05' },
+        { id: 'c2', author: 'Mugisha', text: translations.en.demoComment2, localizedText: { rw: translations.rw.demoComment2, en: translations.en.demoComment2, fr: translations.fr.demoComment2 }, timestamp: '11:07' },
+        { id: 'c3', author: 'Keza', text: translations.en.demoComment3, localizedText: { rw: translations.rw.demoComment3, en: translations.en.demoComment3, fr: translations.fr.demoComment3 }, timestamp: '11:10' },
       ],
     },
     {
@@ -315,8 +325,8 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       turn: 'A',
       moveCount: 28,
       comments: [
-        { id: 'c4', author: 'Gatera', text: 'Keza cleared the front row with a beautiful sow.', timestamp: '10:55' },
-        { id: 'c5', author: 'Mukamana', text: 'Kamali is defending the back pits skillfully.', timestamp: '10:58' },
+        { id: 'c4', author: 'Gatera', text: translations.en.demoComment4, localizedText: { rw: translations.rw.demoComment4, en: translations.en.demoComment4, fr: translations.fr.demoComment4 }, timestamp: '10:55' },
+        { id: 'c5', author: 'Mukamana', text: translations.en.demoComment5, localizedText: { rw: translations.rw.demoComment5, en: translations.en.demoComment5, fr: translations.fr.demoComment5 }, timestamp: '10:58' },
       ],
     },
     {
