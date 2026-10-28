@@ -57,6 +57,21 @@ const MainShell: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Language selector remains available during a match. */}
+            <div role="group" aria-label={t.languageSelectorLabel} className="flex items-center bg-[#18212e] p-1 rounded-xl border border-slate-700/80 text-[11px] font-mono">
+              {(['rw', 'en', 'fr'] as const).map((code) => (
+                <button
+                  key={code}
+                  onClick={() => setLang(code)}
+                  aria-pressed={lang === code}
+                  className={`px-2 py-1 rounded-lg uppercase font-bold transition-all cursor-pointer ${
+                    lang === code ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {code}
+                </button>
+              ))}
+            </div>
             {/* Audio Toggle */}
             <button
               onClick={() => setIsMuted(!isMuted)}
@@ -155,11 +170,12 @@ const MainShell: React.FC = () => {
         {/* Zone 3: Trilingual selector + Audio toggle + Honor points badge */}
         <div className="flex items-center gap-2.5 shrink-0">
           {/* Trilingual Selector */}
-          <div className="flex items-center bg-[#18212e] p-1 rounded-xl border border-slate-700/80 text-[11px] font-mono">
+          <div role="group" aria-label={t.languageSelectorLabel} className="flex items-center bg-[#18212e] p-1 rounded-xl border border-slate-700/80 text-[11px] font-mono">
             {(['rw', 'en', 'fr'] as const).map((code) => (
               <button
                 key={code}
                 onClick={() => setLang(code)}
+                aria-pressed={lang === code}
                 className={`px-2.5 py-1 rounded-lg uppercase font-bold transition-all cursor-pointer ${
                   lang === code ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-slate-200'
                 }`}
