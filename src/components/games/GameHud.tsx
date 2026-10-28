@@ -6,7 +6,6 @@ import { sounds } from '../../utils/sound';
 interface GameHudProps {
   match: ActiveMatch;
   turn: 'A' | 'B';
-  onTimeout?: (player: 'A' | 'B') => void;
   onPauseToggle?: () => void;
   onProposeDraw?: () => void;
   onResign?: () => void;
@@ -18,7 +17,6 @@ interface GameHudProps {
 export const GameHud: React.FC<GameHudProps> = ({
   match,
   turn,
-  onTimeout,
   onPauseToggle,
   onProposeDraw,
   onResign,
@@ -27,40 +25,47 @@ export const GameHud: React.FC<GameHudProps> = ({
   customStatsB,
 }) => {
   const { t, concludeMatch } = usePlatform();
-  const [timeLeft, setTimeLeft] = useState<number>(30);
-  const onTimeoutRef = useRef(onTimeout);
-
-  useEffect(() => {
-    onTimeoutRef.current = onTimeout;
-  }, [onTimeout]);
+  const moveTimeLimit = match.timeControl === 'casual' ? null : match.timeControl === '60s' ? 60 : 30;
+  const [timeLeft, setTimeLeft] = useState<number>(moveTimeLimit ?? 0);
+  const warningPlayedRef = useRef(false);
+  const timeoutHandledRef = useRef(false);
   const [showStopModal, setShowStopModal] = useState<boolean>(false);
   const [showResignModal, setShowResignModal] = useState<boolean>(false);
   const [showDrawModal, setShowDrawModal] = useState<boolean>(false);
 
-  // Reset timer on turn change or move
+  // Reset the move timer whenever a new turn or move begins.
   useEffect(() => {
-    setTimeLeft(30);
-  }, [turn, match.moveCount]);
+    setTimeLeft(moveTimeLimit ?? 0);
+    warningPlayedRef.current = false;
+    timeoutHandledRef.current = false;
+  }, [turn, match.moveCount, moveTimeLimit]);
 
-  // Timer countdown
+  // Casual games have no countdown; timed games use their selected 30s or 60s limit.
   useEffect(() => {
-    if (match.status !== 'playing') return;
+    if (match.status !== 'playing' || moveTimeLimit === null) return;
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev === 10) {
-          sounds.playTimerWarning();
-        }
-        if (prev <= 1) {
-          onTimeoutRef.current?.(turn);
-          return 30;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [turn, match.status]);
+  }, [turn, match.status, moveTimeLimit]);
+
+  useEffect(() => {
+    if (moveTimeLimit === null || timeLeft !== 10 || warningPlayedRef.current) return;
+    warningPlayedRef.current = true;
+    sounds.playTimerWarning();
+  }, [timeLeft, moveTimeLimit]);
+
+  useEffect(() => {
+    if (moveTimeLimit === null || timeLeft !== 0 || match.status !== 'playing' || timeoutHandledRef.current) return;
+    timeoutHandledRef.current = true;
+    const winner: 'A' | 'B' = turn === 'A' ? 'B' : 'A';
+    const losingPlayer = turn === 'A' ? match.playerA.name : match.playerB.name;
+    const winningPlayer = winner === 'A' ? match.playerA.name : match.playerB.name;
+    const reason = t.timeoutVictoryReason.replace('{player}', losingPlayer).replace('{winner}', winningPlayer);
+    concludeMatch(reason, false, winner);
+  }, [timeLeft, moveTimeLimit, match.status, match.playerA.name, match.playerB.name, turn, t, concludeMatch]);
 
   // Advantage visual percentage
   // If leader is A, advantage pushes bar towards A (50% to 100%)
@@ -103,18 +108,24 @@ export const GameHud: React.FC<GameHudProps> = ({
           </div>
         </div>
 
-        {/* Center: Live Timer & Skill Advantage Display */}
+        {/* Center: Move timer & skill advantage display */}
         <div className="flex flex-col items-center justify-center">
-          <div
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all shadow-sm ${
-              timeLeft <= 10
-                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 animate-pulse scale-105'
-                : 'bg-[#18212e] text-slate-200 border border-slate-700'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span>{timeLeft}s</span>
-          </div>
+          {moveTimeLimit === null ? (
+            <div className="rounded-full border border-slate-700 bg-[#18212e] px-3.5 py-1.5 text-xs font-semibold text-slate-300">
+              {t.timeNoLimit}
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all shadow-sm ${
+                timeLeft <= 10
+                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 animate-pulse scale-105'
+                  : 'bg-[#18212e] text-slate-200 border border-slate-700'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span>{timeLeft}s</span>
+            </div>
+          )}
 
           <div className="text-[11px] text-slate-400 mt-1.5 font-medium flex items-center gap-1">
             {match.leader ? (
