@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Play, Users, Shield, Sparkles, PhoneCall, ChevronRight, Award, Clock } from 'lucide-react';
-import { usePlatform, GameType, PlayerProfile } from '../../context/PlatformContext';
+import { usePlatform, GameType, PlayerProfile, getLocalizedProfileAvailability } from '../../context/PlatformContext';
 import { InkaLogo } from '../brand/InkaLogo';
 import { ChallengeModal } from '../modals/ChallengeModal';
 
 export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = () => {
   const {
     t,
+    lang,
     communityPlayers,
     startMatch,
     triggerMockIncomingChallenge,
@@ -196,7 +197,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
                   <h4 className="text-sm font-semibold text-white">{player.name}</h4>
                   <p className="text-[11px] text-slate-400">{player.city} · ★ {player.sportsmanshipLevel}.0</p>
                   <p className="text-[10px] text-emerald-400/90 font-mono mt-0.5">
-                    {player.availability}
+                    {getLocalizedProfileAvailability(player, lang)}
                   </p>
                 </div>
               </div>
