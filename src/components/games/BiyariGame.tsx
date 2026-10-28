@@ -199,7 +199,7 @@ export const BiyariGame: React.FC = () => {
             } else if (b.type === 'eight') {
               const winner = turn === 'A' ? 'A' : 'B';
               concludeMatch(
-                `8-Ball legally potted by ${winner === 'A' ? currentMatch?.playerA.name : currentMatch?.playerB.name}! Decisive Win.`,
+                t.biyariEightBallVictoryReason.replace('{player}', winner === 'A' ? currentMatch?.playerA.name ?? '' : currentMatch?.playerB.name ?? ''),
                 false,
                 winner
               );
