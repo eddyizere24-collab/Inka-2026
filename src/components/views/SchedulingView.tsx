@@ -179,7 +179,7 @@ export const SchedulingView: React.FC = () => {
             const oppWindow = selectedOpponent.availability;
             setSelectedOpponent(null);
             setScheduledMatchAlert(
-              `${t.scheduledMatchConfirmation.replace('{player}', oppName).replace('{game}', game.toUpperCase()).replace('{time}', timeControl).replace('{window}', oppWindow)}`
+              `${t.scheduledMatchConfirmation.replace('{player}', oppName).replace('{game}', game === 'dame' ? t.dameTitle : game === 'igisoro' ? t.igisoroTitle : t.biyariTitle).replace('{time}', timeControl === 'casual' ? t.timeCasual : timeControl === '30s' ? t.time30s : t.time60s).replace('{window}', oppWindow)}`
             );
           }}
         />
