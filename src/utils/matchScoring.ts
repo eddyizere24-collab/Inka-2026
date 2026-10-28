@@ -143,8 +143,8 @@ export function calculateIgisoroAdvantage(
 }
 
 /**
- * Calculates Biyari (Eight-ball) advantage based on balls potted.
- * Sinking the 8-ball legally yields decisive victory (advantage = 1.0).
+ * Calculates Biyari (Eight-ball) advantage based on the seven-ball groups.
+ * A player must clear their seven group balls before legally winning with the 8-ball.
  */
 export function calculateBiyariAdvantage(
   pottedA: number,
@@ -157,7 +157,7 @@ export function calculateBiyariAdvantage(
       leader: 'A',
       advantage: 1.0,
       w: 1.0,
-      scoreA: Math.max(pottedA, 5),
+      scoreA: Math.max(pottedA, 7),
       scoreB: pottedB,
       isDecisiveWin: true,
       winner: 'A',
@@ -170,7 +170,7 @@ export function calculateBiyariAdvantage(
       advantage: 1.0,
       w: 1.0,
       scoreA: pottedA,
-      scoreB: Math.max(pottedB, 5),
+      scoreB: Math.max(pottedB, 7),
       isDecisiveWin: true,
       winner: 'B',
     };
@@ -190,7 +190,7 @@ export function calculateBiyariAdvantage(
   }
 
   const leader = netDiff > 0 ? 'A' : 'B';
-  const advantage = Math.min(0.9, Math.round((Math.abs(netDiff) / 5) * 100) / 100);
+  const advantage = Math.min(0.9, Math.round((Math.abs(netDiff) / 7) * 100) / 100);
 
   return {
     leader,
