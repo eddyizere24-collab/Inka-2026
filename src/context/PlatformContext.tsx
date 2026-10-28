@@ -441,7 +441,7 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       challenger,
       gameType: 'dame',
       timeControl: '30s',
-      message: 'Hello Habimana! Let us play a friendly game of Dame.',
+      message: translations[lang].incomingChallengeMessage.replace('{player}', currentUser.name).replace('{game}', translations[lang].dameTitle),
       timestamp: Date.now(),
     });
     sounds.startRingtone();
