@@ -239,7 +239,7 @@ export const RulesView: React.FC = () => {
               <div>
                 <span className="text-slate-400">{t.endgameStageLabel}:</span>{' '}
                 <strong className="text-amber-300">
-                  {biyariA >= 7 ? t.playerAOnEightBall : biyariB >= 7 ? t.playerBOnEightBall : t.targetGroupPotting}
+                  {biyariA >= 7 && biyariB >= 7 ? t.bothPlayersOnEightBall : biyariA >= 7 ? t.playerAOnEightBall : biyariB >= 7 ? t.playerBOnEightBall : t.targetGroupPotting}
                 </strong>
               </div>
             </div>
