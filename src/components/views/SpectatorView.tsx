@@ -137,7 +137,7 @@ export const SpectatorView: React.FC = () => {
             <div className="space-y-1">
               <div className="flex justify-between text-xs text-slate-400 font-mono">
                 <span className="text-emerald-400">{selectedMatch.playerA.name.split(' ')[0]}: {percentA.toFixed(0)}%</span>
-                <span className="text-slate-500 uppercase text-[10px]">Skill Advantage</span>
+                <span className="text-slate-500 uppercase text-[10px]">{t.advantageGauge}</span>
                 <span className="text-cyan-400">{selectedMatch.playerB.name.split(' ')[0]}: {(100 - percentA).toFixed(0)}%</span>
               </div>
               <div className="h-3 w-full bg-slate-900 rounded-full overflow-hidden flex border border-slate-800 p-0.5">
@@ -172,7 +172,7 @@ export const SpectatorView: React.FC = () => {
 
             {/* Request to Play Buttons */}
             <div className="p-4 bg-[#161e29] rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <span className="text-slate-300 font-medium">Admire a player's skill? Challenge them next:</span>
+              <span className="text-slate-300 font-medium">{t.admireSkillPrompt}</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleRequestToPlay(selectedMatch.playerA)}
@@ -198,7 +198,7 @@ export const SpectatorView: React.FC = () => {
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-emerald-400" />
-              <h4 className="text-sm font-bold text-white">Spectator Discussion</h4>
+              <h4 className="text-sm font-bold text-white">{t.spectatorChatTitle}</h4>
             </div>
             <span className="text-[11px] text-slate-500 font-mono">
               {selectedMatch.spectatorsCount} watching
