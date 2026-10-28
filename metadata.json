@@ -1,0 +1,6 @@
+{
+  "name": "Rwandan Skill-Games Platform",
+  "description": "Authentic Rwandan skill games platform for Igisoro, Dame, and Biyari with human-to-human play, gradual inka settlement, spectator arena, and availability scheduling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
