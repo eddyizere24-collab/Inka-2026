@@ -229,6 +229,18 @@ export interface TranslationSchema {
   squareAccessibleLabel: string;
   pieceLabel: string;
   incomingChallengeMessage: string;
+  defaultProfileBio: string;
+  defaultAvailability: string;
+  demoBioUwase: string;
+  demoBioKamali: string;
+  demoBioMugisha: string;
+  demoBioKeza: string;
+  demoBioKalisa: string;
+  availabilityUwase: string;
+  availabilityKamali: string;
+  availabilityMugisha: string;
+  availabilityKeza: string;
+  availabilityKalisa: string;
   defaultFriendlyMessage: string;
   challengeSentNotice: string;
   documentTitle: string;
@@ -525,6 +537,18 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Akazu {row}, inkingi {col}, {piece}",
     pieceLabel: "igice",
     incomingChallengeMessage: "Muraho {player}! Reka dukine umukino wa {game} mu bwubahane.",
+    defaultProfileBio: "Nkunda gukina Dame n’Igisoro, nkishimira gukina mu mutuzo no kubaha abandi.",
+    defaultAvailability: "Buri munsi saa 17:00–21:00",
+    demoBioUwase: "Ni umuhanga muri Dame, akunda kwibasira umukeba yitonze kandi yihuse. Ahora yiteguye gukina mu bwubahane.",
+    demoBioKamali: "Akunda Igisoro kuva akiri umwana, kandi ashimishwa no gutegura ingamba zo gusobanya isoro.",
+    demoBioMugisha: "Ni umuhanga muri Biyari. Akunda gukubita neza no gutegura aho imipira igwa.",
+    demoBioKeza: "Yiga ubumenyi bw’ubuhinzi kandi akunda kuruhura ubwenge akina Igisoro.",
+    demoBioKalisa: "Ni umukinnyi wa Dame umaze igihe kinini akina kandi akunda amarushanwa.",
+    availabilityUwase: "Buri munsi saa 18:00–21:00",
+    availabilityKamali: "Mu minsi y’akazi saa 16:00–20:00",
+    availabilityMugisha: "Nimugoroba nyuma ya saa 19:00",
+    availabilityKeza: "Mu mpera z’icyumweru no ku manywa",
+    availabilityKalisa: "Buri munsi saa 14:00–19:00",
     defaultFriendlyMessage: "Niteguye gukina umukino w’ubuhanga n’ubucuti!",
     challengeSentNotice: "Ubutumire bwohererejwe {player} ku mukino wa {game} ({time}).",
     documentTitle: "INKA · Imikino y’Ubuhanga",
@@ -820,6 +844,18 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Square row {row}, column {col}, {piece}",
     pieceLabel: "piece",
     incomingChallengeMessage: "Hello {player}! Let’s play a friendly game of {game}.",
+    defaultProfileBio: "I enjoy Dame and Igisoro, and value calm, respectful play.",
+    defaultAvailability: "Daily, 5:00 PM–9:00 PM",
+    demoBioUwase: "An experienced Dame player who enjoys quick counter-attacks and respectful matches.",
+    demoBioKamali: "Passionate about traditional Igisoro since childhood and enjoys strategic sowing.",
+    demoBioMugisha: "A Biyari specialist who enjoys precise bank shots and positional play.",
+    demoBioKeza: "Studies agricultural science and enjoys relaxing with a game of Igisoro.",
+    demoBioKalisa: "A veteran Dame player who enjoys tournaments.",
+    availabilityUwase: "Every day, 6:00 PM–9:00 PM",
+    availabilityKamali: "Weekdays, 4:00 PM–8:00 PM",
+    availabilityMugisha: "Evenings from 7:00 PM",
+    availabilityKeza: "Weekends and afternoons",
+    availabilityKalisa: "Daily, 2:00 PM–7:00 PM",
     defaultFriendlyMessage: "Ready for a respectful, friendly game of skill!",
     challengeSentNotice: "A challenge was sent to {player} for {game} ({time}).",
     documentTitle: "INKA · Skill Games",
@@ -1115,6 +1151,18 @@ export const translations: Record<Language, TranslationSchema> = {
     squareAccessibleLabel: "Case ligne {row}, colonne {col}, {piece}",
     pieceLabel: "pièce",
     incomingChallengeMessage: "Bonjour {player} ! Jouons une partie amicale de {game}.",
+    defaultProfileBio: "J’aime jouer au Dame et à l’Igisoro, dans le calme et le respect.",
+    defaultAvailability: "Tous les jours, de 17 h à 21 h",
+    demoBioUwase: "Joueuse expérimentée de Dame, elle aime les contre-attaques rapides et les parties respectueuses.",
+    demoBioKamali: "Passionné d’Igisoro depuis l’enfance, il aime les stratégies de semis.",
+    demoBioMugisha: "Spécialiste du Biyari, il aime les bandes précises et le placement des billes.",
+    demoBioKeza: "Étudie les sciences agricoles et aime se détendre en jouant à l’Igisoro.",
+    demoBioKalisa: "Joueur de Dame chevronné qui aime les tournois.",
+    availabilityUwase: "Tous les jours, de 18 h à 21 h",
+    availabilityKamali: "En semaine, de 16 h à 20 h",
+    availabilityMugisha: "Le soir à partir de 19 h",
+    availabilityKeza: "Le week-end et l’après-midi",
+    availabilityKalisa: "Tous les jours, de 14 h à 19 h",
     defaultFriendlyMessage: "Prêt à jouer une partie amicale et respectueuse !",
     challengeSentNotice: "Une invitation a été envoyée à {player} pour {game} ({time}).",
     documentTitle: "INKA · Jeux d’adresse",
