@@ -316,7 +316,7 @@ export const DameGame: React.FC = () => {
                 </span>
               </div>
               <div className="font-mono text-emerald-400 font-medium">
-                {isSimulatedOpponentTurn ? 'Opponent calculating move...' : `Turn: ${turn === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name}`}
+                {isSimulatedOpponentTurn ? t.opponentCalculatingMove : `${t.turnLabel}: ${turn === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name}`}
               </div>
               <div className="flex items-center gap-2">
                 <span>
@@ -343,7 +343,7 @@ export const DameGame: React.FC = () => {
                 <div>Leader: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : 'Tied'}</div>
               </div>
               <p className="text-[11px] text-slate-500">
-                100% free skill competition. No wagering, betting pools, or financial risk.
+                {t.freeSkillCompetitionNotice}
               </p>
             </div>
           </div>
@@ -356,7 +356,7 @@ export const DameGame: React.FC = () => {
                 <span>{t.matchConcluded}</span>
               </div>
               <p className="text-xs text-slate-300">
-                {currentMatch.concludeReason || 'Match finished with mutual honor and sportsmanship.'}
+                {currentMatch.concludeReason || t.matchFinishedHonorMessage}
               </p>
               <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
                 <span>{t.honorPointsAwarded}:</span>
@@ -383,7 +383,7 @@ export const DameGame: React.FC = () => {
                 onClick={() => setCurrentMatch(null)}
                 className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
-                Return to Lobby
+                {t.backToLobby}
               </button>
             </div>
           ) : (
