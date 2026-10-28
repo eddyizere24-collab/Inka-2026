@@ -262,7 +262,7 @@ const MainShell: React.FC = () => {
             <span>{t.editionLabel}</span>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <span>{t.humanVsHuman}</span>
+            <span>{t.prototypeNotice}</span>
             <span>·</span>
             <span>{t.skillAdvantage}</span>
             <span>·</span>
