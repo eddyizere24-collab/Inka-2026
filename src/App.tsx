@@ -45,7 +45,7 @@ const MainShell: React.FC = () => {
               className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Lobby</span>
+              <span>{t.backToLobby}</span>
             </button>
             <div className="h-4 w-px bg-slate-800 hidden sm:block" />
             <div className="hidden sm:flex items-center gap-2">
@@ -61,7 +61,7 @@ const MainShell: React.FC = () => {
             <button
               onClick={() => setIsMuted(!isMuted)}
               className="p-2 rounded-lg bg-[#18212e] hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer border border-slate-700/80"
-              aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
+              aria-label={isMuted ? t.unmuteSound : t.muteSound}
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
             </button>
@@ -69,7 +69,7 @@ const MainShell: React.FC = () => {
             {/* Honor Points pill */}
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] border border-emerald-500/40 rounded-xl text-xs font-mono text-emerald-300">
               <Award className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{honorPoints} Honor</span>
+              <span>{honorPoints} {t.honorPointsLabel}</span>
             </div>
           </div>
         </header>
@@ -173,7 +173,7 @@ const MainShell: React.FC = () => {
           <button
             onClick={() => setIsMuted(!isMuted)}
             className="p-2 rounded-xl bg-[#18212e] hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-colors cursor-pointer"
-            aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
+            aria-label={isMuted ? t.unmuteSound : t.muteSound}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
           </button>
@@ -259,14 +259,14 @@ const MainShell: React.FC = () => {
             <span>·</span>
             <span>Igisoro · Dame · Biyari</span>
             <span>·</span>
-            <span>Official 2026 Edition</span>
+            <span>{t.editionLabel}</span>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Strictly Human-vs-Human</span>
+            <span>{t.humanVsHuman}</span>
             <span>·</span>
-            <span>Pure Skill Advantage</span>
+            <span>{t.skillAdvantage}</span>
             <span>·</span>
-            <span>Zero Wagering</span>
+            <span>{t.zeroWageringFooter}</span>
           </div>
         </div>
       </footer>
