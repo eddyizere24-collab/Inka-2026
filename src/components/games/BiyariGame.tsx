@@ -45,8 +45,13 @@ export const BiyariGame: React.FC = () => {
   const [ballsMoving, setBallsMoving] = useState<boolean>(false);
 
   // Potted counts
-  const [pottedA, setPottedA] = useState<number>(0); // solids for A
-  const [pottedB, setPottedB] = useState<number>(0); // stripes for B
+  const [pottedA, setPottedA] = useState<number>(0); // solids for Player A
+  const [pottedB, setPottedB] = useState<number>(0); // stripes for Player B
+  const pottedARef = useRef(0);
+  const pottedBRef = useRef(0);
+  const shotInProgressRef = useRef(false);
+  const ownBallPottedThisShotRef = useRef(false);
+  const cueBallScratchedThisShotRef = useRef(false);
 
   // Balls state
   const ballsRef = useRef<Ball[]>([]);
@@ -74,22 +79,27 @@ export const BiyariGame: React.FC = () => {
     const startY = TABLE_HEIGHT / 2;
     const spacing = BALL_RADIUS * 2 + 1;
 
-    // 10 object balls for snappy skill games
+    // Standard 8-ball groups: seven solids, the 8-ball, and seven stripes.
     const ballDefs: { color: string; type: 'solid' | 'stripe' | 'eight'; num: number }[] = [
       { color: '#eab308', type: 'solid', num: 1 },
       { color: '#3b82f6', type: 'solid', num: 2 },
       { color: '#ef4444', type: 'solid', num: 3 },
       { color: '#a855f7', type: 'solid', num: 4 },
       { color: '#f97316', type: 'solid', num: 5 },
+      { color: '#ec4899', type: 'solid', num: 6 },
+      { color: '#84cc16', type: 'solid', num: 7 },
       { color: '#0f172a', type: 'eight', num: 8 },
       { color: '#10b981', type: 'stripe', num: 9 },
       { color: '#06b6d4', type: 'stripe', num: 10 },
       { color: '#ec4899', type: 'stripe', num: 11 },
       { color: '#84cc16', type: 'stripe', num: 12 },
+      { color: '#f97316', type: 'stripe', num: 13 },
+      { color: '#a855f7', type: 'stripe', num: 14 },
+      { color: '#3b82f6', type: 'stripe', num: 15 },
     ];
 
     let bIdx = 0;
-    for (let col = 0; col < 4; col++) {
+    for (let col = 0; col < 5; col++) {
       for (let row = 0; row <= col; row++) {
         if (bIdx >= ballDefs.length) break;
         const b = ballDefs[bIdx];
@@ -112,6 +122,11 @@ export const BiyariGame: React.FC = () => {
     }
 
     ballsRef.current = list;
+    pottedARef.current = 0;
+    pottedBRef.current = 0;
+    shotInProgressRef.current = false;
+    ownBallPottedThisShotRef.current = false;
+    cueBallScratchedThisShotRef.current = false;
     setPottedA(0);
     setPottedB(0);
     setBallsMoving(false);
@@ -188,6 +203,7 @@ export const BiyariGame: React.FC = () => {
             sounds.playPocketDrop();
 
             if (b.type === 'cue') {
+              cueBallScratchedThisShotRef.current = true;
               // Scratch: respawn cue ball on head spot
               setTimeout(() => {
                 b.x = TABLE_WIDTH * 0.25;
@@ -197,26 +213,25 @@ export const BiyariGame: React.FC = () => {
                 b.isPotted = false;
               }, 600);
             } else if (b.type === 'eight') {
-              const winner = turn === 'A' ? 'A' : 'B';
+              const hasClearedOwnGroup = turn === 'A' ? pottedARef.current >= 7 : pottedBRef.current >= 7;
+              const winner = hasClearedOwnGroup ? turn : turn === 'A' ? 'B' : 'A';
               concludeMatch(
                 t.biyariEightBallVictoryReason.replace('{player}', winner === 'A' ? currentMatch?.playerA.name ?? '' : currentMatch?.playerB.name ?? ''),
                 false,
                 winner
               );
             } else if (b.type === 'solid') {
-              setPottedA((prev) => {
-                const nextA = prev + 1;
-                const scoreResult = calculateBiyariAdvantage(nextA, pottedB, nextA >= 5, false);
-                updateMatchScore(scoreResult);
-                return nextA;
-              });
+              const nextA = pottedARef.current + 1;
+              pottedARef.current = nextA;
+              setPottedA(nextA);
+              if (turn === 'A') ownBallPottedThisShotRef.current = true;
+              updateMatchScore(calculateBiyariAdvantage(nextA, pottedBRef.current));
             } else if (b.type === 'stripe') {
-              setPottedB((prev) => {
-                const nextB = prev + 1;
-                const scoreResult = calculateBiyariAdvantage(pottedA, nextB, false, nextB >= 5);
-                updateMatchScore(scoreResult);
-                return nextB;
-              });
+              const nextB = pottedBRef.current + 1;
+              pottedBRef.current = nextB;
+              setPottedB(nextB);
+              if (turn === 'B') ownBallPottedThisShotRef.current = true;
+              updateMatchScore(calculateBiyariAdvantage(pottedARef.current, nextB));
             }
           }
         }
@@ -367,6 +382,20 @@ export const BiyariGame: React.FC = () => {
     return () => cancelAnimationFrame(animId);
   }, [pockets, ballsMoving, aimAngle, shotPower, currentMatch?.status, currentMatch?.playerA.name, currentMatch?.playerB.name, concludeMatch, turn, pottedA, pottedB, updateMatchScore]);
 
+  useEffect(() => {
+    if (ballsMoving || !shotInProgressRef.current) return;
+    shotInProgressRef.current = false;
+
+    if (currentMatch?.status === 'playing') {
+      if (cueBallScratchedThisShotRef.current || !ownBallPottedThisShotRef.current) {
+        setTurn((prev) => (prev === 'A' ? 'B' : 'A'));
+      }
+    }
+
+    ownBallPottedThisShotRef.current = false;
+    cueBallScratchedThisShotRef.current = false;
+  }, [ballsMoving, currentMatch?.status]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (ballsMoving) return;
     const canvas = canvasRef.current;
@@ -390,9 +419,11 @@ export const BiyariGame: React.FC = () => {
     const speed = (shotPower / 100) * 16;
     cueBall.vx = Math.cos(aimAngle) * speed;
     cueBall.vy = Math.sin(aimAngle) * speed;
+    shotInProgressRef.current = true;
+    ownBallPottedThisShotRef.current = false;
+    cueBallScratchedThisShotRef.current = false;
+    setBallsMoving(true);
     sounds.playBilliardStrike();
-
-    setTurn((prev) => (prev === 'A' ? 'B' : 'A'));
   };
 
   if (!currentMatch) return null;
@@ -404,12 +435,12 @@ export const BiyariGame: React.FC = () => {
         turn={turn}
         customStatsA={
           <span className="text-emerald-400 font-mono">
-            {t.biyari_potted}: {pottedA}/5
+            {t.biyari_potted}: {pottedA}/7
           </span>
         }
         customStatsB={
           <span className="text-cyan-400 font-mono">
-            {t.biyari_potted}: {pottedB}/5
+            {t.biyari_potted}: {pottedB}/7
           </span>
         }
       />
