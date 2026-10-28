@@ -36,7 +36,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors cursor-pointer"
-          aria-label="Close dialog"
+          aria-label={t.close}
         >
           <X className="w-5 h-5" />
         </button>
@@ -94,9 +94,9 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             <div className="grid grid-cols-3 gap-2.5">
               {(
                 [
-                  { id: 'casual', label: t.time_casual, desc: 'No timer limit' },
-                  { id: '30s', label: t.time_30s, desc: 'Official 30s move limit' },
-                  { id: '60s', label: t.time_60s, desc: 'Relaxed 60s move limit' },
+                  { id: 'casual', label: t.time_casual, desc: t.timeNoLimit },
+                  { id: '30s', label: t.time_30s, desc: t.timeOfficial30s },
+                  { id: '60s', label: t.time_60s, desc: t.timeRelaxed60s },
                 ] as const
               ).map((tc) => (
                 <button
@@ -129,7 +129,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="w-full bg-[#18212e] border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-              placeholder="e.g. Mugisha, reka dukine Igisoro!"
+              placeholder={t.friendlyMessagePlaceholder}
             />
           </div>
 
