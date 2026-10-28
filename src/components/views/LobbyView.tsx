@@ -35,7 +35,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white text-balance leading-tight">
-            Igisoro · Dame · Biyari
+            {t.igisoroTitle} · {t.dameTitle} · {t.biyariTitle}
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
