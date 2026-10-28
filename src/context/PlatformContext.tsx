@@ -19,8 +19,18 @@ export interface PlayerProfile {
   availability: string;
   status: 'available' | 'in_game' | 'offline';
   bio: string;
+  localizedBio?: Record<Language, string>;
+  bioIsCustom?: boolean;
+  localizedAvailability?: Record<Language, string>;
+  availabilityIsCustom?: boolean;
   phone?: string;
 }
+
+export const getLocalizedProfileBio = (player: PlayerProfile, lang: Language): string =>
+  player.bioIsCustom ? player.bio : player.localizedBio?.[lang] ?? player.bio;
+
+export const getLocalizedProfileAvailability = (player: PlayerProfile, lang: Language): string =>
+  player.availabilityIsCustom ? player.availability : player.localizedAvailability?.[lang] ?? player.availability;
 
 export interface MatchHistoryItem {
   id: string;
@@ -103,9 +113,13 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     gamesPlayed: 54,
     gamesWon: 38,
     favGame: 'dame',
-    availability: 'Every day 6:00 PM – 9:00 PM',
+    availability: translations.en.availabilityUwase,
+    localizedAvailability: { rw: translations.rw.availabilityUwase, en: translations.en.availabilityUwase, fr: translations.fr.availabilityUwase },
+    availabilityIsCustom: false,
     status: 'available',
-    bio: 'Experienced Dame player with a fast counter-attacking style. Always open for respectful matches.',
+    bio: translations.en.demoBioUwase,
+    localizedBio: { rw: translations.rw.demoBioUwase, en: translations.en.demoBioUwase, fr: translations.fr.demoBioUwase },
+    bioIsCustom: false,
     phone: '+250 788 412 901',
   },
   {
@@ -118,9 +132,13 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     gamesPlayed: 72,
     gamesWon: 49,
     favGame: 'igisoro',
-    availability: 'Weekdays 4:00 PM – 8:00 PM',
+    availability: translations.en.availabilityKamali,
+    localizedAvailability: { rw: translations.rw.availabilityKamali, en: translations.en.availabilityKamali, fr: translations.fr.availabilityKamali },
+    availabilityIsCustom: false,
     status: 'available',
-    bio: 'Passionate about traditional Igisoro since childhood. Playing for the beauty of strategic sowing.',
+    bio: translations.en.demoBioKamali,
+    localizedBio: { rw: translations.rw.demoBioKamali, en: translations.en.demoBioKamali, fr: translations.fr.demoBioKamali },
+    bioIsCustom: false,
     phone: '+250 788 321 004',
   },
   {
@@ -133,9 +151,13 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     gamesPlayed: 41,
     gamesWon: 24,
     favGame: 'biyari',
-    availability: 'Evenings from 7:00 PM',
+    availability: translations.en.availabilityMugisha,
+    localizedAvailability: { rw: translations.rw.availabilityMugisha, en: translations.en.availabilityMugisha, fr: translations.fr.availabilityMugisha },
+    availabilityIsCustom: false,
     status: 'in_game',
-    bio: 'Biyari (8-ball) specialist. Clean bank shots and positional play.',
+    bio: translations.en.demoBioMugisha,
+    localizedBio: { rw: translations.rw.demoBioMugisha, en: translations.en.demoBioMugisha, fr: translations.fr.demoBioMugisha },
+    bioIsCustom: false,
     phone: '+250 783 990 120',
   },
   {
@@ -148,9 +170,13 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     gamesPlayed: 33,
     gamesWon: 22,
     favGame: 'igisoro',
-    availability: 'Available on weekends & afternoons',
+    availability: translations.en.availabilityKeza,
+    localizedAvailability: { rw: translations.rw.availabilityKeza, en: translations.en.availabilityKeza, fr: translations.fr.availabilityKeza },
+    availabilityIsCustom: false,
     status: 'available',
-    bio: 'Studying agricultural science, enjoys relaxing the mind with Igisoro mancala.',
+    bio: translations.en.demoBioKeza,
+    localizedBio: { rw: translations.rw.demoBioKeza, en: translations.en.demoBioKeza, fr: translations.fr.demoBioKeza },
+    bioIsCustom: false,
     phone: '+250 781 123 456',
   },
   {
@@ -163,9 +189,13 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     gamesPlayed: 98,
     gamesWon: 74,
     favGame: 'dame',
-    availability: 'Daily 2:00 PM – 7:00 PM',
+    availability: translations.en.availabilityKalisa,
+    localizedAvailability: { rw: translations.rw.availabilityKalisa, en: translations.en.availabilityKalisa, fr: translations.fr.availabilityKalisa },
+    availabilityIsCustom: false,
     status: 'available',
-    bio: 'Veteran Dame player and tournament enthusiast.',
+    bio: translations.en.demoBioKalisa,
+    localizedBio: { rw: translations.rw.demoBioKalisa, en: translations.en.demoBioKalisa, fr: translations.fr.demoBioKalisa },
+    bioIsCustom: false,
     phone: '+250 788 776 543',
   },
 ];
@@ -214,9 +244,13 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     gamesPlayed: 28,
     gamesWon: 17,
     favGame: 'dame',
-    availability: 'Daily 5:00 PM – 9:00 PM',
+    availability: translations[lang].defaultAvailability,
+    localizedAvailability: { rw: translations.rw.defaultAvailability, en: translations.en.defaultAvailability, fr: translations.fr.defaultAvailability },
+    availabilityIsCustom: false,
     status: 'available',
-    bio: 'Enjoys good Dame and Igisoro matches after work. Calm and respectful play.',
+    bio: translations[lang].defaultProfileBio,
+    localizedBio: { rw: translations.rw.defaultProfileBio, en: translations.en.defaultProfileBio, fr: translations.fr.defaultProfileBio },
+    bioIsCustom: false,
     phone: '+250 788 555 123',
   });
 
@@ -458,7 +492,12 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const updateCurrentUser = (updates: Partial<PlayerProfile>) => {
-    setCurrentUser((prev) => ({ ...prev, ...updates }));
+    setCurrentUser((prev) => ({
+      ...prev,
+      ...updates,
+      ...(Object.prototype.hasOwnProperty.call(updates, 'bio') ? { bioIsCustom: true } : {}),
+      ...(Object.prototype.hasOwnProperty.call(updates, 'availability') ? { availabilityIsCustom: true } : {}),
+    }));
   };
 
   useEffect(() => {
