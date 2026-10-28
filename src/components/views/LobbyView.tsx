@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Users, Shield, Sparkles, PhoneCall, ChevronRight, Award, Clock } from 'lucide-react';
+import { Play, Users, Shield, Sparkles, PhoneCall, ChevronRight, Award, Clock, Info } from 'lucide-react';
 import { usePlatform, GameType, PlayerProfile, getLocalizedProfileAvailability } from '../../context/PlatformContext';
 import { InkaLogo } from '../brand/InkaLogo';
 import { ChallengeModal } from '../modals/ChallengeModal';
@@ -41,6 +41,11 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
           <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
             {t.hero_desc}
           </p>
+
+          <div className="inline-flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-100">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" />
+            <span>{t.prototypeNotice}</span>
+          </div>
 
           <div className="pt-2 flex flex-wrap items-center gap-3 text-xs text-slate-300">
             <div className="flex items-center gap-2 bg-[#151d29] px-3.5 py-2 rounded-xl border border-slate-700/60">
