@@ -34,3 +34,49 @@ test('i18n Validation: Zero wagering terms present in brand notice', () => {
   assert.ok(translations.en.zeroWageringNotice.length > 10);
   assert.ok(translations.fr.zeroWageringNotice.length > 10);
 });
+
+test('i18n Validation: All three dictionaries have exactly the same keys', () => {
+  const englishKeys = Object.keys(translations.en).sort();
+  assert.deepEqual(Object.keys(translations.rw).sort(), englishKeys);
+  assert.deepEqual(Object.keys(translations.fr).sort(), englishKeys);
+});
+
+test('i18n Validation: Dynamic message templates preserve matching placeholders', () => {
+  const templateKeys = [
+    'incomingChallengeMessage',
+    'challengeSentNotice',
+    'scheduledMatchConfirmation',
+    'currentTurnWithLabel',
+    'dameVictoryReason',
+    'igisoroVictoryReason',
+    'igisoroNoMovesVictoryReason',
+    'igisoroCaptureMessage',
+    'playerConcededReason',
+    'biyariEightBallVictoryReason',
+    'squareAccessibleLabel',
+    'pitAccessibleLabel',
+  ] as const;
+
+  const placeholders = (value: string) =>
+    (value.match(/\\{[^}]+\\}/g) ?? []).sort();
+
+  for (const key of templateKeys) {
+    assert.deepEqual(
+      placeholders(translations.rw[key]),
+      placeholders(translations.en[key]),
+      `Placeholder mismatch between Kinyarwanda and English for ${key}`
+    );
+    assert.deepEqual(
+      placeholders(translations.fr[key]),
+      placeholders(translations.en[key]),
+      `Placeholder mismatch between French and English for ${key}`
+    );
+  }
+});
+
+test('i18n Validation: Document metadata is present in all languages', () => {
+  for (const language of ['rw', 'en', 'fr'] as const) {
+    assert.ok(translations[language].documentTitle.trim().length > 0);
+    assert.ok(translations[language].metaDescription.trim().length > 0);
+  }
+});
