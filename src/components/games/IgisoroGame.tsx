@@ -200,7 +200,7 @@ export const IgisoroGame: React.FC = () => {
           {/* Controls */}
           <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">Igisoro: 32 Pits, 64 Traditional Seeds</span>
+              <span className="font-semibold text-slate-200">{t.igisoroSubtitle}</span>
             </div>
             <div>
               <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
@@ -210,7 +210,7 @@ export const IgisoroGame: React.FC = () => {
                   onChange={(e) => setIsPassAndPlay(e.target.checked)}
                   className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
                 />
-                <span>Pass & Play / 2-Player Seat</span>
+                <span>{t.passAndPlayLabel}</span>
               </label>
             </div>
           </div>
@@ -219,8 +219,8 @@ export const IgisoroGame: React.FC = () => {
           <div className="w-full max-w-2xl bg-[#1d2533] border-4 border-[#2b384d] rounded-3xl p-4 sm:p-6 shadow-2xl">
             {/* North Player (Player B) */}
             <div className="flex items-center justify-between mb-2 px-3 text-xs">
-              <span className="text-slate-400 font-semibold">{currentMatch.playerB.name} (North Territory)</span>
-              <span className="font-mono text-cyan-400 font-medium">{seedsB} Seeds ({((seedsB / 64) * 100).toFixed(0)}%)</span>
+              <span className="text-slate-400 font-semibold">{currentMatch.playerB.name} ({t.northTerritory})</span>
+              <span className="font-mono text-cyan-400 font-medium">{seedsB} {t.seedsCountLabel} ({((seedsB / 64) * 100).toFixed(0)}%)</span>
             </div>
 
             {/* 4 Rows of 8 Pits */}
@@ -233,7 +233,7 @@ export const IgisoroGame: React.FC = () => {
                     type="button"
                     disabled={turn !== 'B' || count < 2 || !isPassAndPlay}
                     onClick={() => handlePitClick(0, c)}
-                    aria-label={`Pit Row 0 Col ${c}, ${count} seeds`}
+                    aria-label={t.pitAccessibleLabel.replace('{row}', '0').replace('{col}', String(c)).replace('{count}', String(count))}
                     className={`aspect-square rounded-2xl bg-[#141b26] border-2 border-[#2b3749] flex flex-col items-center justify-center relative transition-all shadow-inner ${
                       turn === 'B' && count >= 2 && isPassAndPlay ? 'hover:border-cyan-400 cursor-pointer' : ''
                     } ${sowingPit?.r === 0 && sowingPit?.c === c ? 'ring-2 ring-cyan-400' : ''}`}
@@ -256,7 +256,7 @@ export const IgisoroGame: React.FC = () => {
                     type="button"
                     disabled={turn !== 'B' || count < 2 || !isPassAndPlay}
                     onClick={() => handlePitClick(1, c)}
-                    aria-label={`Pit Row 1 Col ${c}, ${count} seeds`}
+                    aria-label={t.pitAccessibleLabel.replace('{row}', '1').replace('{col}', String(c)).replace('{count}', String(count))}
                     className={`aspect-square rounded-2xl bg-[#151c27] border-2 border-[#2b3749] flex flex-col items-center justify-center relative transition-all shadow-inner ${
                       turn === 'B' && count >= 2 && isPassAndPlay ? 'hover:border-cyan-400 cursor-pointer' : ''
                     } ${sowingPit?.r === 1 && sowingPit?.c === c ? 'ring-2 ring-cyan-400' : ''}`}
@@ -279,7 +279,7 @@ export const IgisoroGame: React.FC = () => {
                     type="button"
                     disabled={turn !== 'A' || count < 2}
                     onClick={() => handlePitClick(2, c)}
-                    aria-label={`Pit Row 2 Col ${c}, ${count} seeds`}
+                    aria-label={t.pitAccessibleLabel.replace('{row}', '2').replace('{col}', String(c)).replace('{count}', String(count))}
                     className={`aspect-square rounded-2xl bg-[#141c26] border-2 border-[#2a384b] flex flex-col items-center justify-center relative transition-all shadow-inner ${
                       turn === 'A' && count >= 2 ? 'hover:border-emerald-400 hover:scale-105 cursor-pointer ring-1 ring-emerald-500/30' : ''
                     } ${sowingPit?.r === 2 && sowingPit?.c === c ? 'ring-2 ring-emerald-400' : ''}`}
@@ -302,7 +302,7 @@ export const IgisoroGame: React.FC = () => {
                     type="button"
                     disabled={turn !== 'A' || count < 2}
                     onClick={() => handlePitClick(3, c)}
-                    aria-label={`Pit Row 3 Col ${c}, ${count} seeds`}
+                    aria-label={t.pitAccessibleLabel.replace('{row}', '3').replace('{col}', String(c)).replace('{count}', String(count))}
                     className={`aspect-square rounded-2xl bg-[#141c26] border-2 border-[#2a384b] flex flex-col items-center justify-center relative transition-all shadow-inner ${
                       turn === 'A' && count >= 2 ? 'hover:border-emerald-400 hover:scale-105 cursor-pointer ring-1 ring-emerald-500/30' : ''
                     } ${sowingPit?.r === 3 && sowingPit?.c === c ? 'ring-2 ring-emerald-400' : ''}`}
@@ -320,8 +320,8 @@ export const IgisoroGame: React.FC = () => {
 
             {/* South Player (Player A) */}
             <div className="flex items-center justify-between mt-3 px-3 text-xs">
-              <span className="text-emerald-400 font-semibold">{currentMatch.playerA.name} (South Territory)</span>
-              <span className="font-mono text-emerald-400 font-medium">{seedsA} Seeds ({((seedsA / 64) * 100).toFixed(0)}%)</span>
+              <span className="text-emerald-400 font-semibold">{currentMatch.playerA.name} ({t.southTerritory})</span>
+              <span className="font-mono text-emerald-400 font-medium">{seedsA} {t.seedsCountLabel} ({((seedsA / 64) * 100).toFixed(0)}%)</span>
             </div>
           </div>
 
@@ -356,12 +356,12 @@ export const IgisoroGame: React.FC = () => {
             <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
                 <Award className="w-5 h-5 text-emerald-400" />
-                <span>Match Concluded</span>
+                <span>{t.matchConcluded}</span>
               </div>
               <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
               <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
-                <span>Sportsmanship Honors:</span>
-                <strong className="text-white">+10 Honor Points</strong>
+                <span>{t.honorPointsAwarded}:</span>
+                <strong className="text-white">+10 {t.honorPointsLabel}</strong>
               </div>
               <button
                 onClick={() => setCurrentMatch(null)}
