@@ -6,11 +6,13 @@ export interface InkaLogoProps {
   className?: string;
   showTagline?: boolean;
   taglineText?: string;
+  ariaLabel?: string;
 }
 
-export const InkaEmblem: React.FC<{ size?: number; className?: string }> = ({
+export const InkaEmblem: React.FC<{ size?: number; className?: string; ariaLabel?: string }> = ({
   size = 40,
   className = '',
+  ariaLabel = 'INKA emblem',
 }) => {
   return (
     <svg
@@ -20,7 +22,8 @@ export const InkaEmblem: React.FC<{ size?: number; className?: string }> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`shrink-0 drop-shadow-md transition-transform duration-200 hover:scale-105 ${className}`}
-      aria-label="INKA emblem"
+      role="img"
+      aria-label={ariaLabel}
     >
       <defs>
         <linearGradient id="inkaGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -113,7 +116,8 @@ export const InkaLogo: React.FC<InkaLogoProps> = ({
   size = 'md',
   className = '',
   showTagline = true,
-  taglineText, 
+  taglineText,
+  ariaLabel, 
 }) => {
   const pixelSizes = {
     sm: 28,
@@ -132,12 +136,12 @@ export const InkaLogo: React.FC<InkaLogoProps> = ({
   const currentPixelSize = pixelSizes[size];
 
   if (variant === 'symbol') {
-    return <InkaEmblem size={currentPixelSize} className={className} />;
+    return <InkaEmblem size={currentPixelSize} className={className} ariaLabel={ariaLabel} />;
   }
 
   return (
     <div className={`inline-flex items-center gap-3 ${className}`}>
-      <InkaEmblem size={currentPixelSize} />
+      <InkaEmblem size={currentPixelSize} ariaLabel={ariaLabel} />
 
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5 leading-none">
