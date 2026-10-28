@@ -53,12 +53,15 @@ test('Biyari Scoring: evaluates potted balls and clean 8-ball victory', () => {
 });
 
 test('Honor Rewards: awards sportsmanship points without monetary wagering', () => {
-  const winReward = calculateHonorReward(true, false, 15);
-  assert.equal(winReward.honorPoints, 30);
+  const winReward = calculateHonorReward('win', 5);
+  assert.equal(winReward, 25);
 
-  const lossReward = calculateHonorReward(false, false, 12);
-  assert.equal(lossReward.honorPoints, 15);
+  const lossReward = calculateHonorReward('loss', 4);
+  assert.equal(lossReward, 14);
 
-  const drawReward = calculateHonorReward(false, true, 20);
-  assert.equal(drawReward.honorPoints, 20);
+  const drawReward = calculateHonorReward('draw', 5);
+  assert.equal(drawReward, 20);
+
+  const concludeReward = calculateHonorReward('conclude', 5);
+  assert.equal(concludeReward, 20);
 });
