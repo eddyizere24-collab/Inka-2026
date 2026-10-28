@@ -273,7 +273,7 @@ export const GameHud: React.FC<GameHudProps> = ({
                 onClick={() => {
                   setShowResignModal(false);
                   if (onResign) onResign();
-                  else concludeMatch(`${match.playerA.name} conceded the match gracefully`, false, 'B');
+                  else concludeMatch(t.playerConcededReason.replace('{player}', match.playerA.name), false, 'B');
                 }}
                 className="px-4 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold shadow-md cursor-pointer"
               >
