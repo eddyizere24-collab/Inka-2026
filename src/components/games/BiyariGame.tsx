@@ -436,6 +436,7 @@ export const BiyariGame: React.FC = () => {
     if (isPassAndPlay || turn !== 'B' || ballsMoving || currentMatch?.status !== 'playing') return;
 
     const timer = window.setTimeout(() => {
+      if (!currentMatch || currentMatch.status !== 'playing') return;
       const cueBall = ballsRef.current.find((ball) => ball.type === 'cue' && !ball.isPotted);
       if (!cueBall) return;
 
@@ -455,7 +456,7 @@ export const BiyariGame: React.FC = () => {
       cueBallScratchedThisShotRef.current = false;
       setAimAngle(angle);
       setBallsMoving(true);
-      setCurrentMatch((prev) => prev && prev.status === 'playing' ? { ...prev, moveCount: prev.moveCount + 1 } : prev);
+      setCurrentMatch({ ...currentMatch, moveCount: currentMatch.moveCount + 1 });
       sounds.playBilliardStrike();
     }, 1200);
 
