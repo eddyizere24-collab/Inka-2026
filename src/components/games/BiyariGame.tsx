@@ -40,6 +40,7 @@ export const BiyariGame: React.FC = () => {
   const POCKET_RADIUS = 18;
 
   const [turn, setTurn] = useState<'A' | 'B'>('A');
+  const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
   const [aimAngle, setAimAngle] = useState<number>(0);
   const [shotPower, setShotPower] = useState<number>(45);
   const [ballsMoving, setBallsMoving] = useState<boolean>(false);
@@ -397,7 +398,7 @@ export const BiyariGame: React.FC = () => {
   }, [ballsMoving, currentMatch?.status]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (ballsMoving) return;
+    if (ballsMoving || (turn === 'B' && !isPassAndPlay)) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -412,7 +413,7 @@ export const BiyariGame: React.FC = () => {
   };
 
   const executeShot = () => {
-    if (ballsMoving || currentMatch?.status !== 'playing') return;
+    if (ballsMoving || currentMatch?.status !== 'playing' || (turn === 'B' && !isPassAndPlay)) return;
     const cueBall = ballsRef.current.find((b) => b.type === 'cue' && !b.isPotted);
     if (!cueBall) return;
 
@@ -423,8 +424,40 @@ export const BiyariGame: React.FC = () => {
     ownBallPottedThisShotRef.current = false;
     cueBallScratchedThisShotRef.current = false;
     setBallsMoving(true);
+    setCurrentMatch((prev) => prev && prev.status === 'playing' ? { ...prev, moveCount: prev.moveCount + 1 } : prev);
     sounds.playBilliardStrike();
   };
+
+  // A simple local opponent makes Biyari playable in the prototype. Switch to pass-and-play to control both sides.
+  useEffect(() => {
+    if (isPassAndPlay || turn !== 'B' || ballsMoving || currentMatch?.status !== 'playing') return;
+
+    const timer = window.setTimeout(() => {
+      const cueBall = ballsRef.current.find((ball) => ball.type === 'cue' && !ball.isPotted);
+      if (!cueBall) return;
+
+      const targetType = pottedBRef.current >= 7 ? 'eight' : 'stripe';
+      const targets = ballsRef.current.filter((ball) => ball.type === targetType && !ball.isPotted);
+      if (targets.length === 0) return;
+
+      const target = targets.reduce((nearest, ball) =>
+        Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y) < Math.hypot(nearest.x - cueBall.x, nearest.y - cueBall.y) ? ball : nearest
+      );
+      const angle = Math.atan2(target.y - cueBall.y, target.x - cueBall.x);
+      const speed = 0.55 * 16;
+      cueBall.vx = Math.cos(angle) * speed;
+      cueBall.vy = Math.sin(angle) * speed;
+      shotInProgressRef.current = true;
+      ownBallPottedThisShotRef.current = false;
+      cueBallScratchedThisShotRef.current = false;
+      setAimAngle(angle);
+      setBallsMoving(true);
+      setCurrentMatch((prev) => prev && prev.status === 'playing' ? { ...prev, moveCount: prev.moveCount + 1 } : prev);
+      sounds.playBilliardStrike();
+    }, 1200);
+
+    return () => window.clearTimeout(timer);
+  }, [isPassAndPlay, turn, ballsMoving, currentMatch?.status, setCurrentMatch]);
 
   if (!currentMatch) return null;
 
@@ -448,12 +481,22 @@ export const BiyariGame: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Billiard Table View */}
         <div className="lg:col-span-3 flex flex-col items-center">
-          <div className="w-full max-w-2xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
+          <div className="w-full max-w-2xl flex flex-wrap items-center justify-between gap-3 mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-slate-200">{t.biyariTitle}</span>
               <span className="text-slate-500">·</span>
               <span>{t.aimShotInstruction}</span>
             </div>
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={isPassAndPlay}
+                  onChange={(e) => setIsPassAndPlay(e.target.checked)}
+                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
+                />
+                <span>{t.passAndPlayLabel}</span>
+              </label>
             <button
               onClick={initBalls}
               className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 cursor-pointer"
@@ -461,6 +504,7 @@ export const BiyariGame: React.FC = () => {
               <RotateCcw className="w-3 h-3" />
               <span>{t.rackBalls}</span>
             </button>
+            </div>
           </div>
 
           {/* Billiard Table Canvas */}
