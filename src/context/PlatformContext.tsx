@@ -128,7 +128,6 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     bio: translations.en.demoBioUwase,
     localizedBio: { rw: translations.rw.demoBioUwase, en: translations.en.demoBioUwase, fr: translations.fr.demoBioUwase },
     bioIsCustom: false,
-    phone: '+250 788 412 901',
   },
   {
     id: 'p-kamali',
@@ -147,7 +146,6 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     bio: translations.en.demoBioKamali,
     localizedBio: { rw: translations.rw.demoBioKamali, en: translations.en.demoBioKamali, fr: translations.fr.demoBioKamali },
     bioIsCustom: false,
-    phone: '+250 788 321 004',
   },
   {
     id: 'p-mugisha',
@@ -166,7 +164,6 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     bio: translations.en.demoBioMugisha,
     localizedBio: { rw: translations.rw.demoBioMugisha, en: translations.en.demoBioMugisha, fr: translations.fr.demoBioMugisha },
     bioIsCustom: false,
-    phone: '+250 783 990 120',
   },
   {
     id: 'p-keza',
@@ -185,7 +182,6 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     bio: translations.en.demoBioKeza,
     localizedBio: { rw: translations.rw.demoBioKeza, en: translations.en.demoBioKeza, fr: translations.fr.demoBioKeza },
     bioIsCustom: false,
-    phone: '+250 781 123 456',
   },
   {
     id: 'p-kalisa',
@@ -204,7 +200,6 @@ const INITIAL_PLAYERS: PlayerProfile[] = [
     bio: translations.en.demoBioKalisa,
     localizedBio: { rw: translations.rw.demoBioKalisa, en: translations.en.demoBioKalisa, fr: translations.fr.demoBioKalisa },
     bioIsCustom: false,
-    phone: '+250 788 776 543',
   },
 ];
 
@@ -259,7 +254,6 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     bio: translations[lang].defaultProfileBio,
     localizedBio: { rw: translations.rw.defaultProfileBio, en: translations.en.defaultProfileBio, fr: translations.fr.defaultProfileBio },
     bioIsCustom: false,
-    phone: '+250 788 555 123',
   });
 
   const [matchHistory, setMatchHistory] = useState<MatchHistoryItem[]>([
