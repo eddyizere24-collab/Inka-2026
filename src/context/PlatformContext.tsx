@@ -426,10 +426,11 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const concludeMatch = (reason: string, isDraw = false, winner?: 'A' | 'B') => {
     if (!currentMatch) return;
 
-    const isWin = winner === 'A' || (!isDraw && currentMatch.leader === 'A');
-    const reward = calculateHonorReward(isWin, isDraw, currentMatch.moveCount);
+    const isWin = winner ? winner === 'A' : !isDraw && currentMatch.leader === 'A';
+    const rewardOutcome = isWin ? 'win' : isDraw ? 'draw' : winner ? 'loss' : 'conclude';
+    const reward = calculateHonorReward(rewardOutcome, currentMatch.playerA.sportsmanshipLevel);
 
-    setHonorPoints((prev) => prev + reward.honorPoints);
+    setHonorPoints((prev) => prev + reward);
 
     // Record to match history
     const historyEntry: MatchHistoryItem = {
