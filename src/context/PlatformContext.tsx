@@ -192,6 +192,13 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = lang;
+      document.title = translations[lang].documentTitle;
+      const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+      if (description) description.content = translations[lang].metaDescription;
+      const openGraphTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
+      if (openGraphTitle) openGraphTitle.content = translations[lang].documentTitle;
+      const openGraphDescription = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
+      if (openGraphDescription) openGraphDescription.content = translations[lang].metaDescription;
     }
   }, [lang]);
 
