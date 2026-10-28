@@ -97,7 +97,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
                   {t.game_dame}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                  {t.dame_rule}. 10 pieces per player on an 8×8 board (20 pieces total). Crowned kings move diagonally in all directions.
+                  {t.dameDesc}
                 </p>
               </div>
             </div>
