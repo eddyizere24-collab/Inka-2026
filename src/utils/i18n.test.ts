@@ -81,3 +81,9 @@ test('i18n Validation: Document metadata is present in all languages', () => {
     assert.ok(translations[language].metaDescription.trim().length > 0);
   }
 });
+
+test('i18n Validation: Prototype limitations are disclosed in every language', () => {
+  assert.match(translations.rw.prototypeNotice, /icyitegererezo/i);
+  assert.match(translations.en.prototypeNotice, /prototype/i);
+  assert.match(translations.fr.prototypeNotice, /prototype/i);
+});
