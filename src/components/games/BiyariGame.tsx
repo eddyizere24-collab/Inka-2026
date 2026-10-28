@@ -509,7 +509,7 @@ export const BiyariGame: React.FC = () => {
                 onClick={() => setCurrentMatch(null)}
                 className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
-                Return to Lobby
+                {t.backToLobby}
               </button>
             </div>
           )}
