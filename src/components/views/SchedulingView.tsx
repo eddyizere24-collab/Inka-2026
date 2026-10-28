@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, Clock, PhoneCall, Check, UserPlus } from 'lucide-react';
-import { usePlatform, PlayerProfile, GameType, TimeControl } from '../../context/PlatformContext';
+import { usePlatform, PlayerProfile, GameType, TimeControl, getLocalizedProfileAvailability } from '../../context/PlatformContext';
 import { ChallengeModal } from '../modals/ChallengeModal';
 
 export const SchedulingView: React.FC = () => {
-  const { currentUser, updateCurrentUser, communityPlayers, triggerMockIncomingChallenge, t } = usePlatform();
-  const [myWindow, setMyWindow] = useState(currentUser.availability);
+  const { currentUser, updateCurrentUser, communityPlayers, triggerMockIncomingChallenge, lang, t } = usePlatform();
+  const [myWindow, setMyWindow] = useState(getLocalizedProfileAvailability(currentUser, lang));
+  const [hasEditedWindow, setHasEditedWindow] = useState(false);
   const [myPreferredGame, setMyPreferredGame] = useState<GameType>(currentUser.favGame);
   const [saveNotice, setSaveNotice] = useState(false);
   const [selectedOpponent, setSelectedOpponent] = useState<PlayerProfile | null>(null);
   const [scheduledMatchAlert, setScheduledMatchAlert] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!hasEditedWindow) setMyWindow(getLocalizedProfileAvailability(currentUser, lang));
+  }, [currentUser, lang, hasEditedWindow]);
 
   const handleSaveAvailability = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +22,7 @@ export const SchedulingView: React.FC = () => {
       availability: myWindow,
       favGame: myPreferredGame,
     });
+    setHasEditedWindow(false);
     setSaveNotice(true);
     setTimeout(() => setSaveNotice(false), 3000);
   };
@@ -70,7 +76,7 @@ export const SchedulingView: React.FC = () => {
               <input
                 type="text"
                 value={myWindow}
-                onChange={(e) => setMyWindow(e.target.value)}
+                onChange={(e) => { setMyWindow(e.target.value); setHasEditedWindow(true); }}
                 placeholder={t.yourTimeWindowPlaceholder}
                 className="w-full px-3 py-2 bg-[#0c1016] border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
               />
@@ -146,7 +152,7 @@ export const SchedulingView: React.FC = () => {
                     </div>
                     <div className="text-xs text-emerald-400/90 font-mono flex items-center gap-1.5 mt-0.5">
                       <Clock className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{player.availability}</span>
+                      <span>{getLocalizedProfileAvailability(player, lang)}</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1 max-w-md">
                       {t.specializesInLabel} <strong className="text-slate-300 uppercase">{player.favGame === 'dame' ? t.dameTitle : player.favGame === 'igisoro' ? t.igisoroTitle : t.biyariTitle}</strong> · ★ {player.sportsmanshipLevel}.0 ({player.gamesWon} {t.winsLabel})
