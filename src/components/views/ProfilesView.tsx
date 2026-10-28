@@ -8,7 +8,11 @@ export const ProfilesView: React.FC = () => {
   const [selectedOpponent, setSelectedOpponent] = useState<PlayerProfile | null>(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState(getLocalizedProfileBio(currentUser, lang));
-  const [savedNotice, setSavedNotice] = useState(false);\n\n  useEffect(() => {\n    if (!isEditingBio) setBioText(getLocalizedProfileBio(currentUser, lang));\n  }, [currentUser, lang, isEditingBio]);
+  const [savedNotice, setSavedNotice] = useState(false);
+
+  useEffect(() => {
+    if (!isEditingBio) setBioText(getLocalizedProfileBio(currentUser, lang));
+  }, [currentUser, lang, isEditingBio]);
 
   const handleSaveBio = (e: React.FormEvent) => {
     e.preventDefault();
