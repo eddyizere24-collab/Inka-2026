@@ -38,6 +38,7 @@ A modern front-end prototype for a platform celebrating traditional Rwandan skil
    - Interactive 2D physics canvas simulation with cushion bounces, elastic collisions, and six pockets.
    - Standard 15-ball object rack: seven solids, the centered 8-ball, and seven stripes.
    - A player must clear all seven balls in their group before legally pocketing the 8-ball to win.
+   - The opponent is a simple local simulation; the **Pass and Play** option lets two people take turns on the same device.
    - The physics and rule enforcement are still a prototype and need further testing before production use.
 
 ---
