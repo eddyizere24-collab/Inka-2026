@@ -8,6 +8,7 @@ export type Language = 'rw' | 'en' | 'fr';
 
 export interface TranslationSchema {
   // Brand & Identity
+  prototypeNotice: string;
   brandName: string;
   logoTagline: string;
   logoAccessibleLabel: string;
@@ -325,6 +326,7 @@ export interface TranslationSchema {
 export const translations: Record<Language, TranslationSchema> = {
   rw: {
     // Brand & Identity
+    prototypeNotice: "Icyitegererezo cyo kugerageza: abakinnyi n'imikino yo kuri interineti nyayo ntibirahuzwa.",
     brandName: 'INKA',
     logoTagline: 'Imikino gakondo y’ubuhanga',
     logoAccessibleLabel: 'Ikirango cya INKA',
@@ -407,11 +409,11 @@ export const translations: Record<Language, TranslationSchema> = {
     friendlyMessagePlaceholder: 'Kaza neza! Reka dukine mu mutuzo n’ubwubahane.',
     sendChallenge: 'Ohereza Ubutumire',
     challengeSentSuccess: 'Ubutumire bwohererejwe mugenzi wanyu neza.',
-    simulateIncomingCall: 'Gupima Ubutumire nka Terefone',
+    simulateIncomingCall: "Gerageza ubutumire bw'icyitegererezo",
 
     // Spectator Arena
     arenaTitle: 'Icyumba cyo Kureba Imikino',
-    arenaSubtitle: 'Reba uburyo abahanga b’Abanyarwanda bakina Igisoro, Dame, na Biyari mu buryo butaziguye.',
+    arenaSubtitle: "Reba uburyo imikino y'icyitegererezo ya Dame, Igisoro na Biyari igaragazwa. Imikino nyayo yo kuri interineti iracyategereje seriveri.",
     noWageringBadge: 'Imikino y’ubuhanga gusa · Nta gutega bibaho',
     liveMatchesCount: 'Imikino iri kubera ubu',
     spectatorChatTitle: 'Ikiganiro cy’Abareba Umukino',
@@ -467,8 +469,8 @@ export const translations: Record<Language, TranslationSchema> = {
     // Rules & Philosophy
     philosophyTitle: 'Indangagaciro n’Amategeko ya INKA',
     philosophySubtitle: 'Uburyo INKA yubatswe kugira ngo iteze imbere umuco nyarwanda n’ubuhanga budashingiye ku mafaranga.',
-    rule1Title: '1. Abantu Nyamuntu Gusa (Nta Mashini)',
-    rule1Desc: 'Buri mukino uba hagati y’abantu babiri b’abanyamuryango. Nta za bots cyangwa mudasobwa zikina.',
+    rule1Title: "1. Kubahana no gukina mu mucyo",
+    rule1Desc: "INKA igamije guhuza abakinnyi nyabo; muri iyi verisiyo y'igerageza, hari amakuru y'abakinnyi n'imigendekere yigana umukino.",
     rule2Title: '2. Ubuhanga Ntabwo ari Amahirwe cyangwa Gutega',
     rule2Desc: 'Igisoro, Dame na Biyari ni imikino y’ubwenge n’imyitozo. Nta gutega amafaranga na gato byemewe kuri INKA.',
     rule3Title: '3. Umudendezo wo Guhagarara',
@@ -534,7 +536,7 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Amasegonda 60 kuri buri ntambwe",
     friendlyMatchConclusion: "Umukino urangijwe mu bwubahane",
     mutualDrawAgreed: "Abakinnyi bemeranyije kunganya mu bwubahane",
-    watchLiveMatchesDescription: "Reba imikino iri kubera ubu kandi ugire ibiganiro byiza n’abandi bareba.",
+    watchLiveMatchesDescription: "Reba uko ahagenewe imikino n'ibiganiro by'abareba bikora ukoresheje amakuru y'icyitegererezo.",
     moveNumberLabel: "Intambwe",
     currentTurnWithLabel: "Igihe cyo gukina kiri kuri {player}",
     dameVictoryReason: "{player} yatsinze Dame; ibice 10 by’umukeba byafashwe.",
@@ -606,7 +608,7 @@ export const translations: Record<Language, TranslationSchema> = {
     play_dame: 'Kina Dame',
     play_igisoro: 'Kina Igisoro',
     play_biyari: 'Kina Biyari',
-    live_opponents: 'Abakinnyi bari ku rubuga ubu',
+    live_opponents: "Abakinnyi b'icyitegererezo",
     status_available: 'Bari kwitegura gukina',
     challenge: 'Tanga Ubutumire',
     challenge_player: 'Tanga Ubutumire',
@@ -619,13 +621,13 @@ export const translations: Record<Language, TranslationSchema> = {
     zero_wagering_rule: 'Nta masezerano y’amafaranga cyangwa gutega bibaho.',
     sportsmanship_awarded: 'Amanota y’ubupfura ahabwa abakinnyi bose.',
     send_challenge: 'Ohereza Ubutumire',
-    incoming_call: 'Ubutumire bushya bwinjira',
+    incoming_call: "Ubutumire bwo gukina",
     honor_rating: 'Amanota y’Ibigwi',
     match_history: 'Amateka y’Imikino',
     rules_title: 'Amahame n’Ubuhanga bwa INKA',
     rules_desc: 'Amategeko arambuye y’imikino n’agaciro k’ubupfura n’umuco nyarwanda.',
     schedule_time: 'Gahunda y’Imikino n’Ubwitabire',
-    live_arena: 'Reba Imikino iri kuba ubu',
+    live_arena: "Ahareberwa imikino y'icyitegererezo",
     spectator_comments_hidden: 'Ibitekerezo by’abareba bihishwa abakinnyi kugeza umukino urangiye.',
     stop_game: 'Soza Umukino mu Bupfura',
     inka_philosophy: 'Ku rubuga rwa INKA, gusoza umukino bikorwa mu bwubahane.',
@@ -636,11 +638,12 @@ export const translations: Record<Language, TranslationSchema> = {
     equal_standing: 'Munganya amanota',
     score_advantage: 'Ikigero cy’Ubuhanga',
     spectators_watching: 'abantu bari kureba ubu',
-    live_spectators: 'Abareba Umukino',
+    live_spectators: "Abareba umukino",
   },
 
   en: {
     // Brand & Identity
+    prototypeNotice: "Prototype preview: real online players and multiplayer matches are not connected yet.",
     brandName: 'INKA',
     logoTagline: 'Traditional games of skill',
     logoAccessibleLabel: 'INKA emblem',
@@ -723,11 +726,11 @@ export const translations: Record<Language, TranslationSchema> = {
     friendlyMessagePlaceholder: 'Welcome! Let’s have an honorable and fun game.',
     sendChallenge: 'Send Challenge',
     challengeSentSuccess: 'Challenge sent successfully to your opponent.',
-    simulateIncomingCall: 'Simulate Incoming Call Alert',
+    simulateIncomingCall: "Try demo challenge",
 
     // Spectator Arena
     arenaTitle: 'Live Spectator Arena',
-    arenaSubtitle: 'Watch skilled Rwandan players compete in real time across Dame, Igisoro, and Biyari.',
+    arenaSubtitle: "Explore sample Dame, Igisoro, and Biyari match views. Real online matches still require a connected server.",
     noWageringBadge: '100% Free Skill Play · Zero Betting',
     liveMatchesCount: 'Active matches right now',
     spectatorChatTitle: 'Spectator Community Discussion',
@@ -783,8 +786,8 @@ export const translations: Record<Language, TranslationSchema> = {
     // Rules & Philosophy
     philosophyTitle: 'The INKA Principles',
     philosophySubtitle: 'Why INKA is designed around cultural heritage, human connection, and pure skill without money.',
-    rule1Title: '1. Human-vs-Human Only',
-    rule1Desc: 'Every match is played between two real people. Automated bots and computer opponents are never used.',
+    rule1Title: "1. Respectful Play and Transparency",
+    rule1Desc: "INKA is designed to connect real players; this prototype uses sample profiles and simulated match behavior.",
     rule2Title: '2. Pure Skill, Zero Wagering',
     rule2Desc: 'Igisoro, Dame, and Biyari are contests of mind and skill. Betting and money stakes are strictly excluded.',
     rule3Title: '3. Freedom to Conclude',
@@ -850,7 +853,7 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Relaxed 60-second move limit",
     friendlyMatchConclusion: "Friendly match concluded with mutual respect",
     mutualDrawAgreed: "Players agreed to a respectful draw",
-    watchLiveMatchesDescription: "Watch live matches and discuss the games respectfully with other spectators.",
+    watchLiveMatchesDescription: "Explore the spectator layout and respectful discussion using sample match data.",
     moveNumberLabel: "Move",
     currentTurnWithLabel: "Current turn: {player}",
     dameVictoryReason: "{player} wins Dame after capturing all 10 opposing pieces.",
@@ -922,7 +925,7 @@ export const translations: Record<Language, TranslationSchema> = {
     play_dame: 'Play Dame',
     play_igisoro: 'Play Igisoro',
     play_biyari: 'Play Biyari',
-    live_opponents: 'Live Players Available Now',
+    live_opponents: "Sample Players",
     status_available: 'Available to Play',
     challenge: 'Challenge',
     challenge_player: 'Challenge Player',
@@ -935,13 +938,13 @@ export const translations: Record<Language, TranslationSchema> = {
     zero_wagering_rule: 'Strictly zero monetary wagering or betting.',
     sportsmanship_awarded: 'Sportsmanship honors are awarded to both players.',
     send_challenge: 'Send Challenge',
-    incoming_call: 'Incoming Real-Time Match Invitation',
+    incoming_call: "Match Invitation",
     honor_rating: 'Honor Rating',
     match_history: 'Match History',
     rules_title: 'Principles & Mathematics of INKA',
     rules_desc: 'Authentic rules, mathematical advantage scoring, and zero-wagering charter.',
     schedule_time: 'Availability & Scheduling',
-    live_arena: 'Live Spectator Arena',
+    live_arena: "Spectator Arena Preview",
     spectator_comments_hidden: 'Spectator comments are hidden from players during live play.',
     stop_game: 'Conclude Match Gracefully',
     inka_philosophy: 'On INKA, games are concluded with dignity and mutual respect.',
@@ -952,11 +955,12 @@ export const translations: Record<Language, TranslationSchema> = {
     equal_standing: 'Level Standing',
     score_advantage: 'Skill Advantage',
     spectators_watching: 'spectators watching live',
-    live_spectators: 'Live Spectators',
+    live_spectators: "Spectators",
   },
 
   fr: {
     // Brand & Identity
+    prototypeNotice: "Aperçu du prototype : les vrais joueurs et les parties multijoueurs en ligne ne sont pas encore connectés.",
     brandName: 'INKA',
     logoTagline: 'Jeux traditionnels d’adresse',
     logoAccessibleLabel: 'Emblème INKA',
@@ -1039,11 +1043,11 @@ export const translations: Record<Language, TranslationSchema> = {
     friendlyMessagePlaceholder: 'Bienvenue ! Jouons avec talent et esprit sportif.',
     sendChallenge: 'Envoyer le Défi',
     challengeSentSuccess: 'Défi envoyé avec succès à votre adversaire.',
-    simulateIncomingCall: 'Tester la Sonnerie d’Appel',
+    simulateIncomingCall: "Tester une invitation de démonstration",
 
     // Spectator Arena
     arenaTitle: 'Arène des Spectateurs',
-    arenaSubtitle: 'Observez en direct les parties des joueurs rwandais sur Dame, Igisoro et Biyari.',
+    arenaSubtitle: "Découvrez des exemples de parties de Dame, d’Igisoro et de Biyari. Les vraies parties en ligne nécessitent encore un serveur connecté.",
     noWageringBadge: '100% Jeu d’Adresse Gratuit · Zéro Pari',
     liveMatchesCount: 'Parties actives en ce moment',
     spectatorChatTitle: 'Discussion des Spectateurs',
@@ -1099,8 +1103,8 @@ export const translations: Record<Language, TranslationSchema> = {
     // Rules & Philosophy
     philosophyTitle: 'Les Principes Fondateurs d’INKA',
     philosophySubtitle: 'Pourquoi INKA est voué au patrimoine, à la convivialité humaine et au talent pur sans argent.',
-    rule1Title: '1. Exclusivement entre Humains',
-    rule1Desc: 'Chaque rencontre oppose deux personnes réelles. Aucun bot ni adversaire virtuel n’est admis.',
+    rule1Title: "1. Respect et transparence",
+    rule1Desc: "INKA vise à mettre en relation de vrais joueurs ; ce prototype utilise des profils d'exemple et simule le déroulement des parties.",
     rule2Title: '2. Talent Pur, Zéro Pari',
     rule2Desc: 'L’Igisoro, les Dames et le Biyari sont des jeux de maîtrise. Tout pari d’argent est strictement exclu.',
     rule3Title: '3. Liberté d’Arrêt Respectueuse',
@@ -1166,7 +1170,7 @@ export const translations: Record<Language, TranslationSchema> = {
     timeRelaxed60s: "Limite souple de 60 secondes par coup",
     friendlyMatchConclusion: "Partie amicale terminée dans le respect mutuel",
     mutualDrawAgreed: "Les joueurs ont accepté une nulle dans le respect",
-    watchLiveMatchesDescription: "Regardez les parties en direct et échangez respectueusement avec les autres spectateurs.",
+    watchLiveMatchesDescription: "Découvrez l’interface des spectateurs et les échanges respectueux à partir de données de démonstration.",
     moveNumberLabel: "Coup",
     currentTurnWithLabel: "Au tour de {player}",
     dameVictoryReason: "{player} remporte la partie de Dame après avoir capturé les 10 pièces adverses.",
@@ -1238,7 +1242,7 @@ export const translations: Record<Language, TranslationSchema> = {
     play_dame: 'Jouer aux Dames',
     play_igisoro: 'Jouer à l’Igisoro',
     play_biyari: 'Jouer au Biyari',
-    live_opponents: 'Joueurs Disponibles Actuellement',
+    live_opponents: "Joueurs de démonstration",
     status_available: 'Disponible pour jouer',
     challenge: 'Défier',
     challenge_player: 'Défier le Joueur',
@@ -1251,13 +1255,13 @@ export const translations: Record<Language, TranslationSchema> = {
     zero_wagering_rule: 'Zéro pari d’argent ni mise financière.',
     sportsmanship_awarded: 'Des points d’honneur sont accordés aux deux joueurs.',
     send_challenge: 'Envoyer l’Invitation',
-    incoming_call: 'Invitation de Match en Direct',
+    incoming_call: "Invitation à jouer",
     honor_rating: 'Score d’Honneur',
     match_history: 'Historique des Matchs',
     rules_title: 'Principes et Règles d’INKA',
     rules_desc: 'Règles authentiques, calcul de l’avantage et charte sans aucun pari.',
     schedule_time: 'Disponibilité et Planification',
-    live_arena: 'Arène des Spectateurs en Direct',
+    live_arena: "Aperçu de l’espace spectateurs",
     spectator_comments_hidden: 'Les commentaires des spectateurs sont masqués aux joueurs en cours de partie.',
     stop_game: 'Conclure la Partie Dignement',
     inka_philosophy: 'Sur INKA, toute conclusion se fait dans le respect mutuel et l’honneur.',
@@ -1268,7 +1272,7 @@ export const translations: Record<Language, TranslationSchema> = {
     equal_standing: 'Égalité Parfaite',
     score_advantage: 'Avantage Tactique',
     spectators_watching: 'spectateurs en direct',
-    live_spectators: 'Spectateurs en Direct',
+    live_spectators: "Spectateurs",
   },
 };
 
