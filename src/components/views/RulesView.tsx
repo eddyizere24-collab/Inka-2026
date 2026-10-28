@@ -87,7 +87,7 @@ export const RulesView: React.FC = () => {
             <h3 className="font-bold text-white text-lg">{t.advantageGauge}</h3>
           </div>
           <span className="text-xs text-emerald-400 font-mono">
-            Normalized skill advantage w ∈ [0.0, 1.0]
+            {t.normalizedAdvantageLabel} w ∈ [0.0, 1.0]
           </span>
         </div>
 
@@ -120,7 +120,7 @@ export const RulesView: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  Player A Captures: <span className="font-mono text-emerald-400 font-bold">{dameCapA}</span> / 10
+                  {t.playerACapturesLabel}: <span className="font-mono text-emerald-400 font-bold">{dameCapA}</span> / 10
                 </label>
                 <input
                   type="range"
@@ -134,7 +134,7 @@ export const RulesView: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-2">
-                  Player B Captures: <span className="font-mono text-cyan-400 font-bold">{dameCapB}</span> / 10
+                  {t.playerBCapturesLabel}: <span className="font-mono text-cyan-400 font-bold">{dameCapB}</span> / 10
                 </label>
                 <input
                   type="range"
@@ -192,7 +192,7 @@ export const RulesView: React.FC = () => {
               </div>
               <div>
                 <span className="text-slate-400">{t.leaderLabel}:</span>{' '}
-                <strong className="text-amber-300">{igisoroResult.leader ? `Player ${igisoroResult.leader}` : 'Level Standing'}</strong>
+                <strong className="text-amber-300">{igisoroResult.leader ? `${t.playerLabel} ${igisoroResult.leader}` : t.levelStanding}</strong>
               </div>
             </div>
           </div>
