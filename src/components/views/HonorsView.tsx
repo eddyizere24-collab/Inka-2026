@@ -1,9 +1,9 @@
 import React from 'react';
 import { Award, ShieldCheck, Star, Trophy, History, HeartHandshake, Sparkles, CheckCircle2 } from 'lucide-react';
-import { usePlatform } from '../../context/PlatformContext';
+import { usePlatform, getLocalizedMatchSummary } from '../../context/PlatformContext';
 
 export const HonorsView: React.FC = () => {
-  const { currentUser, honorPoints, matchHistory, t } = usePlatform();
+  const { currentUser, honorPoints, matchHistory, lang, t } = usePlatform();
 
   const badges = [
     {
@@ -147,7 +147,7 @@ export const HonorsView: React.FC = () => {
                           {item.gameType === 'dame' ? t.dameTitle : item.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">{item.scoreSummary}</p>
+                      <p className="text-xs text-slate-400">{getLocalizedMatchSummary(item, lang)}</p>
                     </div>
                   </div>
 
