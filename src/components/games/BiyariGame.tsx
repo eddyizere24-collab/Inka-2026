@@ -463,6 +463,21 @@ export const BiyariGame: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [isPassAndPlay, turn, ballsMoving, currentMatch?.status, setCurrentMatch]);
 
+  const handleRerack = () => {
+    initBalls();
+    if (!currentMatch) return;
+    setCurrentMatch({
+      ...currentMatch,
+      status: 'playing',
+      leader: null,
+      advantage: 0,
+      scoreA: 0,
+      scoreB: 0,
+      moveCount: 0,
+      concludeReason: undefined,
+    });
+  };
+
   if (!currentMatch) return null;
 
   return (
@@ -502,7 +517,7 @@ export const BiyariGame: React.FC = () => {
                 <span>{t.passAndPlayLabel}</span>
               </label>
             <button
-              onClick={initBalls}
+              onClick={handleRerack}
               className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
