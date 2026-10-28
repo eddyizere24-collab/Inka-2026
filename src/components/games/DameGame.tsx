@@ -154,9 +154,9 @@ export const DameGame: React.FC = () => {
       updateMatchScore(scoreResult);
 
       if (isWinA) {
-        concludeMatch(`Decisive Victory by ${currentMatch?.playerA.name} (All 10 pieces captured)`, false, 'A');
+        concludeMatch(t.dameVictoryReason.replace('{player}', currentMatch?.playerA.name ?? ''), false, 'A');
       } else if (isWinB) {
-        concludeMatch(`Decisive Victory by ${currentMatch?.playerB.name} (All 10 pieces captured)`, false, 'B');
+        concludeMatch(t.dameVictoryReason.replace('{player}', currentMatch?.playerB.name ?? ''), false, 'B');
       }
     } else {
       sounds.playMove();
@@ -275,7 +275,7 @@ export const DameGame: React.FC = () => {
                       key={`${r}-${c}`}
                       type="button"
                       onClick={() => handleSquareClick(r, c)}
-                      aria-label={`Square ${r},${c} ${piece ? piece.color + ' piece' : ''}`}
+                      aria-label={t.squareAccessibleLabel.replace('{row}', String(r + 1)).replace('{col}', String(c + 1)).replace('{piece}', piece ? t.pieceLabel : '')}
                       className={`relative flex items-center justify-center transition-colors ${
                         isDarkSquare ? 'bg-[#1b2636]' : 'bg-[#e2e8f0]'
                       } ${isValidMove ? 'ring-4 ring-emerald-400/80 ring-inset cursor-pointer' : ''}`}
