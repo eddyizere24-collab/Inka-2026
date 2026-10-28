@@ -9,6 +9,7 @@ export type Language = 'rw' | 'en' | 'fr';
 export interface TranslationSchema {
   // Brand & Identity
   brandName: string;
+  logoTagline: string;
   tagline: string;
   subTagline: string;
   culturalNotice: string;
@@ -324,6 +325,9 @@ export const translations: Record<Language, TranslationSchema> = {
   rw: {
     // Brand & Identity
     brandName: 'INKA',
+    logoTagline: 'Jeux traditionnels d’adresse',
+    logoTagline: 'Traditional games of skill',
+    logoTagline: 'Imikino gakondo y’ubuhanga',
     tagline: 'Kina. Ruhura ubwenge. Rwanira ku buhanga. Menyana n’abandi.',
     subTagline: 'Urubuga rw’u Rwanda rw’imikino gakondo n’ubuhanga: Igisoro, Dame, na Biyari.',
     culturalNotice: 'Inka yacu ni ikimenyetso cy’ubucuti, ubumwe n’ubwubahane hagati y’abakinnyi.',
