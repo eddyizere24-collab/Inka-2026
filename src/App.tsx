@@ -63,7 +63,7 @@ const MainShell: React.FC = () => {
             </button>
             <div className="h-4 w-px bg-slate-800 hidden sm:block" />
             <div className="hidden sm:flex items-center gap-2">
-              <InkaLogo variant="symbol" size="sm" />
+              <InkaLogo variant="symbol" size="sm" ariaLabel={t.logoAccessibleLabel} />
               <span className="font-display font-bold text-white text-sm sm:text-base">
                 INKA · {currentMatch.gameType === 'dame' ? t.dameTitle : currentMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
               </span>
@@ -110,7 +110,7 @@ const MainShell: React.FC = () => {
             onClick={() => setActiveNav('lobby')}
             className="flex items-center gap-2.5 text-left focus:outline-none cursor-pointer"
           >
-            <InkaLogo variant="full" size="md" taglineText={t.logoTagline} />
+            <InkaLogo variant="full" size="md" taglineText={t.logoTagline} ariaLabel={t.logoAccessibleLabel} />
           </button>
         </div>
 
@@ -271,7 +271,7 @@ const MainShell: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-300">INKA</span>
             <span>·</span>
-            <span>Igisoro · Dame · Biyari</span>
+            <span>{t.logoTagline}</span>
             <span>·</span>
             <span>{t.editionLabel}</span>
           </div>
