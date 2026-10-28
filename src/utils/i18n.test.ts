@@ -52,6 +52,7 @@ test('i18n Validation: Dynamic message templates preserve matching placeholders'
     'igisoroNoMovesVictoryReason',
     'igisoroCaptureMessage',
     'playerConcededReason',
+    'timeoutVictoryReason',
     'biyariEightBallVictoryReason',
     'squareAccessibleLabel',
     'pitAccessibleLabel',
