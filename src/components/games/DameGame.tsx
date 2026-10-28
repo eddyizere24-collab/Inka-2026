@@ -243,9 +243,9 @@ export const DameGame: React.FC = () => {
           {/* Mode Switcher */}
           <div className="w-full max-w-xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">Dame: 10 Pieces Per Player</span>
+              <span className="font-semibold text-slate-200">{t.dameSubtitle}</span>
               <span className="text-slate-500">·</span>
-              <span>8×8 Board</span>
+              <span>{t.dameBoardLabel}</span>
             </div>
             <div className="flex items-center gap-2">
               <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
@@ -255,7 +255,7 @@ export const DameGame: React.FC = () => {
                   onChange={(e) => setIsPassAndPlay(e.target.checked)}
                   className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
                 />
-                <span>Pass & Play / 2-Player Seat</span>
+                <span>{t.passAndPlayLabel}</span>
               </label>
             </div>
           </div>
@@ -353,14 +353,14 @@ export const DameGame: React.FC = () => {
             <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3 animate-in fade-in">
               <div className="flex items-center gap-2 font-display font-bold text-sm">
                 <Award className="w-5 h-5 text-emerald-400" />
-                <span>Match Concluded</span>
+                <span>{t.matchConcluded}</span>
               </div>
               <p className="text-xs text-slate-300">
                 {currentMatch.concludeReason || 'Match finished with mutual honor and sportsmanship.'}
               </p>
               <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
-                <span>Sportsmanship Honors:</span>
-                <strong className="text-white">+10 Honor Points</strong>
+                <span>{t.honorPointsAwarded}:</span>
+                <strong className="text-white">+10 {t.honorPointsLabel}</strong>
               </div>
 
               {/* Reveal spectator comments */}
