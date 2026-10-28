@@ -189,6 +189,12 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
   const [honorPoints, setHonorPoints] = useState<number>(240);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<PlayerProfile>({
