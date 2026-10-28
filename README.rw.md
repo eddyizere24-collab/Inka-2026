@@ -3,7 +3,7 @@
 
 > **“Kina. Ruhura ubwenge. Rwanira ku buhanga. Menyana n’abandi.”**
 
-**INKA** ni porototayipu y'urubuga rw'imikino y'ubuhanga ishingiye ku muco nyarwanda, ubucuti, imikino isaba gutekereza no kubahana.
+**INKA** ni verisiyo y'igerageza y'urubuga rw'imikino y'ubuhanga ishingiye ku muco nyarwanda, ubucuti, imikino isaba gutekereza no kubahana.
 
 **Indimi:** [Kinyarwanda](README.rw.md) · [English](README.md) · [Français](README.fr.md)
 
@@ -15,7 +15,7 @@
 - **Ubuhanga n'ubunyangamugayo:** amanota agaragaza uko umukinnyi yitwaye mu mukino n'uburyo yitwara neza; si amafaranga kandi ntashobora guhindurwa amafaranga.
 - **Imikino itatu:** Dame, Igisoro na Biyari.
 - **Indimi eshatu:** Kinyarwanda (`rw`), Icyongereza (`en`) n'Igifaransa (`fr`). Ubutumwa, ibisobanuro, amazina y'ibikorwa n'ibikoresho bifasha abantu bafite ubumuga bwo kureba cyangwa gukoresha imbeba bishyigikira guhindura ururimi.
-- **Icyitonderwa ku rwego rw'umushinga:** iyi ni porototayipu ikorera ku ruhande rw'imbere rwa porogaramu. Ifite amakuru y'icyitegererezo n'imikorere yigana uwo mukinnyi bahanganye. Nta buryo bwuzuye bwo kwemeza konti, ububiko bw'amakuru bwa seriveri, guhuza abakinnyi nyabo cyangwa gukinira hamwe ako kanya burimo.
+- **Icyitonderwa ku rwego rw'umushinga:** iyi ni verisiyo y'igerageza ikorera ku ruhande rw'imbere rwa porogaramu. Ifite amakuru y'icyitegererezo n'imikorere yigana uwo mukinnyi bahanganye. Nta buryo bwuzuye bwo kwemeza konti, ububiko bw'amakuru bwa seriveri, guhuza abakinnyi nyabo cyangwa gukinira hamwe ako kanya burimo.
 - **Abakinnyi b'icyitegererezo:** amazina, amanota n'amakuru y'abakinnyi agaragara mu cyitegererezo ntabwo ari konti zemejwe z'abantu nyabo.
 
 ## 2. Imikino
@@ -36,12 +36,12 @@
 - Umukinnyi agomba kubanza gushyira mu mufuka imipira 7 yo mu itsinda rye mbere yo gutsinda ashyize mu mufuka umupira wa 8.
 - Iyi ni simulation yo kwerekana imikorere; igomba kugeragezwa no kunozwa mbere yo kwitwa umukino wuzuye uhuye n'amategeko yose ya biliyari.
 
-## 3. Ibyo porototayipu irimo
+## 3. Ibyo verisiyo y'igerageza irimo
 
 - `src/components/brand/InkaLogo.tsx` — ikirango cya INKA gishushanyije muri SVG.
 - `src/components/games/` — imikino ya Dame, Igisoro na Biyari hamwe n'ibikoresho byo kwerekana amanota.
 - `src/components/views/` — urutonde rw'imikino, abakinnyi b'icyitegererezo, gahunda, amategeko, ibigwi n'ahantu ho kurebera.
-- `src/context/PlatformContext.tsx` — uko porototayipu ibika uko umukino uhagaze, amakuru y'icyitegererezo n'ururimi rwatoranyijwe.
+- `src/context/PlatformContext.tsx` — uko verisiyo y'igerageza ibika uko umukino uhagaze, amakuru y'icyitegererezo n'ururimi rwatoranyijwe.
 - `src/utils/i18n.ts` — ububiko bw'ubuhinduzi bw'indimi eshatu.
 - `src/utils/i18n.test.ts` — ibizamini bigenzura ko indimi zose zifite imfunguzo zimwe, ko nta butumwa busigaye ari ubusa, kandi ko ibimenyetso bisimbuzwa mu butumwa bihuye.
 - `src/utils/matchScoring.ts` — ibarura ry'ubuhanga n'amanota y'imyitwarire myiza.
