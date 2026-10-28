@@ -34,6 +34,7 @@
 - Imbonerahamwe ya biliyari igaragarizwa kuri canvas, ifite kugongana kw'imipira, kugaruka ku nkuta n'imifuka 6.
 - Umukino usanzwe ukoresha imipira 15 yo gukina: imipira 7 yuzuye, imipira 7 ifite imirongo n'umupira wa 8.
 - Umukinnyi agomba kubanza gushyira mu mufuka imipira 7 yo mu itsinda rye mbere yo gutsinda ashyize mu mufuka umupira wa 8.
+- Umukeba w'icyitegererezo akina akoresheje uburyo bworoshye bwigana umukino; uburyo bwa **Pass and Play** butuma abantu babiri basimburana kuri telefoni cyangwa mudasobwa imwe.
 - Iyi ni simulation yo kwerekana imikorere; igomba kugeragezwa no kunozwa mbere yo kwitwa umukino wuzuye uhuye n'amategeko yose ya biliyari.
 
 ## 3. Ibyo verisiyo y'igerageza irimo
