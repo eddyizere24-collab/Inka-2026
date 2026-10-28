@@ -27,7 +27,7 @@ export const LobbyView: React.FC<{ onSelectGame: (game: GameType) => void }> = (
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#121923] via-[#0f151e] to-[#0a0e14] border border-[#232e3e] p-6 sm:p-10 md:p-12 shadow-2xl">
         <div className="relative z-10 max-w-3xl space-y-5">
           <div className="flex items-center gap-3">
-            <InkaLogo variant="full" size="md" />
+            <InkaLogo variant="full" size="md" taglineText={t.logoTagline} />
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-semibold text-emerald-400">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{t.noWageringBadge}</span>
