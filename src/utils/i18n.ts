@@ -161,6 +161,55 @@ export interface TranslationSchema {
   rule6Title: string;
   rule6Desc: string;
 
+  muteSound: string;
+  unmuteSound: string;
+  editionLabel: string;
+  humanVsHuman: string;
+  skillAdvantage: string;
+  zeroWageringFooter: string;
+  levelLabel: string;
+  badgeFairPlayGuardian: string;
+  badgeFairPlayGuardianDesc: string;
+  netCaptureDifference: string;
+  skillAdvantageLabel: string;
+  leaderLabel: string;
+  seedRatioLabel: string;
+  formulaLabel: string;
+  playerASeedsLabel: string;
+  playerBHoldsLabel: string;
+  playerASolidsPottedLabel: string;
+  playerBStripesPottedLabel: string;
+  endgameStageLabel: string;
+  targetGroupPotting: string;
+  playerAOnEightBall: string;
+  playerBOnEightBall: string;
+  piecesUnit: string;
+  levelStanding: string;
+  dameBoardLabel: string;
+  aimShotInstruction: string;
+  cuePowerLabel: string;
+  ballsRollingLabel: string;
+  biyariScoringHelp: string;
+  matchConcluded: string;
+  honorPointsAwarded: string;
+  passAndPlayLabel: string;
+  gameDetailPhysics: string;
+  communityMatchmakingDesc: string;
+  noMatchesCompletedLabel: string;
+  matchOutcomeWin: string;
+  matchOutcomeLoss: string;
+  matchOutcomeDraw: string;
+  scheduledMatchConfirmation: string;
+  testRingLabel: string;
+  versusLabel: string;
+  northTerritory: string;
+  southTerritory: string;
+  seedsCountLabel: string;
+  pitAccessibleLabel: string;
+  profileDirectoryDesc: string;
+  profileUpdatedLabel: string;
+  versusHistoryLabel: string;
+
   // Convenience Aliases for Clean UI Integration
   nav_play: string;
   nav_spectator: string;
@@ -371,6 +420,55 @@ export const translations: Record<Language, TranslationSchema> = {
     rule6Title: '6. Umuco Nyarwanda no Kwikorera',
     rule6Desc: 'Gusigasira imikino yacu gakondo nka Igisoro no kuyimenyekanisha mu ikoranabuhanga rigezweho.',
 
+    muteSound: "Zimya ijwi",
+    unmuteSound: "Fungura ijwi",
+    editionLabel: "Inyandiko ya 2026",
+    humanVsHuman: "Abakinnyi bakina hagati yabo",
+    skillAdvantage: "Inyungu ishingiye ku buhanga",
+    zeroWageringFooter: "Nta gutega cyangwa kwimura amafaranga",
+    levelLabel: "Urwego",
+    badgeFairPlayGuardian: "Murinda Indangagaciro za INKA",
+    badgeFairPlayGuardianDesc: "Yagaragaje imyitwarire myiza no kubaha abandi mu mikino.",
+    netCaptureDifference: "Itandukaniro ry’ibice byafashwe",
+    skillAdvantageLabel: "Inyungu y’ubuhanga",
+    leaderLabel: "Ubuyoboye",
+    seedRatioLabel: "Ikigereranyo cy’isoro",
+    formulaLabel: "Inzira y’imibare",
+    playerASeedsLabel: "Isoro z’Umukinnyi A",
+    playerBHoldsLabel: "Umukinnyi B afite",
+    playerASolidsPottedLabel: "Imipira yuzuye yinjijwe",
+    playerBStripesPottedLabel: "Imipira ifite imirongo yinjijwe",
+    endgameStageLabel: "Icyiciro cya nyuma",
+    targetGroupPotting: "Kwinjiza imipira y’itsinda",
+    playerAOnEightBall: "Umukinnyi A agiye gukina umupira wa 8",
+    playerBOnEightBall: "Umukinnyi B agiye gukina umupira wa 8",
+    piecesUnit: "ibice",
+    levelStanding: "Barangana",
+    dameBoardLabel: "Ikibaho cya 8×8",
+    aimShotInstruction: "Erekera ku meza uhindure imbaraga zo gukubita",
+    cuePowerLabel: "Imbaraga z’inkoni",
+    ballsRollingLabel: "Imipira iri kugenda…",
+    biyariScoringHelp: "Kwinjiza imipira byongera inyungu. Banza winjize imipira yo mu itsinda ryawe, hanyuma winjize umupira wa 8 kugira ngo utsinde.",
+    matchConcluded: "Umukino urarangiye",
+    honorPointsAwarded: "Amanota y’imyitwarire myiza",
+    passAndPlayLabel: "Kina n’undi ukoresheje igikoresho kimwe",
+    gameDetailPhysics: "Imbonerahamwe y’imipira ya 2D",
+    communityMatchmakingDesc: "Huza umukino n’abakinnyi bo mu muryango wa INKA.",
+    noMatchesCompletedLabel: "Nta mukino urarangira. Tumira umukinnyi uboneka kugira ngo utangire kwegeranya amanota y’icyubahiro.",
+    matchOutcomeWin: "WATSINZE",
+    matchOutcomeLoss: "WATSINZWE",
+    matchOutcomeDraw: "ANGANYE",
+    scheduledMatchConfirmation: "Umukino na {player} wateguwe: {game} ({time}) mu gihe cya {window}.",
+    testRingLabel: "Gerageza ijwi",
+    versusLabel: "na",
+    northTerritory: "Uruhande rwo mu majyaruguru",
+    southTerritory: "Uruhande rwo mu majyepfo",
+    seedsCountLabel: "Isoro",
+    pitAccessibleLabel: "Umwobo {row}, inkingi {col}, isoro {count}",
+    profileDirectoryDesc: "Reba abakinnyi, umenye ubuhanga bakunda, kandi uhitamo uwo mukina mu bwubahane.",
+    profileUpdatedLabel: "Umwirondoro wawe wavuguruwe.",
+    versusHistoryLabel: "na",
+
     // Convenience Aliases
     nav_play: 'Kina Ubu',
     nav_spectator: 'Reba Imikino',
@@ -580,6 +678,55 @@ export const translations: Record<Language, TranslationSchema> = {
     rule6Title: '6. Cultural Preservation',
     rule6Desc: 'Honoring Rwanda’s heritage games like Igisoro and bringing them to modern digital craft for future generations.',
 
+    muteSound: "Mute sound",
+    unmuteSound: "Unmute sound",
+    editionLabel: "2026 edition",
+    humanVsHuman: "Human vs. human",
+    skillAdvantage: "Skill advantage",
+    zeroWageringFooter: "No betting or money transfers",
+    levelLabel: "Level",
+    badgeFairPlayGuardian: "Guardian of INKA",
+    badgeFairPlayGuardianDesc: "Maintained exemplary sportsmanship and respect during games.",
+    netCaptureDifference: "Net capture difference",
+    skillAdvantageLabel: "Skill advantage",
+    leaderLabel: "Leader",
+    seedRatioLabel: "Seed ratio",
+    formulaLabel: "Formula",
+    playerASeedsLabel: "Player A’s seeds",
+    playerBHoldsLabel: "Player B holds",
+    playerASolidsPottedLabel: "Solid balls potted",
+    playerBStripesPottedLabel: "Striped balls potted",
+    endgameStageLabel: "Endgame stage",
+    targetGroupPotting: "Clearing the target group",
+    playerAOnEightBall: "Player A is on the 8-ball",
+    playerBOnEightBall: "Player B is on the 8-ball",
+    piecesUnit: "pieces",
+    levelStanding: "Tied",
+    dameBoardLabel: "8×8 board",
+    aimShotInstruction: "Aim over the table and adjust shot power",
+    cuePowerLabel: "Cue power",
+    ballsRollingLabel: "Balls rolling…",
+    biyariScoringHelp: "Each potted ball increases the advantage. Clear your group first, then pot the 8-ball to win.",
+    matchConcluded: "Match concluded",
+    honorPointsAwarded: "Sportsmanship points",
+    passAndPlayLabel: "Pass and play · two players on one device",
+    gameDetailPhysics: "2D table simulation",
+    communityMatchmakingDesc: "Find a match with players from the INKA community.",
+    noMatchesCompletedLabel: "No matches completed yet. Challenge an available player to begin earning honor points.",
+    matchOutcomeWin: "WIN",
+    matchOutcomeLoss: "LOSS",
+    matchOutcomeDraw: "DRAW",
+    scheduledMatchConfirmation: "Match arranged with {player}: {game} ({time}) during {window}.",
+    testRingLabel: "Test ring",
+    versusLabel: "vs",
+    northTerritory: "North side",
+    southTerritory: "South side",
+    seedsCountLabel: "Seeds",
+    pitAccessibleLabel: "Pit row {row}, column {col}, {count} seeds",
+    profileDirectoryDesc: "Browse players, discover their favorite games, and choose a respectful opponent.",
+    profileUpdatedLabel: "Your profile has been updated.",
+    versusHistoryLabel: "vs",
+
     // Convenience Aliases
     nav_play: 'Play Now',
     nav_spectator: 'Live Arena',
@@ -788,6 +935,55 @@ export const translations: Record<Language, TranslationSchema> = {
     rule5Desc: 'Le clavardage des spectateurs est invisible aux joueurs pendant la partie pour éviter tout conseil tactique.',
     rule6Title: '6. Préservation du Patrimoine',
     rule6Desc: 'Honorer les trésors culturels rwandais comme l’Igisoro et les transmettre aux générations futures.',
+
+    muteSound: "Couper le son",
+    unmuteSound: "Réactiver le son",
+    editionLabel: "Édition 2026",
+    humanVsHuman: "Joueur contre joueur",
+    skillAdvantage: "Avantage lié à l’adresse",
+    zeroWageringFooter: "Aucun pari ni transfert d’argent",
+    levelLabel: "Niveau",
+    badgeFairPlayGuardian: "Gardien des valeurs d’INKA",
+    badgeFairPlayGuardianDesc: "A fait preuve d’un esprit sportif et d’un respect exemplaires pendant les parties.",
+    netCaptureDifference: "Écart des pièces capturées",
+    skillAdvantageLabel: "Avantage de jeu",
+    leaderLabel: "Joueur en tête",
+    seedRatioLabel: "Ratio des graines",
+    formulaLabel: "Formule",
+    playerASeedsLabel: "Graines du joueur A",
+    playerBHoldsLabel: "Le joueur B possède",
+    playerASolidsPottedLabel: "Boules pleines empochées",
+    playerBStripesPottedLabel: "Boules rayées empochées",
+    endgameStageLabel: "Phase finale",
+    targetGroupPotting: "Empocher les billes du groupe",
+    playerAOnEightBall: "Le joueur A vise la bille 8",
+    playerBOnEightBall: "Le joueur B vise la bille 8",
+    piecesUnit: "pièces",
+    levelStanding: "À égalité",
+    dameBoardLabel: "Plateau 8×8",
+    aimShotInstruction: "Visez la table et réglez la puissance du tir",
+    cuePowerLabel: "Puissance de la queue",
+    ballsRollingLabel: "Les billes roulent…",
+    biyariScoringHelp: "Chaque bille empochée augmente l’avantage. Empochez d’abord les billes de votre groupe, puis la bille 8 pour gagner.",
+    matchConcluded: "Match terminé",
+    honorPointsAwarded: "Points de fair-play",
+    passAndPlayLabel: "Jeu à deux sur le même appareil",
+    gameDetailPhysics: "Simulation de table en 2D",
+    communityMatchmakingDesc: "Trouvez une partie avec les joueurs de la communauté INKA.",
+    noMatchesCompletedLabel: "Aucune partie terminée pour le moment. Défiez un joueur disponible pour commencer à gagner des points d’honneur.",
+    matchOutcomeWin: "VICTOIRE",
+    matchOutcomeLoss: "DÉFAITE",
+    matchOutcomeDraw: "NUL",
+    scheduledMatchConfirmation: "Partie organisée avec {player} : {game} ({time}) pendant {window}.",
+    testRingLabel: "Tester la sonnerie",
+    versusLabel: "contre",
+    northTerritory: "Côté nord",
+    southTerritory: "Côté sud",
+    seedsCountLabel: "Graines",
+    pitAccessibleLabel: "Trou ligne {row}, colonne {col}, {count} graines",
+    profileDirectoryDesc: "Découvrez les joueurs, leurs jeux préférés et choisissez un adversaire dans le respect.",
+    profileUpdatedLabel: "Votre profil a été mis à jour.",
+    versusHistoryLabel: "contre",
 
     // Convenience Aliases
     nav_play: 'Jouer',
