@@ -210,6 +210,19 @@ export interface TranslationSchema {
   profileUpdatedLabel: string;
   versusHistoryLabel: string;
 
+  normalizedAdvantageLabel: string;
+  playerACapturesLabel: string;
+  playerBCapturesLabel: string;
+  opponentCalculatingMove: string;
+  freeSkillCompetitionNotice: string;
+  matchFinishedHonorMessage: string;
+  youLabel: string;
+  saveBioLabel: string;
+  specializesInLabel: string;
+  winsLabel: string;
+  gameStreamInProgress: string;
+  turnLabel: string;
+
   // Convenience Aliases for Clean UI Integration
   nav_play: string;
   nav_spectator: string;
@@ -469,6 +482,19 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Umwirondoro wawe wavuguruwe.",
     versusHistoryLabel: "na",
 
+    normalizedAdvantageLabel: "Igipimo cy’inyungu y’ubuhanga",
+    playerACapturesLabel: "Ibice Umukinnyi A yafashe",
+    playerBCapturesLabel: "Ibice Umukinnyi B yafashe",
+    opponentCalculatingMove: "Mugenzi arimo gutekereza ku ntambwe…",
+    freeSkillCompetitionNotice: "Iri rushanwa rishingiye ku buhanga. Nta gutega cyangwa amafaranga.",
+    matchFinishedHonorMessage: "Umukino warangiye mu bwubahane.",
+    youLabel: "Wowe",
+    saveBioLabel: "Bika umwirondoro",
+    specializesInLabel: "Akunda gukina",
+    winsLabel: "intsinzi",
+    gameStreamInProgress: "Umukino uri kubera ako kanya",
+    turnLabel: "Igihe cyo gukina",
+
     // Convenience Aliases
     nav_play: 'Kina Ubu',
     nav_spectator: 'Reba Imikino',
@@ -727,6 +753,19 @@ export const translations: Record<Language, TranslationSchema> = {
     profileUpdatedLabel: "Your profile has been updated.",
     versusHistoryLabel: "vs",
 
+    normalizedAdvantageLabel: "Normalized skill advantage",
+    playerACapturesLabel: "Player A captures",
+    playerBCapturesLabel: "Player B captures",
+    opponentCalculatingMove: "Opponent is thinking…",
+    freeSkillCompetitionNotice: "Free skill competition. No betting or financial risk.",
+    matchFinishedHonorMessage: "Match finished with mutual respect and sportsmanship.",
+    youLabel: "You",
+    saveBioLabel: "Save bio",
+    specializesInLabel: "Specializes in",
+    winsLabel: "wins",
+    gameStreamInProgress: "Game stream in progress",
+    turnLabel: "Turn",
+
     // Convenience Aliases
     nav_play: 'Play Now',
     nav_spectator: 'Live Arena',
@@ -984,6 +1023,19 @@ export const translations: Record<Language, TranslationSchema> = {
     profileDirectoryDesc: "Découvrez les joueurs, leurs jeux préférés et choisissez un adversaire dans le respect.",
     profileUpdatedLabel: "Votre profil a été mis à jour.",
     versusHistoryLabel: "contre",
+
+    normalizedAdvantageLabel: "Avantage de jeu normalisé",
+    playerACapturesLabel: "Pièces capturées par le joueur A",
+    playerBCapturesLabel: "Pièces capturées par le joueur B",
+    opponentCalculatingMove: "L’adversaire réfléchit…",
+    freeSkillCompetitionNotice: "Compétition d’adresse gratuite. Aucun pari ni risque financier.",
+    matchFinishedHonorMessage: "La partie s’est terminée dans le respect et l’esprit sportif.",
+    youLabel: "Vous",
+    saveBioLabel: "Enregistrer la bio",
+    specializesInLabel: "Spécialité",
+    winsLabel: "victoires",
+    gameStreamInProgress: "Partie en cours",
+    turnLabel: "Tour",
 
     // Convenience Aliases
     nav_play: 'Jouer',
