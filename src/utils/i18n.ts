@@ -12,6 +12,7 @@ export interface TranslationSchema {
   brandName: string;
   logoTagline: string;
   logoAccessibleLabel: string;
+  languageSelectorLabel: string;
   tagline: string;
   subTagline: string;
   culturalNotice: string;
@@ -330,6 +331,7 @@ export const translations: Record<Language, TranslationSchema> = {
     brandName: 'INKA',
     logoTagline: 'Imikino gakondo y’ubuhanga',
     logoAccessibleLabel: 'Ikirango cya INKA',
+    languageSelectorLabel: "Hitamo ururimi",
     tagline: 'Kina. Ruhura ubwenge. Rwanira ku buhanga. Menyana n’abandi.',
     subTagline: 'Urubuga rw’u Rwanda rw’imikino gakondo n’ubuhanga: Igisoro, Dame, na Biyari.',
     culturalNotice: 'Inka yacu ni ikimenyetso cy’ubucuti, ubumwe n’ubwubahane hagati y’abakinnyi.',
@@ -647,6 +649,7 @@ export const translations: Record<Language, TranslationSchema> = {
     brandName: 'INKA',
     logoTagline: 'Traditional games of skill',
     logoAccessibleLabel: 'INKA emblem',
+    languageSelectorLabel: "Choose language",
     tagline: 'Play. Relax the mind. Compete with skill. Meet people.',
     subTagline: 'Rwanda’s authentic skill-games community for Igisoro, Dame, and Biyari.',
     culturalNotice: 'Inka represents friendship, shared prosperity, and mutual respect among players.',
@@ -964,6 +967,7 @@ export const translations: Record<Language, TranslationSchema> = {
     brandName: 'INKA',
     logoTagline: 'Jeux traditionnels d’adresse',
     logoAccessibleLabel: 'Emblème INKA',
+    languageSelectorLabel: "Choisir la langue",
     tagline: 'Jouez. Détendez l’esprit. Concourrez avec talent. Rencontrez du monde.',
     subTagline: 'La communauté rwandaise de jeux d’adresse traditionnels : Igisoro, Dames, et Billard.',
     culturalNotice: 'Inka incarne l’amitié, la prospérité partagée et le respect mutuel entre joueurs.',
