@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Clock, Eye, AlertTriangle, ShieldCheck, Pause, Play, Handshake, Flag, Award } from 'lucide-react';
 import { ActiveMatch, usePlatform } from '../../context/PlatformContext';
 import { sounds } from '../../utils/sound';
@@ -28,6 +28,11 @@ export const GameHud: React.FC<GameHudProps> = ({
 }) => {
   const { t, concludeMatch } = usePlatform();
   const [timeLeft, setTimeLeft] = useState<number>(30);
+  const onTimeoutRef = useRef(onTimeout);
+
+  useEffect(() => {
+    onTimeoutRef.current = onTimeout;
+  }, [onTimeout]);
   const [showStopModal, setShowStopModal] = useState<boolean>(false);
   const [showResignModal, setShowResignModal] = useState<boolean>(false);
   const [showDrawModal, setShowDrawModal] = useState<boolean>(false);
@@ -47,7 +52,7 @@ export const GameHud: React.FC<GameHudProps> = ({
           sounds.playTimerWarning();
         }
         if (prev <= 1) {
-          if (onTimeout) onTimeout(turn);
+          onTimeoutRef.current?.(turn);
           return 30;
         }
         return prev - 1;
@@ -55,7 +60,7 @@ export const GameHud: React.FC<GameHudProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [turn, match.status, onTimeout]);
+  }, [turn, match.status]);
 
   // Advantage visual percentage
   // If leader is A, advantage pushes bar towards A (50% to 100%)
