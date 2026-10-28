@@ -440,7 +440,7 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       result: isWin ? 'win' : isDraw ? 'draw' : 'loss',
       scoreSummary: `${currentMatch.scoreA} - ${currentMatch.scoreB}`,
       date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      honorEarned: reward.honorPoints,
+      honorEarned: reward,
     };
     setMatchHistory((prev) => [historyEntry, ...prev]);
 
