@@ -46,7 +46,7 @@ export const SchedulingView: React.FC = () => {
         <div className="p-3 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-emerald-300 text-xs flex items-center justify-between">
           <span>{scheduledMatchAlert}</span>
           <button onClick={() => setScheduledMatchAlert(null)} className="text-emerald-400 hover:text-white cursor-pointer">
-            Dismiss
+            {t.close}
           </button>
         </div>
       )}
@@ -103,7 +103,7 @@ export const SchedulingView: React.FC = () => {
                 type="submit"
                 className="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-semibold shadow-md transition-colors cursor-pointer"
               >
-                Publish Availability
+                {t.saveAvailability}
               </button>
               <button
                 type="button"
@@ -111,7 +111,7 @@ export const SchedulingView: React.FC = () => {
                 className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-xl text-xs font-medium border border-slate-700 cursor-pointer"
                 title={t.simulateIncomingCall}
               >
-                Test Ring
+                {t.testRingLabel}
               </button>
             </div>
           </form>
@@ -149,7 +149,7 @@ export const SchedulingView: React.FC = () => {
                       <span>{player.availability}</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1 max-w-md">
-                      Specializes in <strong className="text-slate-300 uppercase">{player.favGame}</strong> · ★ {player.sportsmanshipLevel}.0 ({player.gamesWon} wins)
+                      {t.specializesInLabel} <strong className="text-slate-300 uppercase">{player.favGame === 'dame' ? t.dameTitle : player.favGame === 'igisoro' ? t.igisoroTitle : t.biyariTitle}</strong> · ★ {player.sportsmanshipLevel}.0 ({player.gamesWon} {t.winsLabel})
                     </p>
                   </div>
                 </div>
