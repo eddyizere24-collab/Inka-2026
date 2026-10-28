@@ -1,5 +1,7 @@
 # INKA
 ### *Igisoro · Dame · Biyari*
+
+**Languages:** [Kinyarwanda](README.rw.md) · [English](README.md) · [Français](README.fr.md)
 > **"Kina. Ruhura mu mutwe. Rushanwa ku bwenge. Menyane n'abandi."**
 > *(Play. Relax the mind. Compete with intellect. Connect with friends.)*
 
@@ -33,9 +35,10 @@ A modern front-end prototype for a platform celebrating traditional Rwandan skil
    - Advantage evaluated by seed fraction: $w = |2p - 1|$.
 
 3. **Biyari (Eight-Ball Billiards)**:
-   - Interactive 2D physics canvas simulation with cushion bounces and elastic collisions.
-   - Cue stick aiming, trajectory guideline, and shot power meter.
-   - Potted target balls advance advantage towards the decisive 8-ball finish.
+   - Interactive 2D physics canvas simulation with cushion bounces, elastic collisions, and six pockets.
+   - Standard 15-ball object rack: seven solids, the centered 8-ball, and seven stripes.
+   - A player must clear all seven balls in their group before legally pocketing the 8-ball to win.
+   - The physics and rule enforcement are still a prototype and need further testing before production use.
 
 ---
 
