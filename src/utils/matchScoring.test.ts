@@ -46,9 +46,14 @@ test('Biyari Scoring: evaluates potted balls and clean 8-ball victory', () => {
   assert.equal(midGame.leader, 'A');
   assert.ok(midGame.advantage > 0);
 
-  const win = calculateBiyariAdvantage(4, 2, true, false);
+  const sevenPotted = calculateBiyariAdvantage(7, 2);
+  assert.equal(sevenPotted.isDecisiveWin, false);
+  assert.equal(sevenPotted.winner, null);
+
+  const win = calculateBiyariAdvantage(7, 2, true, false);
   assert.equal(win.isDecisiveWin, true);
   assert.equal(win.winner, 'A');
+  assert.equal(win.scoreA, 7);
   assert.equal(win.advantage, 1.0);
 });
 
