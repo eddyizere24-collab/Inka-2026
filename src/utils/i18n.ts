@@ -228,6 +228,7 @@ export interface TranslationSchema {
   biyariEightBallVictoryReason: string;
   squareAccessibleLabel: string;
   pieceLabel: string;
+  incomingChallengeMessage: string;
   challengeSentNotice: string;
   documentTitle: string;
   metaDescription: string;
@@ -522,6 +523,7 @@ export const translations: Record<Language, TranslationSchema> = {
     biyariEightBallVictoryReason: "Umukinnyi {player} yinjije umupira wa 8 mu buryo bwemewe aratsinda.",
     squareAccessibleLabel: "Akazu {row}, inkingi {col}, {piece}",
     pieceLabel: "igice",
+    incomingChallengeMessage: "Muraho {player}! Reka dukine umukino wa {game} mu bwubahane.",
     challengeSentNotice: "Ubutumire bwohererejwe {player} ku mukino wa {game} ({time}).",
     documentTitle: "INKA · Imikino y’Ubuhanga",
     metaDescription: "INKA ni urubuga rw’imikino y’ubuhanga: Igisoro, Dame na Biyari. Kina ku buntu, menyana n’abandi kandi ukine mu bwubahane.",
@@ -815,6 +817,7 @@ export const translations: Record<Language, TranslationSchema> = {
     biyariEightBallVictoryReason: "{player} legally potted the 8-ball and won.",
     squareAccessibleLabel: "Square row {row}, column {col}, {piece}",
     pieceLabel: "piece",
+    incomingChallengeMessage: "Hello {player}! Let’s play a friendly game of {game}.",
     challengeSentNotice: "A challenge was sent to {player} for {game} ({time}).",
     documentTitle: "INKA · Skill Games",
     metaDescription: "INKA is a free skill-games platform for Igisoro, Dame, and Biyari. Play, connect with others, and enjoy respectful competition.",
@@ -1108,6 +1111,7 @@ export const translations: Record<Language, TranslationSchema> = {
     biyariEightBallVictoryReason: "{player} a empoché légalement la bille 8 et remporte la partie.",
     squareAccessibleLabel: "Case ligne {row}, colonne {col}, {piece}",
     pieceLabel: "pièce",
+    incomingChallengeMessage: "Bonjour {player} ! Jouons une partie amicale de {game}.",
     challengeSentNotice: "Une invitation a été envoyée à {player} pour {game} ({time}).",
     documentTitle: "INKA · Jeux d’adresse",
     metaDescription: "INKA est une plateforme gratuite de jeux d’adresse proposant l’Igisoro, le Dame et le Biyari. Jouez, rencontrez d’autres joueurs et partagez une compétition respectueuse.",
