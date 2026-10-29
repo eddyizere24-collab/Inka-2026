@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Award, Target, RotateCcw, ShieldCheck } from 'lucide-react';
+import { Award, Target, RotateCcw, ShieldCheck, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
 import { GameHud } from './GameHud';
 import { calculateBiyariAdvantage } from '../../utils/matchScoring';
@@ -23,26 +23,26 @@ export const BiyariGame: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Table dimensions (standard 2:1 aspect ratio)
-  const TABLE_WIDTH = 640;
-  const TABLE_HEIGHT = 340;
-  const CUSHION = 24;
-  const BALL_RADIUS = 9;
+  const TABLE_WIDTH = 680;
+  const TABLE_HEIGHT = 360;
+  const CUSHION = 26;
+  const BALL_RADIUS = 9.5;
 
   // Pocket coordinates
   const pockets = [
-    { x: CUSHION + 4, y: CUSHION + 4 }, // Top-left
+    { x: CUSHION + 3, y: CUSHION + 3 }, // Top-left
     { x: TABLE_WIDTH / 2, y: CUSHION }, // Top-center
-    { x: TABLE_WIDTH - CUSHION - 4, y: CUSHION + 4 }, // Top-right
-    { x: CUSHION + 4, y: TABLE_HEIGHT - CUSHION - 4 }, // Bottom-left
+    { x: TABLE_WIDTH - CUSHION - 3, y: CUSHION + 3 }, // Top-right
+    { x: CUSHION + 3, y: TABLE_HEIGHT - CUSHION - 3 }, // Bottom-left
     { x: TABLE_WIDTH / 2, y: TABLE_HEIGHT - CUSHION }, // Bottom-center
-    { x: TABLE_WIDTH - CUSHION - 4, y: TABLE_HEIGHT - CUSHION - 4 }, // Bottom-right
+    { x: TABLE_WIDTH - CUSHION - 3, y: TABLE_HEIGHT - CUSHION - 3 }, // Bottom-right
   ];
-  const POCKET_RADIUS = 18;
+  const POCKET_RADIUS = 19;
 
   const [turn, setTurn] = useState<'A' | 'B'>('A');
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
   const [aimAngle, setAimAngle] = useState<number>(0);
-  const [shotPower, setShotPower] = useState<number>(45);
+  const [shotPower, setShotPower] = useState<number>(50);
   const [ballsMoving, setBallsMoving] = useState<boolean>(false);
 
   // Potted counts
@@ -76,27 +76,27 @@ export const BiyariGame: React.FC = () => {
     });
 
     // Triangle apex at 70% table width
-    const startX = TABLE_WIDTH * 0.7;
+    const startX = TABLE_WIDTH * 0.68;
     const startY = TABLE_HEIGHT / 2;
-    const spacing = BALL_RADIUS * 2 + 1;
+    const spacing = BALL_RADIUS * 2 + 0.8;
 
-    // Standard 8-ball groups: seven solids, the 8-ball, and seven stripes.
+    // Standard 8-ball groups: seven solids (1-7), the 8-ball, and seven stripes (9-15)
     const ballDefs: { color: string; type: 'solid' | 'stripe' | 'eight'; num: number }[] = [
-      { color: '#eab308', type: 'solid', num: 1 },
-      { color: '#3b82f6', type: 'solid', num: 2 },
-      { color: '#ef4444', type: 'solid', num: 3 },
-      { color: '#a855f7', type: 'solid', num: 4 },
-      { color: '#0f172a', type: 'eight', num: 8 },
-      { color: '#f97316', type: 'solid', num: 5 },
-      { color: '#ec4899', type: 'solid', num: 6 },
-      { color: '#84cc16', type: 'solid', num: 7 },
-      { color: '#10b981', type: 'stripe', num: 9 },
-      { color: '#06b6d4', type: 'stripe', num: 10 },
-      { color: '#ec4899', type: 'stripe', num: 11 },
-      { color: '#84cc16', type: 'stripe', num: 12 },
-      { color: '#f97316', type: 'stripe', num: 13 },
-      { color: '#a855f7', type: 'stripe', num: 14 },
-      { color: '#3b82f6', type: 'stripe', num: 15 },
+      { color: '#eab308', type: 'solid', num: 1 }, // yellow
+      { color: '#2563eb', type: 'solid', num: 2 }, // blue
+      { color: '#dc2626', type: 'solid', num: 3 }, // red
+      { color: '#7c3aed', type: 'solid', num: 4 }, // purple
+      { color: '#090d16', type: 'eight', num: 8 }, // 8-ball center
+      { color: '#ea580c', type: 'solid', num: 5 }, // orange
+      { color: '#16a34a', type: 'solid', num: 6 }, // green
+      { color: '#854d0e', type: 'solid', num: 7 }, // maroon
+      { color: '#eab308', type: 'stripe', num: 9 }, // yellow stripe
+      { color: '#2563eb', type: 'stripe', num: 10 }, // blue stripe
+      { color: '#dc2626', type: 'stripe', num: 11 }, // red stripe
+      { color: '#7c3aed', type: 'stripe', num: 12 }, // purple stripe
+      { color: '#ea580c', type: 'stripe', num: 13 }, // orange stripe
+      { color: '#16a34a', type: 'stripe', num: 14 }, // green stripe
+      { color: '#854d0e', type: 'stripe', num: 15 }, // maroon stripe
     ];
 
     let bIdx = 0;
@@ -132,7 +132,7 @@ export const BiyariGame: React.FC = () => {
     setPottedB(0);
     setTurn('A');
     setAimAngle(0);
-    setShotPower(45);
+    setShotPower(50);
     setBallsMoving(false);
   }, [TABLE_WIDTH, TABLE_HEIGHT, BALL_RADIUS]);
 
@@ -161,17 +161,17 @@ export const BiyariGame: React.FC = () => {
         b.x += b.vx;
         b.y += b.vy;
 
-        // Friction
-        b.vx *= 0.985;
-        b.vy *= 0.985;
+        // Realistic Baize cloth friction
+        b.vx *= 0.986;
+        b.vy *= 0.986;
 
         // Stop micro-movements
-        if (Math.abs(b.vx) < 0.05) b.vx = 0;
-        if (Math.abs(b.vy) < 0.05) b.vy = 0;
+        if (Math.abs(b.vx) < 0.04) b.vx = 0;
+        if (Math.abs(b.vy) < 0.04) b.vy = 0;
 
         if (b.vx !== 0 || b.vy !== 0) anyMoving = true;
 
-        // Cushion bounce (boundaries)
+        // Cushion bounce (boundaries with rubber dampening)
         const minX = CUSHION + b.radius;
         const maxX = TABLE_WIDTH - CUSHION - b.radius;
         const minY = CUSHION + b.radius;
@@ -179,25 +179,25 @@ export const BiyariGame: React.FC = () => {
 
         if (b.x < minX) {
           b.x = minX;
-          b.vx *= -0.85;
-          sounds.playBilliardStrike();
+          b.vx *= -0.86;
+          sounds.playCushionBounce(Math.abs(b.vx));
         } else if (b.x > maxX) {
           b.x = maxX;
-          b.vx *= -0.85;
-          sounds.playBilliardStrike();
+          b.vx *= -0.86;
+          sounds.playCushionBounce(Math.abs(b.vx));
         }
 
         if (b.y < minY) {
           b.y = minY;
-          b.vy *= -0.85;
-          sounds.playBilliardStrike();
+          b.vy *= -0.86;
+          sounds.playCushionBounce(Math.abs(b.vy));
         } else if (b.y > maxY) {
           b.y = maxY;
-          b.vy *= -0.85;
-          sounds.playBilliardStrike();
+          b.vy *= -0.86;
+          sounds.playCushionBounce(Math.abs(b.vy));
         }
 
-        // Pocket detection
+        // Pocket drop detection
         for (const p of pockets) {
           const dist = Math.hypot(b.x - p.x, b.y - p.y);
           if (dist < POCKET_RADIUS && !b.isPotted) {
@@ -267,12 +267,13 @@ export const BiyariGame: React.FC = () => {
             const ky = b1.vy - b2.vy;
             const p = 2 * (nx * kx + ny * ky) / 2;
 
-            b1.vx -= p * nx * 0.9;
-            b1.vy -= p * ny * 0.9;
-            b2.vx += p * nx * 0.9;
-            b2.vy += p * ny * 0.9;
+            b1.vx -= p * nx * 0.94;
+            b1.vy -= p * ny * 0.94;
+            b2.vx += p * nx * 0.94;
+            b2.vy += p * ny * 0.94;
 
-            sounds.playBilliardStrike();
+            const impactSpeed = Math.hypot(kx, ky);
+            sounds.playBallCollision(impactSpeed);
           }
         }
       }
@@ -283,95 +284,296 @@ export const BiyariGame: React.FC = () => {
     const render = () => {
       ctx.clearRect(0, 0, TABLE_WIDTH, TABLE_HEIGHT);
 
-      // Wooden Table Rails
-      ctx.fillStyle = '#1e2838';
+      // Wooden Table Frame (Polished Mahogany)
+      const woodGrad = ctx.createLinearGradient(0, 0, TABLE_WIDTH, TABLE_HEIGHT);
+      woodGrad.addColorStop(0, '#2e1c12');
+      woodGrad.addColorStop(0.5, '#1e110a');
+      woodGrad.addColorStop(1, '#150a04');
+      ctx.fillStyle = woodGrad;
       ctx.beginPath();
-      ctx.roundRect(0, 0, TABLE_WIDTH, TABLE_HEIGHT, 16);
+      ctx.roundRect(0, 0, TABLE_WIDTH, TABLE_HEIGHT, 20);
       ctx.fill();
 
-      // Green Felt Bed
-      ctx.fillStyle = '#064e3b';
+      // Outer Bevel Highlight
+      ctx.strokeStyle = '#4e3323';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Inlaid Mother-of-Pearl Diamond Sights along Rails
+      const drawDiamond = (x: number, y: number) => {
+        ctx.fillStyle = '#f8fafc';
+        ctx.beginPath();
+        ctx.moveTo(x, y - 3);
+        ctx.lineTo(x + 3, y);
+        ctx.lineTo(x, y + 3);
+        ctx.lineTo(x - 3, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      };
+
+      // Top & Bottom Rails Diamonds
+      for (let i = 1; i <= 7; i++) {
+        if (i === 4) continue; // center pocket
+        const x = CUSHION + (i / 8) * (TABLE_WIDTH - CUSHION * 2);
+        drawDiamond(x, CUSHION / 2);
+        drawDiamond(x, TABLE_HEIGHT - CUSHION / 2);
+      }
+      // Left & Right Rails Diamonds
+      for (let j = 1; j <= 3; j++) {
+        if (j === 2) continue;
+        const y = CUSHION + (j / 4) * (TABLE_HEIGHT - CUSHION * 2);
+        drawDiamond(CUSHION / 2, y);
+        drawDiamond(TABLE_WIDTH - CUSHION / 2, y);
+      }
+
+      // Championship Green Baize Felt Bed with Vignette
+      const feltGrad = ctx.createRadialGradient(
+        TABLE_WIDTH / 2,
+        TABLE_HEIGHT / 2,
+        60,
+        TABLE_WIDTH / 2,
+        TABLE_HEIGHT / 2,
+        TABLE_WIDTH / 1.6
+      );
+      feltGrad.addColorStop(0, '#0a6349');
+      feltGrad.addColorStop(0.8, '#064e3b');
+      feltGrad.addColorStop(1, '#033326');
+
+      ctx.fillStyle = feltGrad;
       ctx.beginPath();
       ctx.roundRect(
         CUSHION,
         CUSHION,
         TABLE_WIDTH - CUSHION * 2,
         TABLE_HEIGHT - CUSHION * 2,
-        8
+        10
       );
       ctx.fill();
 
-      // Draw Pockets
+      // Cushion Nose Rubber Shadow
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Head string marker line & spot
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(TABLE_WIDTH * 0.25, CUSHION);
+      ctx.lineTo(TABLE_WIDTH * 0.25, TABLE_HEIGHT - CUSHION);
+      ctx.stroke();
+
+      // Draw Pockets with Polished Brass Rim & Deep Shadow
       for (const p of pockets) {
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#05070a';
         ctx.beginPath();
         ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 3;
+
+        ctx.strokeStyle = '#b45309'; // brass rim
+        ctx.lineWidth = 2.5;
         ctx.stroke();
       }
 
-      // Draw Aiming Line & Cue Stick if cue ball is stationary
+      // Find stationary Cue Ball
       const cueBall = ballsRef.current.find((b) => b.type === 'cue' && !b.isPotted);
-      if (cueBall && !ballsMoving && currentMatch?.status === 'playing') {
-        const aimLength = 120;
-        const targetX = cueBall.x + Math.cos(aimAngle) * aimLength;
-        const targetY = cueBall.y + Math.sin(aimAngle) * aimLength;
 
-        // Dashed trajectory guideline
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 4]);
+      // Advanced Ghost-Ball Collision Raycasting
+      if (cueBall && !ballsMoving && currentMatch?.status === 'playing') {
+        const rayCos = Math.cos(aimAngle);
+        const raySin = Math.sin(aimAngle);
+
+        let closestHit: {
+          ball: Ball;
+          hitDist: number;
+          ghostX: number;
+          ghostY: number;
+        } | null = null;
+
+        // Check intersection with all active balls
+        for (const b of ballsRef.current) {
+          if (b.type === 'cue' || b.isPotted) continue;
+
+          // Vector from cue to object ball
+          const dx = b.x - cueBall.x;
+          const dy = b.y - cueBall.y;
+
+          // Projection along ray
+          const dot = dx * rayCos + dy * raySin;
+          if (dot <= 0) continue; // Behind cue ball
+
+          // Perpendicular distance from ray to object ball center
+          const perpDistSq = (dx * dx + dy * dy) - dot * dot;
+          const collisionDist = BALL_RADIUS * 2;
+
+          if (perpDistSq < collisionDist * collisionDist) {
+            // Distance along ray to collision point
+            const delta = Math.sqrt(collisionDist * collisionDist - perpDistSq);
+            const hitDist = dot - delta;
+
+            if (hitDist > 0 && (!closestHit || hitDist < closestHit.hitDist)) {
+              closestHit = {
+                ball: b,
+                hitDist,
+                ghostX: cueBall.x + rayCos * hitDist,
+                ghostY: cueBall.y + raySin * hitDist,
+              };
+            }
+          }
+        }
+
+        // 1. Draw Cue Ball Trajectory Line
+        const targetDist = closestHit ? closestHit.hitDist : 240;
+        const endLineX = cueBall.x + rayCos * targetDist;
+        const endLineY = cueBall.y + raySin * targetDist;
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 4]);
         ctx.beginPath();
         ctx.moveTo(cueBall.x, cueBall.y);
-        ctx.lineTo(targetX, targetY);
+        ctx.lineTo(endLineX, endLineY);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Cue Stick
-        const cueDistance = 22 + shotPower * 0.4;
-        const cueStartX = cueBall.x - Math.cos(aimAngle) * (cueDistance + 140);
-        const cueStartY = cueBall.y - Math.sin(aimAngle) * (cueDistance + 140);
-        const cueTipX = cueBall.x - Math.cos(aimAngle) * cueDistance;
-        const cueTipY = cueBall.y - Math.sin(aimAngle) * cueDistance;
+        // 2. Draw Ghost Ball & Deflection Vectors if collision predicted
+        if (closestHit) {
+          const { ball: targetBall, ghostX, ghostY } = closestHit;
 
+          // Ghost Cue Ball
+          ctx.beginPath();
+          ctx.arc(ghostX, ghostY, BALL_RADIUS, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 3]);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+          ctx.fill();
+          ctx.setLineDash([]);
+
+          // Object Ball Aim Line (Line of Centers)
+          const normDx = targetBall.x - ghostX;
+          const normDy = targetBall.y - ghostY;
+          const normDist = Math.hypot(normDx, normDy);
+          if (normDist > 0) {
+            const nx = normDx / normDist;
+            const ny = normDy / normDist;
+
+            ctx.strokeStyle = '#34d399'; // Emerald target path
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(targetBall.x, targetBall.y);
+            ctx.lineTo(targetBall.x + nx * 60, targetBall.y + ny * 60);
+            ctx.stroke();
+
+            // Tangent line for cue ball deflection
+            const tx = -ny;
+            const ty = nx;
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)'; // Amber tangent
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(ghostX, ghostY);
+            ctx.lineTo(ghostX + tx * 35, ghostY + ty * 35);
+            ctx.stroke();
+          }
+        }
+
+        // 3. Draw Professional Wooden Cue Stick
+        const pullBack = 24 + (shotPower / 100) * 36;
+        const cueLength = 160;
+        const cueStartX = cueBall.x - rayCos * (pullBack + cueLength);
+        const cueStartY = cueBall.y - raySin * (pullBack + cueLength);
+        const cueTipX = cueBall.x - rayCos * pullBack;
+        const cueTipY = cueBall.y - raySin * pullBack;
+
+        // Tapered Cue Stick
         ctx.strokeStyle = '#d4a373';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 4.5;
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(cueStartX, cueStartY);
         ctx.lineTo(cueTipX, cueTipY);
         ctx.stroke();
+
+        // Leather Cue Tip
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        ctx.moveTo(cueTipX, cueTipY);
+        ctx.lineTo(cueBall.x - rayCos * (pullBack - 3), cueBall.y - raySin * (pullBack - 3));
+        ctx.stroke();
       }
 
-      // Draw Balls
+      // Draw 3D Photorealistic Balls
       for (const b of ballsRef.current) {
         if (b.isPotted) continue;
 
+        // Cast shadow beneath ball on felt
         ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fillStyle = b.color;
+        ctx.arc(b.x + 1.5, b.y + 2, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         ctx.fill();
 
+        // Ball Body with 3D Radial Lighting
+        const ballGrad = ctx.createRadialGradient(
+          b.x - b.radius * 0.35,
+          b.y - b.radius * 0.35,
+          b.radius * 0.1,
+          b.x,
+          b.y,
+          b.radius
+        );
+
+        if (b.type === 'cue') {
+          ballGrad.addColorStop(0, '#ffffff');
+          ballGrad.addColorStop(0.7, '#f1f5f9');
+          ballGrad.addColorStop(1, '#94a3b8');
+        } else if (b.type === 'eight') {
+          ballGrad.addColorStop(0, '#334155');
+          ballGrad.addColorStop(0.6, '#0f172a');
+          ballGrad.addColorStop(1, '#020617');
+        } else {
+          ballGrad.addColorStop(0, '#ffffff');
+          ballGrad.addColorStop(0.2, b.color);
+          ballGrad.addColorStop(1, '#05070a');
+        }
+
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = ballGrad;
+        ctx.fill();
+
+        // Stripe band
         if (b.type === 'stripe') {
-          ctx.strokeStyle = '#FFFFFF';
-          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.radius - 1, 0, Math.PI * 2);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 4;
           ctx.stroke();
         }
 
-        ctx.beginPath();
-        ctx.arc(b.x - b.radius * 0.3, b.y - b.radius * 0.3, b.radius * 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fill();
+        // Circular Number Badge for numbered balls
+        if (b.number > 0) {
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.radius * 0.45, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
 
-        if (b.type === 'eight') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 8px monospace';
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 7.5px monospace';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText('8', b.x, b.y);
+          ctx.fillText(String(b.number), b.x, b.y + 0.5);
         }
+
+        // Specular highlight gloss reflection
+        ctx.beginPath();
+        ctx.arc(b.x - b.radius * 0.32, b.y - b.radius * 0.32, b.radius * 0.28, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+        ctx.fill();
       }
     };
 
@@ -415,12 +617,18 @@ export const BiyariGame: React.FC = () => {
     }
   };
 
+  const adjustAngle = (deltaDegrees: number) => {
+    if (ballsMoving) return;
+    const rad = (deltaDegrees * Math.PI) / 180;
+    setAimAngle((prev) => prev + rad);
+  };
+
   const executeShot = () => {
     if (ballsMoving || !currentMatch || currentMatch.status !== 'playing' || (turn === 'B' && !isPassAndPlay)) return;
     const cueBall = ballsRef.current.find((b) => b.type === 'cue' && !b.isPotted);
     if (!cueBall) return;
 
-    const speed = (shotPower / 100) * 16;
+    const speed = (shotPower / 100) * 17;
     cueBall.vx = Math.cos(aimAngle) * speed;
     cueBall.vy = Math.sin(aimAngle) * speed;
     shotInProgressRef.current = true;
@@ -428,10 +636,10 @@ export const BiyariGame: React.FC = () => {
     cueBallScratchedThisShotRef.current = false;
     setBallsMoving(true);
     setCurrentMatch({ ...currentMatch, moveCount: currentMatch.moveCount + 1 });
-    sounds.playBilliardStrike();
+    sounds.playBilliardStrike(shotPower);
   };
 
-  // A simple local opponent makes Biyari playable in the prototype. Switch to pass-and-play to control both sides.
+  // Local simulated friendly opponent
   useEffect(() => {
     if (isPassAndPlay || turn !== 'B' || ballsMoving || currentMatch?.status !== 'playing') return;
 
@@ -448,7 +656,8 @@ export const BiyariGame: React.FC = () => {
         Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y) < Math.hypot(nearest.x - cueBall.x, nearest.y - cueBall.y) ? ball : nearest
       );
       const angle = Math.atan2(target.y - cueBall.y, target.x - cueBall.x);
-      const speed = 0.55 * 16;
+      const power = 55;
+      const speed = (power / 100) * 17;
       cueBall.vx = Math.cos(angle) * speed;
       cueBall.vy = Math.sin(angle) * speed;
       shotInProgressRef.current = true;
@@ -457,8 +666,8 @@ export const BiyariGame: React.FC = () => {
       setAimAngle(angle);
       setBallsMoving(true);
       setCurrentMatch({ ...currentMatch, moveCount: currentMatch.moveCount + 1 });
-      sounds.playBilliardStrike();
-    }, 1200);
+      sounds.playBilliardStrike(power);
+    }, 1100);
 
     return () => window.clearTimeout(timer);
   }, [isPassAndPlay, turn, ballsMoving, currentMatch?.status, setCurrentMatch]);
@@ -486,12 +695,14 @@ export const BiyariGame: React.FC = () => {
         match={currentMatch}
         turn={turn}
         customStatsA={
-          <span className="text-emerald-400 font-mono">
+          <span className="text-emerald-400 font-mono flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block shadow-sm" />
             {t.biyari_potted}: {pottedA}/7
           </span>
         }
         customStatsB={
-          <span className="text-cyan-400 font-mono">
+          <span className="text-cyan-400 font-mono flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-sm" />
             {t.biyari_potted}: {pottedB}/7
           </span>
         }
@@ -500,49 +711,89 @@ export const BiyariGame: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Billiard Table View */}
         <div className="lg:col-span-3 flex flex-col items-center">
-          <div className="w-full max-w-2xl flex flex-wrap items-center justify-between gap-3 mb-3 px-1 text-xs text-slate-400">
+          <div className="w-full max-w-3xl flex flex-wrap items-center justify-between gap-3 mb-3 px-1 text-xs text-slate-300">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">{t.biyariTitle}</span>
-              <span className="text-slate-500">·</span>
-              <span>{t.aimShotInstruction}</span>
+              <span className="font-bold text-slate-100 font-display text-sm tracking-wide">
+                Ameza ya Biyari (8-Ball Pool)
+              </span>
+              <span className="text-slate-500 font-mono">·</span>
+              <span className="text-emerald-400 font-mono">{t.aimShotInstruction}</span>
             </div>
             <div className="flex items-center gap-3">
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white transition-colors">
                 <input
                   type="checkbox"
                   checked={isPassAndPlay}
                   onChange={(e) => setIsPassAndPlay(e.target.checked)}
-                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
+                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer accent-emerald-500"
                 />
-                <span>{t.passAndPlayLabel}</span>
+                <span className="text-xs">{t.passAndPlayLabel}</span>
               </label>
-            <button
-              onClick={handleRerack}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1 cursor-pointer"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>{t.rackBalls}</span>
-            </button>
+              <button
+                onClick={handleRerack}
+                className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs flex items-center gap-1 transition-colors cursor-pointer border border-slate-700"
+              >
+                <RotateCcw className="w-3 h-3 text-amber-400" />
+                <span>{t.rackBalls}</span>
+              </button>
             </div>
           </div>
 
-          {/* Billiard Table Canvas */}
-          <div className="p-3 bg-[#131a24] border-4 border-[#243144] rounded-2xl shadow-2xl overflow-hidden max-w-full">
+          {/* Championship Table Canvas */}
+          <div className="p-3.5 bg-[#101620] border-4 border-[#243144] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden max-w-full">
             <canvas
               ref={canvasRef}
               width={TABLE_WIDTH}
               height={TABLE_HEIGHT}
               onMouseMove={handleMouseMove}
               onClick={executeShot}
-              className="cursor-crosshair rounded-lg block max-w-full h-auto"
+              className="cursor-crosshair rounded-xl block max-w-full h-auto shadow-inner"
             />
           </div>
 
-          {/* Controls Bar */}
-          <div className="mt-4 w-full max-w-2xl p-4 bg-[#141a24] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4">
+          {/* Controls Bar & Fine Tuning */}
+          <div className="mt-4 w-full max-w-3xl p-4 bg-[#141a24] border border-slate-800 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-md">
+            {/* Fine Tuning Buttons */}
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-slate-400 mr-1 text-[11px] font-mono">Icyerekezo:</span>
+              <button
+                type="button"
+                onClick={() => adjustAngle(-5)}
+                disabled={ballsMoving}
+                className="px-2 py-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 rounded text-slate-200 text-xs font-mono cursor-pointer border border-slate-700"
+              >
+                -5°
+              </button>
+              <button
+                type="button"
+                onClick={() => adjustAngle(-1)}
+                disabled={ballsMoving}
+                className="px-2 py-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 rounded text-slate-200 text-xs font-mono cursor-pointer border border-slate-700"
+              >
+                -1°
+              </button>
+              <button
+                type="button"
+                onClick={() => adjustAngle(1)}
+                disabled={ballsMoving}
+                className="px-2 py-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 rounded text-slate-200 text-xs font-mono cursor-pointer border border-slate-700"
+              >
+                +1°
+              </button>
+              <button
+                type="button"
+                onClick={() => adjustAngle(5)}
+                disabled={ballsMoving}
+                className="px-2 py-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 rounded text-slate-200 text-xs font-mono cursor-pointer border border-slate-700"
+              >
+                +5°
+              </button>
+            </div>
+
+            {/* Power Slider */}
             <div className="flex items-center gap-3 flex-1 min-w-[200px]">
               <Target className="w-4 h-4 text-emerald-400 shrink-0" />
-              <label className="text-xs text-slate-300 whitespace-nowrap">{t.cuePowerLabel}:</label>
+              <label className="text-xs text-slate-300 whitespace-nowrap font-medium">{t.cuePowerLabel}:</label>
               <input
                 type="range"
                 min="10"
@@ -552,39 +803,92 @@ export const BiyariGame: React.FC = () => {
                 disabled={ballsMoving}
                 className="w-full accent-emerald-500 h-2 bg-slate-800 rounded cursor-pointer"
               />
-              <span className="text-xs font-mono text-emerald-400 w-10 text-right">{shotPower}%</span>
+              <span className="text-xs font-mono text-emerald-400 w-10 text-right font-bold">{shotPower}%</span>
             </div>
 
+            {/* Strike Button */}
             <button
               type="button"
               onClick={executeShot}
               disabled={ballsMoving || currentMatch.status !== 'playing'}
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap"
+              className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-lg transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5"
             >
-              {ballsMoving ? t.ballsRollingLabel : t.strikeCueBall}
+              <Zap className="w-3.5 h-3.5" />
+              <span>{ballsMoving ? t.ballsRollingLabel : t.strikeCueBall}</span>
             </button>
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Sidebar & Ball Group Racks */}
         <div className="space-y-4">
           <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
             <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>{t.biyariTitle}</span>
+              <span>Imipira Iri ku Meza</span>
             </h4>
-            <div className="text-xs text-slate-400 space-y-2">
-              <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
-                <span>{currentMatch.playerA.name} ({t.playerASolidsPottedLabel}):</span>
-                <span className="font-mono font-bold text-emerald-400">{pottedA} / 7</span>
+            <div className="text-xs text-slate-400 space-y-3">
+              {/* Player A Solids Tray (1-7) */}
+              <div className="p-3 bg-[#0e131b] rounded-lg border border-slate-800 space-y-1.5">
+                <div className="flex justify-between items-center text-slate-200 font-semibold">
+                  <span className="text-emerald-400">{currentMatch.playerA.name} ({t.playerASolidsPottedLabel}):</span>
+                  <span className="font-mono text-emerald-400 font-bold">{pottedA} / 7</span>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  {[1, 2, 3, 4, 5, 6, 7].map((num) => {
+                    const isPotted = ballsRef.current.find((b) => b.number === num)?.isPotted;
+                    return (
+                      <div
+                        key={num}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[9px] font-bold border transition-opacity ${
+                          isPotted
+                            ? 'bg-slate-800/40 border-slate-700 text-slate-600 opacity-30 line-through'
+                            : 'bg-amber-500 text-slate-950 border-amber-300 shadow-sm'
+                        }`}
+                      >
+                        {num}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="flex justify-between items-center p-2 bg-[#0e131b] rounded">
-                <span>{currentMatch.playerB.name} ({t.playerBStripesPottedLabel}):</span>
-                <span className="font-mono font-bold text-cyan-400">{pottedB} / 7</span>
+
+              {/* Player B Stripes Tray (9-15) */}
+              <div className="p-3 bg-[#0e131b] rounded-lg border border-slate-800 space-y-1.5">
+                <div className="flex justify-between items-center text-slate-200 font-semibold">
+                  <span className="text-cyan-400">{currentMatch.playerB.name} ({t.playerBStripesPottedLabel}):</span>
+                  <span className="font-mono text-cyan-400 font-bold">{pottedB} / 7</span>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  {[9, 10, 11, 12, 13, 14, 15].map((num) => {
+                    const isPotted = ballsRef.current.find((b) => b.number === num)?.isPotted;
+                    return (
+                      <div
+                        key={num}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[9px] font-bold border transition-opacity ${
+                          isPotted
+                            ? 'bg-slate-800/40 border-slate-700 text-slate-600 opacity-30 line-through'
+                            : 'bg-white text-slate-900 border-cyan-400 ring-1 ring-cyan-500 shadow-sm'
+                        }`}
+                      >
+                        {num}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <p className="text-[11px] text-slate-500 pt-1">
-                {t.biyariScoringHelp}
-              </p>
+
+              {/* The 8-ball status */}
+              <div className="p-2.5 bg-slate-900/60 rounded-lg flex items-center justify-between text-[11px] text-slate-300 border border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-black border border-slate-500 text-white flex items-center justify-center font-bold font-mono text-[8px]">
+                    8
+                  </div>
+                  <span>Umupira wa 8:</span>
+                </div>
+                <span className="text-amber-300 font-medium">
+                  {pottedA >= 7 || pottedB >= 7 ? 'Witeguye Kwinjizwa!' : 'Uracyategereje'}
+                </span>
+              </div>
             </div>
           </div>
 

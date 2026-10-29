@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Crown, MessageSquare, Award, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Crown, MessageSquare, Award, ShieldCheck, Sparkles, Swords } from 'lucide-react';
 import { usePlatform, getLocalizedCommentText } from '../../context/PlatformContext';
 import { GameHud } from './GameHud';
 import { calculateDameAdvantage } from '../../utils/matchScoring';
 import { sounds } from '../../utils/sound';
 
-type PieceColor = 'red' | 'black'; // red = Player A, black = Player B
+type PieceColor = 'red' | 'black'; // red = Player A (Emerald), black = Player B (Obsidian)
 
 interface Piece {
   id: string;
@@ -13,6 +13,13 @@ interface Piece {
   isKing: boolean;
   row: number;
   col: number;
+}
+
+interface Move {
+  row: number;
+  col: number;
+  jumpedPiece?: Piece;
+  subsequentJumps?: Move[];
 }
 
 export const DameGame: React.FC = () => {
@@ -34,7 +41,7 @@ export const DameGame: React.FC = () => {
       pieces.push({ id: `b-${idCounter++}`, color: 'black', isKing: false, row: r, col: c });
     });
 
-    // Red pieces (Player A, bottom) - 10 pieces
+    // Red/Emerald pieces (Player A, bottom) - 10 pieces
     const redCoords = [
       [5, 4], [5, 6],
       [6, 1], [6, 3], [6, 5], [6, 7],
@@ -49,31 +56,33 @@ export const DameGame: React.FC = () => {
 
   const [pieces, setPieces] = useState<Piece[]>(getInitialPieces);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
-  const [validMoves, setValidMoves] = useState<{ row: number; col: number; jumpedPiece?: Piece }[]>([]);
+  const [validMoves, setValidMoves] = useState<Move[]>([]);
   const [capturedByA, setCapturedByA] = useState<number>(0);
   const [capturedByB, setCapturedByB] = useState<number>(0);
   const [turn, setTurn] = useState<'A' | 'B'>('A'); // A = Red (User), B = Black (Opponent)
   const [isSimulatedOpponentTurn, setIsSimulatedOpponentTurn] = useState<boolean>(false);
   const [isPassAndPlay, setIsPassAndPlay] = useState<boolean>(false);
+  const [lastMove, setLastMove] = useState<{ fromR: number; fromC: number; toR: number; toC: number } | null>(null);
+  const [newlyCrownedId, setNewlyCrownedId] = useState<string | null>(null);
 
   const getPieceAt = useCallback((row: number, col: number) => {
     return pieces.find((p) => p.row === row && p.col === col);
   }, [pieces]);
 
-  // Compute legal moves for a piece
+  // Compute legal moves and captures for a piece
   const getMovesForPiece = useCallback((piece: Piece) => {
-    const moves: { row: number; col: number; jumpedPiece?: Piece }[] = [];
+    const moves: Move[] = [];
     const directions: number[][] = [];
 
     if (piece.isKing) {
       directions.push([-1, -1], [-1, 1], [1, -1], [1, 1]);
     } else if (piece.color === 'red') {
-      directions.push([-1, -1], [-1, 1]); // Moves up
+      directions.push([-1, -1], [-1, 1]); // Advances up
     } else {
-      directions.push([1, -1], [1, 1]); // Moves down
+      directions.push([1, -1], [1, 1]); // Advances down
     }
 
-    // Regular moves
+    // Regular non-jump moves
     for (const [dr, dc] of directions) {
       const nr = piece.row + dr;
       const nc = piece.col + dc;
@@ -84,12 +93,8 @@ export const DameGame: React.FC = () => {
       }
     }
 
-    // Jump moves (over opponent)
-    const jumpDirs = piece.isKing
-      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
-      : piece.color === 'red'
-      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]]
-      : [[1, -1], [1, 1], [-1, -1], [-1, 1]];
+    // Jump / Capture moves (All pieces can jump forward or backward over opponent)
+    const jumpDirs = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
 
     for (const [dr, dc] of jumpDirs) {
       const midR = piece.row + dr;
@@ -120,11 +125,12 @@ export const DameGame: React.FC = () => {
     // Select own piece
     if (clickedPiece && clickedPiece.color === expectedColor) {
       setSelectedPiece(clickedPiece);
-      setValidMoves(getMovesForPiece(clickedPiece));
+      const moves = getMovesForPiece(clickedPiece);
+      setValidMoves(moves);
       return;
     }
 
-    // Move to valid destination
+    // Move selected piece to destination
     if (selectedPiece) {
       const move = validMoves.find((m) => m.row === row && m.col === col);
       if (move) {
@@ -133,19 +139,26 @@ export const DameGame: React.FC = () => {
     }
   };
 
-  const executeMove = (
-    piece: Piece,
-    move: { row: number; col: number; jumpedPiece?: Piece }
-  ) => {
+  const executeMove = (piece: Piece, move: Move) => {
+    const fromR = piece.row;
+    const fromC = piece.col;
     let newPieces = pieces.filter((p) => p.id !== piece.id);
 
     // If jumped over a piece, capture it
+    let wasCapture = false;
+    let newCapA = capturedByA;
+    let newCapB = capturedByB;
+
     if (move.jumpedPiece) {
+      wasCapture = true;
       newPieces = newPieces.filter((p) => p.id !== move.jumpedPiece!.id);
-      const newCapA = piece.color === 'red' ? capturedByA + 1 : capturedByA;
-      const newCapB = piece.color === 'black' ? capturedByB + 1 : capturedByB;
-      setCapturedByA(newCapA);
-      setCapturedByB(newCapB);
+      if (piece.color === 'red') {
+        newCapA += 1;
+        setCapturedByA(newCapA);
+      } else {
+        newCapB += 1;
+        setCapturedByB(newCapB);
+      }
       sounds.playCapture();
 
       const isWinA = newCapA >= 10;
@@ -155,27 +168,37 @@ export const DameGame: React.FC = () => {
 
       if (isWinA) {
         concludeMatch(t.dameVictoryReason.replace('{player}', currentMatch?.playerA.name ?? ''), false, 'A');
+        return;
       } else if (isWinB) {
         concludeMatch(t.dameVictoryReason.replace('{player}', currentMatch?.playerB.name ?? ''), false, 'B');
+        return;
       }
     } else {
       sounds.playMove();
     }
 
-    // Check king promotion
+    // Check King/Dame promotion (Umwamikazi)
     const isNowKing =
       piece.isKing ||
       (piece.color === 'red' && move.row === 0) ||
       (piece.color === 'black' && move.row === 7);
 
-    newPieces.push({
+    if (!piece.isKing && isNowKing) {
+      sounds.playCrownChime();
+      setNewlyCrownedId(piece.id);
+      setTimeout(() => setNewlyCrownedId(null), 1500);
+    }
+
+    const movedPiece: Piece = {
       ...piece,
       row: move.row,
       col: move.col,
       isKing: isNowKing,
-    });
+    };
 
+    newPieces.push(movedPiece);
     setPieces(newPieces);
+    setLastMove({ fromR, fromC, toR: move.row, toC: move.col });
     setSelectedPiece(null);
     setValidMoves([]);
 
@@ -189,7 +212,7 @@ export const DameGame: React.FC = () => {
       setIsSimulatedOpponentTurn(true);
       const timer = setTimeout(() => {
         const blackPieces = pieces.filter((p) => p.color === 'black');
-        let availableMoves: { piece: Piece; move: { row: number; col: number; jumpedPiece?: Piece } }[] = [];
+        let availableMoves: { piece: Piece; move: Move }[] = [];
 
         for (const p of blackPieces) {
           const mList = getMovesForPiece(p);
@@ -198,6 +221,7 @@ export const DameGame: React.FC = () => {
           }
         }
 
+        // Standard draughts rule priority: Captures take priority!
         const jumpMoves = availableMoves.filter((am) => am.move.jumpedPiece);
         const chosen = jumpMoves.length > 0
           ? jumpMoves[Math.floor(Math.random() * jumpMoves.length)]
@@ -207,13 +231,15 @@ export const DameGame: React.FC = () => {
           executeMove(chosen.piece, chosen.move);
         }
         setIsSimulatedOpponentTurn(false);
-      }, 1100);
+      }, 950);
 
       return () => clearTimeout(timer);
     }
   }, [turn, isPassAndPlay, currentMatch?.status, pieces, getMovesForPiece]);
 
   if (!currentMatch) return null;
+
+  const colLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
   return (
     <div className="space-y-6">
@@ -222,12 +248,14 @@ export const DameGame: React.FC = () => {
         match={currentMatch}
         turn={turn}
         customStatsA={
-          <span className="text-emerald-400 font-mono">
+          <span className="text-emerald-400 font-mono flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-sm" />
             {t.dame_captures}: {capturedByA}/10
           </span>
         }
         customStatsB={
-          <span className="text-cyan-400 font-mono">
+          <span className="text-cyan-400 font-mono flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-sm" />
             {t.dame_captures}: {capturedByB}/10
           </span>
         }
@@ -237,89 +265,130 @@ export const DameGame: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Left Board Area */}
         <div className="lg:col-span-3 flex flex-col items-center">
-          {/* Mode Switcher */}
-          <div className="w-full max-w-xl flex items-center justify-between mb-3 px-1 text-xs text-slate-400">
+          {/* Mode Switcher & Board Header */}
+          <div className="w-full max-w-xl flex items-center justify-between mb-3 px-1 text-xs text-slate-300">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-200">{t.dameSubtitle}</span>
-              <span className="text-slate-500">·</span>
-              <span>{t.dameBoardLabel}</span>
+              <span className="font-bold text-slate-100 font-display text-sm tracking-wide">
+                Ikibaho cya Dame (8×8)
+              </span>
+              <span className="text-slate-500 font-mono">·</span>
+              <span className="text-slate-400">Ibice 10 kuri buri mukinnyi</span>
             </div>
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300">
+              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white transition-colors">
                 <input
                   type="checkbox"
                   checked={isPassAndPlay}
                   onChange={(e) => setIsPassAndPlay(e.target.checked)}
-                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer"
+                  className="rounded border-slate-700 bg-slate-800 text-emerald-500 cursor-pointer accent-emerald-500"
                 />
-                <span>{t.passAndPlayLabel}</span>
+                <span className="text-xs">{t.passAndPlayLabel}</span>
               </label>
             </div>
           </div>
 
-          {/* Checkerboard */}
-          <div className="relative p-3 sm:p-4 bg-[#1e2736] border-4 border-[#2c394d] rounded-2xl shadow-2xl">
-            <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] border border-[#141b27] rounded-lg overflow-hidden">
-              {Array.from({ length: 8 }).map((_, r) =>
-                Array.from({ length: 8 }).map((_, c) => {
-                  const isDarkSquare = (r + c) % 2 === 1;
-                  const piece = getPieceAt(r, c);
-                  const isSelected = selectedPiece?.id === piece?.id;
-                  const isValidMove = validMoves.some((m) => m.row === r && m.col === c);
-
-                  return (
-                    <button
-                      key={`${r}-${c}`}
-                      type="button"
-                      onClick={() => handleSquareClick(r, c)}
-                      aria-label={t.squareAccessibleLabel.replace('{row}', String(r + 1)).replace('{col}', String(c + 1)).replace('{piece}', piece ? t.pieceLabel : '')}
-                      className={`relative flex items-center justify-center transition-colors ${
-                        isDarkSquare ? 'bg-[#1b2636]' : 'bg-[#e2e8f0]'
-                      } ${isValidMove ? 'ring-4 ring-emerald-400/80 ring-inset cursor-pointer' : ''}`}
-                    >
-                      {/* Highlight move dot */}
-                      {isValidMove && !piece && (
-                        <div className="w-4 h-4 rounded-full bg-emerald-400/70 shadow-md animate-pulse" />
-                      )}
-
-                      {/* Piece rendering */}
-                      {piece && (
-                        <div
-                          className={`w-[28px] h-[28px] sm:w-[42px] sm:h-[42px] rounded-full shadow-lg flex items-center justify-center transition-transform ${
-                            piece.color === 'red'
-                              ? 'bg-gradient-to-b from-emerald-500 to-teal-700 border-2 border-emerald-300 text-white'
-                              : 'bg-gradient-to-b from-slate-700 to-slate-950 border-2 border-slate-500 text-slate-200'
-                          } ${isSelected ? 'scale-110 ring-4 ring-white' : 'hover:scale-105'}`}
-                        >
-                          {piece.isKing ? (
-                            <Crown className="w-5 h-5 text-amber-300 fill-amber-300" />
-                          ) : (
-                            <div className="w-3.5 h-3.5 rounded-full border border-white/30" />
-                          )}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })
-              )}
+          {/* Tournament Crafted Checkerboard with Hardwood Borders and Coordinate Markings */}
+          <div className="relative p-3 sm:p-5 bg-gradient-to-br from-[#2a1e17] via-[#1a120c] to-[#120a06] border-4 border-[#3f2918] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+            {/* Top Coordinate Rulers */}
+            <div className="grid grid-cols-8 text-center text-[10px] font-mono font-bold text-amber-500/70 pb-1.5 px-3">
+              {colLabels.map((c) => (
+                <div key={c}>{c}</div>
+              ))}
             </div>
 
-            {/* Turn status overlay pill */}
-            <div className="mt-3 flex items-center justify-between text-xs text-slate-300 px-2">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span>
-                  {currentMatch.playerA.name}: <strong>{capturedByA}</strong> / 10
-                </span>
+            <div className="flex items-center">
+              {/* Left Row Number Ruler */}
+              <div className="flex flex-col justify-around text-center text-[10px] font-mono font-bold text-amber-500/70 pr-2 h-[320px] sm:h-[480px]">
+                {[8, 7, 6, 5, 4, 3, 2, 1].map((r) => (
+                  <div key={r}>{r}</div>
+                ))}
               </div>
-              <div className="font-mono text-emerald-400 font-medium">
-                {isSimulatedOpponentTurn ? t.opponentCalculatingMove : `${t.turnLabel}: ${turn === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name}`}
+
+              {/* 8×8 Playing Grid */}
+              <div className="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] border-2 border-[#120b06] rounded-xl overflow-hidden shadow-2xl">
+                {Array.from({ length: 8 }).map((_, r) =>
+                  Array.from({ length: 8 }).map((_, c) => {
+                    const isDarkSquare = (r + c) % 2 === 1;
+                    const piece = getPieceAt(r, c);
+                    const isSelected = selectedPiece?.id === piece?.id;
+                    const validMove = validMoves.find((m) => m.row === r && m.col === c);
+                    const isValidMove = Boolean(validMove);
+                    const isLastFrom = lastMove?.fromR === r && lastMove?.fromC === c;
+                    const isLastTo = lastMove?.toR === r && lastMove?.toC === c;
+                    const isNewlyCrowned = piece && piece.id === newlyCrownedId;
+
+                    return (
+                      <button
+                        key={`${r}-${c}`}
+                        type="button"
+                        onClick={() => handleSquareClick(r, c)}
+                        aria-label={t.squareAccessibleLabel.replace('{row}', String(r + 1)).replace('{col}', String(c + 1)).replace('{piece}', piece ? t.pieceLabel : '')}
+                        className={`relative flex items-center justify-center transition-all ${
+                          isDarkSquare
+                            ? 'bg-[#1b232e]'
+                            : 'bg-[#d8cbb8]'
+                        } ${isLastFrom || isLastTo ? 'bg-amber-900/40' : ''} ${
+                          isValidMove ? 'cursor-pointer' : ''
+                        }`}
+                      >
+                        {/* Valid landing pulse marker */}
+                        {isValidMove && !piece && (
+                          <div className="w-5 h-5 rounded-full bg-emerald-400/80 shadow-[0_0_12px_rgba(52,211,153,0.9)] animate-pulse flex items-center justify-center">
+                            {validMove?.jumpedPiece && (
+                              <Swords className="w-3 h-3 text-slate-900" />
+                            )}
+                          </div>
+                        )}
+
+                        {/* Tournament Piece Representation */}
+                        {piece && (
+                          <div
+                            className={`w-[32px] h-[32px] sm:w-[46px] sm:h-[46px] rounded-full shadow-[0_6px_12px_rgba(0,0,0,0.8)] flex items-center justify-center transition-transform relative select-none ${
+                              piece.color === 'red'
+                                ? 'bg-gradient-to-b from-emerald-400 via-teal-600 to-emerald-950 border-2 border-emerald-300 text-white'
+                                : 'bg-gradient-to-b from-slate-600 via-slate-800 to-slate-950 border-2 border-slate-400 text-slate-200'
+                            } ${isSelected ? 'scale-115 ring-4 ring-amber-300 z-10 shadow-[0_0_20px_rgba(251,191,36,0.8)]' : 'hover:scale-105'}`}
+                          >
+                            {/* Lathe-turned concentric ring decor */}
+                            <div className="w-[80%] h-[80%] rounded-full border border-white/20 flex items-center justify-center pointer-events-none">
+                              {piece.isKing ? (
+                                <div className="flex items-center justify-center">
+                                  <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300 fill-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] animate-pulse" />
+                                </div>
+                              ) : (
+                                <div className="w-2.5 h-2.5 rounded-full bg-white/25 shadow-inner" />
+                              )}
+                            </div>
+
+                            {/* Crown celebration aura */}
+                            {isNewlyCrowned && (
+                              <div className="absolute inset-0 rounded-full ring-4 ring-amber-400 animate-ping pointer-events-none" />
+                            )}
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Bottom Status & Captures Counter Bar */}
+            <div className="mt-3.5 flex items-center justify-between text-xs text-slate-300 px-3 py-2 bg-[#121922] rounded-xl border border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm" />
+                <span className="text-slate-200 font-semibold">{currentMatch.playerA.name}:</span>
+                <span className="font-mono text-emerald-400 font-bold">{capturedByA} / 10</span>
+              </div>
+              <div className="font-mono text-amber-300 font-medium">
+                {isSimulatedOpponentTurn
+                  ? t.opponentCalculatingMove
+                  : `${t.turnLabel}: ${turn === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name}`}
               </div>
               <div className="flex items-center gap-2">
-                <span>
-                  {currentMatch.playerB.name}: <strong>{capturedByB}</strong> / 10
-                </span>
-                <div className="w-3 h-3 rounded-full bg-slate-700" />
+                <span className="text-slate-200 font-semibold">{currentMatch.playerB.name}:</span>
+                <span className="font-mono text-cyan-400 font-bold">{capturedByB} / 10</span>
+                <span className="w-3 h-3 rounded-full bg-slate-700 shadow-sm" />
               </div>
             </div>
           </div>
@@ -339,9 +408,15 @@ export const DameGame: React.FC = () => {
                 <div>{t.skillAdvantageLabel} (w): {(currentMatch.advantage * 100).toFixed(0)}%</div>
                 <div>{t.leaderLabel}: {currentMatch.leader ? (currentMatch.leader === 'A' ? currentMatch.playerA.name : currentMatch.playerB.name) : t.levelStanding}</div>
               </div>
-              <p className="text-[11px] text-slate-500">
-                {t.freeSkillCompetitionNotice}
-              </p>
+              <div className="p-2.5 bg-slate-900/80 rounded-lg text-[11px] text-slate-300 space-y-1">
+                <div className="font-semibold text-amber-300 flex items-center gap-1">
+                  <Crown className="w-3 h-3 text-amber-400" />
+                  <span>Amategeko y'Umwamikazi (Dame)</span>
+                </div>
+                <p className="text-slate-400">
+                  Iyo igice kigeze ku murongo wa nyuma w'umukeba, gihinduka Umwamikazi (Dame) kigashobora kugenda no gusimbuka imbere n'inyuma.
+                </p>
+              </div>
             </div>
           </div>
 
