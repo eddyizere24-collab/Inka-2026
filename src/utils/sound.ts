@@ -248,6 +248,70 @@ class SoundEngine {
     osc.stop(ctx.currentTime + 0.1);
   }
 
+  /** Celebratory multi-tone Victory Fanfare */
+  public playVictoryFanfare() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const notes = [
+      { f: 523.25, d: 0.12, t: 0 },    // C5
+      { f: 659.25, d: 0.12, t: 0.1 },  // E5
+      { f: 783.99, d: 0.14, t: 0.2 },  // G5
+      { f: 1046.5, d: 0.45, t: 0.32 }, // C6
+    ];
+    notes.forEach(({ f, d, t }) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, ctx.currentTime + t);
+
+      gain.gain.setValueAtTime(0.24, ctx.currentTime + t);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + d);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + d);
+    });
+  }
+
+  /** Foul buzzer sound (scratch, wrong ball) */
+  public playFoulSound() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, ctx.currentTime);
+    osc.frequency.setValueAtTime(105, ctx.currentTime + 0.1);
+
+    gain.gain.setValueAtTime(0.22, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.28);
+  }
+
+  /** Subtle chalk rub on cue tip */
+  public playChalk() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(750 + Math.random() * 150, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.04);
+
+    gain.gain.setValueAtTime(0.06, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.04);
+  }
+
   /**
    * Authentic phone call ring alert (Doc Section 5.3 & Appendix A:
    * "Uwase receives an alert that rings her phone like an incoming call")

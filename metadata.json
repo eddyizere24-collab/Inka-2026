@@ -1,6 +1,6 @@
 {
   "name": "INKA",
-  "description": "INKA is Rwanda's premier community skill-games platform for Igisoro, Dame, and Biyari. Play, connect, and relax with friends.",
+  "description": "INKA is an authentic Rwandan community skill-games platform for Igisoro, Dame, and Biyari. Play, connect, and relax with friends.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

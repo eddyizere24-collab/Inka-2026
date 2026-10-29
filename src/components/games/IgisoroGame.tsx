@@ -282,6 +282,7 @@ export const IgisoroGame: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Compact Top Match HUD */}
       <GameHud
         match={currentMatch}
         turn={turn}
@@ -297,126 +298,18 @@ export const IgisoroGame: React.FC = () => {
             {t.seeds_count}: {seedsB}/64
           </span>
         }
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        {/* Mancala Board Area */}
-        <div className="lg:col-span-3 flex flex-col items-center">
-          {/* Top Bar Controls */}
-          <div className="w-full max-w-3xl flex items-center justify-between mb-3 px-2 text-xs text-slate-300">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-amber-200 tracking-wide font-display text-sm">
-                Urubaho rw'Igisoro Nyarwanda
-              </span>
-              <span className="text-amber-500/60 font-mono">·</span>
-              <span className="text-slate-400">Imyobo 32 / Isoro 64</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <label className="flex items-center gap-1.5 cursor-pointer text-slate-300 hover:text-white transition-colors">
-                <input
-                  type="checkbox"
-                  checked={isPassAndPlay}
-                  onChange={(e) => setIsPassAndPlay(e.target.checked)}
-                  className="rounded border-amber-900/60 bg-slate-900 text-emerald-500 cursor-pointer accent-emerald-500"
-                />
-                <span className="text-xs">{t.passAndPlayLabel}</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Authentic Rwandan Hardwood Board (Urubaho rw'Igisoro) */}
-          <div className="w-full max-w-3xl relative rounded-3xl p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-4 border-[#3a2211] bg-gradient-to-br from-[#2a170a] via-[#1a0f07] to-[#120a05] text-amber-100 select-none overflow-hidden">
-            {/* Subtle Imigongo geometric border trim */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
-
-            {/* North Player (Player B) Header */}
-            <div className="flex items-center justify-between mb-3 px-3 py-1.5 bg-[#201208]/80 rounded-xl border border-amber-950/70 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm" />
-                <span className="text-slate-200 font-semibold">{currentMatch.playerB.name}</span>
-                <span className="text-cyan-400/80 text-[11px]">({t.northTerritory})</span>
+        rulesContent={
+          <div className="space-y-4">
+            <div className="p-3 bg-[#0d131c] rounded-xl border border-slate-800 space-y-3">
+              <div className="flex items-center gap-2 text-amber-300 font-display font-bold text-sm">
+                <Info className="w-4 h-4 text-amber-400" />
+                <span>{t.igisoroTitle}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-cyan-300 font-bold">{seedsB} {t.seedsCountLabel}</span>
-                <span className="text-slate-400 text-[11px]">({((seedsB / 64) * 100).toFixed(0)}%)</span>
-              </div>
-            </div>
-
-            {/* Board Pits Grid (4 Rows × 8 Columns) */}
-            <div className="space-y-3 relative">
-              {/* Row 0: Player B Back Row (Urushya rw'inyuma) */}
-              <div className="grid grid-cols-8 gap-2 sm:gap-2.5">
-                {board[0].map((count, c) => renderPit(0, c, count, 'B', false))}
-              </div>
-
-              {/* Row 1: Player B Front Battle Row (Urushya rw'imbere) */}
-              <div className="grid grid-cols-8 gap-2 sm:gap-2.5 pb-2">
-                {board[1].map((count, c) => renderPit(1, c, count, 'B', true))}
-              </div>
-
-              {/* Battle Dividing Line with Cultural Marker */}
-              <div className="relative py-1 flex items-center justify-center">
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-600/50 to-transparent" />
-                <span className="absolute bg-[#1a0f07] px-3 py-0.5 rounded-full border border-amber-900/60 text-[10px] text-amber-300/80 font-mono uppercase tracking-wider flex items-center gap-1">
-                  <Swords className="w-3 h-3 text-amber-400" />
-                  Urushya rw'Imbere (Gusiba Zone)
-                </span>
-              </div>
-
-              {/* Row 2: Player A Front Battle Row (Urushya rw'imbere) */}
-              <div className="grid grid-cols-8 gap-2 sm:gap-2.5 pt-2">
-                {board[2].map((count, c) => renderPit(2, c, count, 'A', true))}
-              </div>
-
-              {/* Row 3: Player A Back Row (Urushya rw'inyuma) */}
-              <div className="grid grid-cols-8 gap-2 sm:gap-2.5">
-                {board[3].map((count, c) => renderPit(3, c, count, 'A', false))}
-              </div>
-            </div>
-
-            {/* South Player (Player A) Footer */}
-            <div className="flex items-center justify-between mt-3 px-3 py-1.5 bg-[#201208]/80 rounded-xl border border-amber-950/70 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm" />
-                <span className="text-emerald-300 font-semibold">{currentMatch.playerA.name}</span>
-                <span className="text-emerald-400/80 text-[11px]">({t.southTerritory})</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-emerald-300 font-bold">{seedsA} {t.seedsCountLabel}</span>
-                <span className="text-slate-400 text-[11px]">({((seedsA / 64) * 100).toFixed(0)}%)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Sowing Commentary & Status HUD */}
-          <div className="mt-4 w-full max-w-3xl flex items-center justify-between gap-3 text-xs bg-[#121924] px-4 py-2.5 rounded-xl border border-slate-800 text-slate-300 shadow-md">
-            <div className="flex items-center gap-2 text-emerald-300">
-              <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 animate-pulse" />
-              <span className="font-medium">{statusMessage}</span>
-            </div>
-            <div className="font-mono text-slate-400 text-[11px] whitespace-nowrap">
-              {turn === 'A' ? (
-                <span className="text-emerald-400 font-semibold">{t.turnYourTurn}</span>
-              ) : (
-                <span className="text-cyan-400 font-semibold">{t.turnOpponentTurn}</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Tactical Overview & Honor Sidebar */}
-        <div className="space-y-4">
-          <div className="p-4 bg-[#141a24] border border-slate-800 rounded-xl space-y-3">
-            <h4 className="text-sm font-bold text-slate-200 font-display flex items-center gap-2">
-              <Info className="w-4 h-4 text-amber-400" />
-              <span>Amategeko y'Igisoro</span>
-            </h4>
-            <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
-              <p>
+              <p className="text-xs text-slate-400 leading-relaxed">
                 {t.igisoroDesc}
               </p>
-              <div className="p-3 bg-[#0d131c] rounded-lg font-mono text-[11px] text-amber-200 space-y-1.5 border border-slate-800/80">
+
+              <div className="p-2.5 bg-[#141b26] rounded-lg font-mono text-[11px] text-amber-200 space-y-1 border border-slate-800">
                 <div className="flex justify-between">
                   <span>Isoro za {currentMatch.playerA.name}:</span>
                   <strong className="text-emerald-400">{seedsA} / 64 ({(seedsA / 64 * 100).toFixed(0)}%)</strong>
@@ -430,37 +323,137 @@ export const IgisoroGame: React.FC = () => {
                   <strong className="text-amber-400">{(currentMatch.advantage * 100).toFixed(0)}%</strong>
                 </div>
               </div>
+
               <div className="p-2.5 bg-amber-950/20 border border-amber-900/40 rounded-lg text-[11px] text-amber-200/90 space-y-1">
                 <div className="font-semibold text-amber-300 flex items-center gap-1">
                   <Swords className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Gusiba (Kurya Isoro)</span>
+                  <span>{t.igisoroFrontBattleZone}</span>
                 </div>
                 <p className="text-slate-400 leading-snug">
-                  Iyo isoro ya nyuma iguye mu mwobo w'imbere ufite izindi soro, kandi umukeba afite isoro mu mwobo uteze n'uwo, urazirya zose!
+                  {t.igisoro_rule}
                 </p>
               </div>
             </div>
-          </div>
 
-          {currentMatch.status === 'concluded' && (
-            <div className="p-4 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-3">
-              <div className="flex items-center gap-2 font-display font-bold text-sm">
-                <Award className="w-5 h-5 text-emerald-400" />
-                <span>{t.matchConcluded}</span>
+            {currentMatch.status === 'concluded' && (
+              <div className="p-3.5 bg-emerald-950/40 border border-emerald-700/60 rounded-xl text-emerald-200 space-y-2.5">
+                <div className="flex items-center gap-2 font-display font-bold text-sm">
+                  <Award className="w-4 h-4 text-emerald-400" />
+                  <span>{t.matchConcluded}</span>
+                </div>
+                <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
+                <div className="p-2 bg-[#10151d] rounded text-xs font-mono text-emerald-300 flex justify-between">
+                  <span>{t.honorPointsAwarded}:</span>
+                  <strong className="text-white">+10 {t.honorPointsLabel}</strong>
+                </div>
               </div>
-              <p className="text-xs text-slate-300">{currentMatch.concludeReason}</p>
-              <div className="p-3 bg-[#10151d] rounded-lg text-xs font-mono text-emerald-300 flex justify-between">
-                <span>{t.honorPointsAwarded}:</span>
-                <strong className="text-white">+10 {t.honorPointsLabel}</strong>
+            )}
+          </div>
+        }
+      />
+
+      {/* Maximized Mancala Board Arena */}
+      <div className="w-full flex-1 flex flex-col items-center justify-between min-h-0 gap-1.5 sm:gap-2">
+        {/* Sleek Top Mini Ribbon */}
+        <div className="w-full max-w-5xl flex items-center justify-between px-2 text-[11px] text-slate-300 shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-amber-200 font-display">Urubaho rw'Igisoro</span>
+            <span className="text-amber-500/60 font-mono">·</span>
+            <span className="text-emerald-400 font-mono text-[10px]">
+              {turn === 'A' ? `${t.turnYourTurn}: ${currentMatch.playerA.name}` : `${t.turnOpponentTurn}: ${currentMatch.playerB.name}`}
+            </span>
+          </div>
+          <label className="flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-white transition-colors text-[10px]">
+            <input
+              type="checkbox"
+              checked={isPassAndPlay}
+              onChange={(e) => setIsPassAndPlay(e.target.checked)}
+              className="rounded border-amber-900/60 bg-slate-900 text-emerald-500 cursor-pointer accent-emerald-500 w-3 h-3"
+            />
+            <span>{t.passAndPlayLabel}</span>
+          </label>
+        </div>
+
+        {/* Maximized Authentic Hardwood Board (Urubaho rw'Igisoro) */}
+        <div className="relative flex-1 w-full max-w-5xl flex items-center justify-center min-h-0 overflow-hidden">
+          <div className="w-full max-h-[calc(100vh-175px)] relative rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.95)] border-4 border-[#3a2211] bg-gradient-to-br from-[#2a170a] via-[#1a0f07] to-[#120a05] text-amber-100 select-none overflow-hidden flex flex-col justify-between">
+            {/* Subtle Imigongo geometric border trim */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
+
+            {/* North Player (Player B) Header */}
+            <div className="flex items-center justify-between mb-2 px-3 py-1 bg-[#201208]/90 rounded-xl border border-amber-950/70 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm" />
+                <span className="text-slate-200 font-semibold">{currentMatch.playerB.name}</span>
+                <span className="text-cyan-400/80 text-[10px] hidden sm:inline">({t.northTerritory})</span>
               </div>
-              <button
-                onClick={() => setCurrentMatch(null)}
-                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
-              >
-                {t.backToLobby}
-              </button>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-cyan-300 font-bold">{seedsB} {t.seedsCountLabel}</span>
+                <span className="text-slate-400 text-[10px]">({((seedsB / 64) * 100).toFixed(0)}%)</span>
+              </div>
             </div>
-          )}
+
+            {/* Board Pits Grid (4 Rows × 8 Columns) */}
+            <div className="space-y-1.5 sm:space-y-2 relative flex-1 flex flex-col justify-around">
+              {/* Row 0: Player B Back Row */}
+              <div className="grid grid-cols-8 gap-1.5 sm:gap-2.5">
+                {board[0].map((count, c) => renderPit(0, c, count, 'B', false))}
+              </div>
+
+              {/* Row 1: Player B Front Battle Row */}
+              <div className="grid grid-cols-8 gap-1.5 sm:gap-2.5 pb-1">
+                {board[1].map((count, c) => renderPit(1, c, count, 'B', true))}
+              </div>
+
+              {/* Battle Dividing Line */}
+              <div className="relative py-0.5 flex items-center justify-center">
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-600/50 to-transparent" />
+                <span className="absolute bg-[#1a0f07] px-2.5 py-0.5 rounded-full border border-amber-900/60 text-[9px] text-amber-300/80 font-mono uppercase tracking-wider flex items-center gap-1">
+                  <Swords className="w-2.5 h-2.5 text-amber-400" />
+                  {t.igisoroFrontBattleZone}
+                </span>
+              </div>
+
+              {/* Row 2: Player A Front Battle Row */}
+              <div className="grid grid-cols-8 gap-1.5 sm:gap-2.5 pt-1">
+                {board[2].map((count, c) => renderPit(2, c, count, 'A', true))}
+              </div>
+
+              {/* Row 3: Player A Back Row */}
+              <div className="grid grid-cols-8 gap-1.5 sm:gap-2.5">
+                {board[3].map((count, c) => renderPit(3, c, count, 'A', false))}
+              </div>
+            </div>
+
+            {/* South Player (Player A) Footer */}
+            <div className="flex items-center justify-between mt-2 px-3 py-1 bg-[#201208]/90 rounded-xl border border-amber-950/70 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm" />
+                <span className="text-emerald-300 font-semibold">{currentMatch.playerA.name}</span>
+                <span className="text-emerald-400/80 text-[10px] hidden sm:inline">({t.southTerritory})</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-emerald-300 font-bold">{seedsA} {t.seedsCountLabel}</span>
+                <span className="text-slate-400 text-[10px]">({((seedsA / 64) * 100).toFixed(0)}%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Minimal Sowing Commentary Ribbon */}
+        <div className="w-full max-w-5xl flex items-center justify-between gap-3 text-xs bg-[#0e141e]/90 px-3 py-1.5 rounded-xl border border-slate-800 text-slate-300 shrink-0">
+          <div className="flex items-center gap-2 text-emerald-300 min-w-0">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0 animate-pulse" />
+            <span className="font-medium text-[11px] truncate">{statusMessage}</span>
+          </div>
+          <div className="font-mono text-slate-400 text-[10px] whitespace-nowrap shrink-0">
+            {turn === 'A' ? (
+              <span className="text-emerald-400 font-semibold">{t.turnYourTurn}</span>
+            ) : (
+              <span className="text-cyan-400 font-semibold">{t.turnOpponentTurn}</span>
+            )}
+          </div>
         </div>
       </div>
     </div>

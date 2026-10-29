@@ -323,6 +323,40 @@ export interface TranslationSchema {
   score_advantage: string;
   spectators_watching: string;
   live_spectators: string;
+  rotateToLandscape: string;
+  rotateToLandscapeDesc: string;
+  toggleFullscreen: string;
+  gameDetailsAndRules: string;
+  ballInHandNotice: string;
+  cueAimLabel: string;
+  spinEnglishLabel: string;
+  spinEnglishTooltip: string;
+  eightBallStatusReady: string;
+  eightBallStatusWaiting: string;
+  calledPocketSelected: string;
+  callPocketPrompt: string;
+  biyariScratchLoss: string;
+  biyariEarlyEightLoss: string;
+  biyariUncalledPocketLoss: string;
+  dameQueenRules: string;
+  dameQueenRulesDesc: string;
+  dameMandatoryCaptureNotice: string;
+  dameNoMovesVictoryReason: string;
+  igisoroFrontBattleZone: string;
+  spectatorZeroMatches: string;
+  demoModeBadge: string;
+  biyariCalledPocketWinReason: string;
+  biyariScratchBallInHand: string;
+  biyariPottedContinueTurn: string;
+  biyariChampionshipWinTitle: string;
+  biyariMatchConcludedTitle: string;
+  biyariAimCueBallPrompt: string;
+  pocketCornerTopLeft: string;
+  pocketCenterTop: string;
+  pocketCornerTopRight: string;
+  pocketCornerBottomLeft: string;
+  pocketCenterBottom: string;
+  pocketCornerBottomRight: string;
 }
 
 export const translations: Record<Language, TranslationSchema> = {
@@ -643,6 +677,40 @@ export const translations: Record<Language, TranslationSchema> = {
     score_advantage: 'Ikigero cy’Ubuhanga',
     spectators_watching: 'abantu bari kureba ubu',
     live_spectators: "Abareba umukino",
+    rotateToLandscape: 'Hindura telefoni ibe itambitse',
+    rotateToLandscapeDesc: 'Hindura telefoni itambike kugira ngo ikibuga cyaguke kandi kigaragare neza.',
+    toggleFullscreen: 'Kwerekana ku kirere cyose',
+    gameDetailsAndRules: "Amategeko n'Ububiko",
+    ballInHandNotice: 'Kanda ku meza ushyireho umupira wera (Ball-in-Hand)!',
+    cueAimLabel: 'Icyerekezo',
+    spinEnglishLabel: 'Uruziga (Spin)',
+    spinEnglishTooltip: "Kanda hano uhitemo uruziga rw'umupira (Spin, English)",
+    eightBallStatusReady: 'Witeguye Kwinjizwa!',
+    eightBallStatusWaiting: 'Uracyategereje',
+    calledPocketSelected: 'Umwobo wahiswemo: {pocket}',
+    callPocketPrompt: 'Kanda ku mwobo ushaka kwinjizamo umupira wa 8 kugira ngo uwutangaze (Call Pocket)!',
+    biyariScratchLoss: 'Gutsindwa ku kosa ry’umupira wera: Umupira wa 8 winjijwe hamwe n’umupira wera.',
+    biyariEarlyEightLoss: "Gutsindwa ku itegeko rya Biyari: Umupira wa 8 winjijwe mbere yo kurangiza imipira yose y'itsinda ({count} isigaye).",
+    biyariUncalledPocketLoss: 'Gutsindwa: Umupira wa 8 winjijwe mu mwobo utari watangajwe.',
+    dameQueenRules: "Amategeko y'Umwamikazi (Dame)",
+    dameQueenRulesDesc: "Iyo igice kigeze ku murongo wa nyuma w'umukeba, gihinduka Umwamikazi (Dame) kigashobora kugenda no gusimbuka imbere n'inyuma.",
+    dameMandatoryCaptureNotice: 'Gufata (Kurya) birategetswe: Iyo ufite umwanya wo kurya, ugomba kurya mbere yo gukora indi coup.',
+    dameNoMovesVictoryReason: '{player} yabuze ahantu ho kugana maze {winner} atsinda umukino.',
+    igisoroFrontBattleZone: "Urushya rw'Imbere (Gusiba)",
+    spectatorZeroMatches: 'Nta mikino iri gukinwa aka kanya. Tangira umukino muri salo cyangwa ugerageze imyitozo!',
+    demoModeBadge: "Uburyo bw'Igerageza",
+    biyariCalledPocketWinReason: 'Intsinzi Nyayo! Umukinnyi yinjije umupira wa 8 mu mwobo yabwiwe ku buhanga bukomeye cyane.',
+    biyariScratchBallInHand: 'Ikosa (Scratch): Umukeba yahawe umupira mu maboko (Ball-in-Hand)!',
+    biyariPottedContinueTurn: 'Watsinze neza! Komeza ukinire kuri uyu mwanya',
+    biyariChampionshipWinTitle: 'Intsinzi y’Ikirenga: {player} Aratsinze!',
+    biyariMatchConcludedTitle: 'Umukino Urangiye: {player} Yegukanye Intsinzi',
+    biyariAimCueBallPrompt: 'Kina umupira wera werekeza ku matsinda y’imipira',
+    pocketCornerTopLeft: 'Mfuruka Hejuru Ibumoso',
+    pocketCenterTop: 'Hagati Hejuru',
+    pocketCornerTopRight: 'Mfuruka Hejuru Iburyo',
+    pocketCornerBottomLeft: 'Mfuruka Hasi Ibumoso',
+    pocketCenterBottom: 'Hagati Hasi',
+    pocketCornerBottomRight: 'Mfuruka Hasi Iburyo',
   },
 
   en: {
@@ -962,6 +1030,40 @@ export const translations: Record<Language, TranslationSchema> = {
     score_advantage: 'Skill Advantage',
     spectators_watching: 'spectators watching live',
     live_spectators: "Spectators",
+    rotateToLandscape: 'Rotate to Landscape',
+    rotateToLandscapeDesc: 'Rotate your device horizontally for maximum playing field and best view.',
+    toggleFullscreen: 'Toggle Fullscreen',
+    gameDetailsAndRules: 'Rules & Match Details',
+    ballInHandNotice: 'Tap on the table to place the cue ball (Ball-in-Hand)!',
+    cueAimLabel: 'Aim Angle',
+    spinEnglishLabel: 'Cue Spin (English)',
+    spinEnglishTooltip: 'Tap to adjust cue ball contact point (English & Spin)',
+    eightBallStatusReady: 'Ready to Pocket!',
+    eightBallStatusWaiting: 'Waiting on Group',
+    calledPocketSelected: 'Called Pocket: {pocket}',
+    callPocketPrompt: 'Tap a pocket to designate where you will sink the 8-ball (Call Pocket)!',
+    biyariScratchLoss: 'Loss on scratch foul: 8-ball potted along with cue ball scratch.',
+    biyariEarlyEightLoss: 'Loss under 8-ball rules: 8-ball potted before clearing your group ({count} remaining).',
+    biyariUncalledPocketLoss: 'Loss: 8-ball potted in an uncalled pocket.',
+    dameQueenRules: 'Queen (Dame) Rules',
+    dameQueenRulesDesc: "When a piece reaches the opponent's back row, it promotes to a Queen (Dame) and can move or capture forwards and backwards.",
+    dameMandatoryCaptureNotice: 'Mandatory capture: When a capture is available, you must jump and cannot make a regular step.',
+    dameNoMovesVictoryReason: '{player} has no legal moves remaining. {winner} wins the match.',
+    igisoroFrontBattleZone: 'Front Battle Row (Gusiba)',
+    spectatorZeroMatches: 'No active live matches right now. Start a challenge in the lobby or play practice mode!',
+    demoModeBadge: 'Demo Practice Mode',
+    biyariCalledPocketWinReason: 'Authentic Victory! The player sunk the 8-ball into their called pocket with exceptional skill.',
+    biyariScratchBallInHand: 'Scratch Foul: Opponent awarded ball-in-hand anywhere on the table!',
+    biyariPottedContinueTurn: 'Great pot! Continue your turn',
+    biyariChampionshipWinTitle: 'Championship Victory: {player} Wins!',
+    biyariMatchConcludedTitle: 'Match Concluded: {player} Takes the Win',
+    biyariAimCueBallPrompt: 'Aim the cue ball toward your target object balls',
+    pocketCornerTopLeft: 'Top Left Corner',
+    pocketCenterTop: 'Top Center',
+    pocketCornerTopRight: 'Top Right Corner',
+    pocketCornerBottomLeft: 'Bottom Left Corner',
+    pocketCenterBottom: 'Bottom Center',
+    pocketCornerBottomRight: 'Bottom Right Corner',
   },
 
   fr: {
@@ -1281,6 +1383,40 @@ export const translations: Record<Language, TranslationSchema> = {
     score_advantage: 'Avantage Tactique',
     spectators_watching: 'spectateurs en direct',
     live_spectators: "Spectateurs",
+    rotateToLandscape: 'Pivoter en Mode Paysage',
+    rotateToLandscapeDesc: 'Basculez votre appareil à l’horizontale pour un terrain de jeu maximal.',
+    toggleFullscreen: 'Plein Écran',
+    gameDetailsAndRules: 'Règles et Détails du Match',
+    ballInHandNotice: 'Touchez la table pour placer la bille blanche (Bille en main) !',
+    cueAimLabel: 'Angle de visée',
+    spinEnglishLabel: 'Effet (Spin)',
+    spinEnglishTooltip: "Touchez pour régler l'effet de frappe (Effet & Spin)",
+    eightBallStatusReady: 'Prête à être empochée !',
+    eightBallStatusWaiting: 'En attente du groupe',
+    calledPocketSelected: 'Poche désignée : {pocket}',
+    callPocketPrompt: 'Touchez une poche pour désigner où vous empocherez la 8 (Désigner la poche) !',
+    biyariScratchLoss: "Défaite par faute : bille 8 empochée lors d'un empochage de la blanche.",
+    biyariEarlyEightLoss: "Défaite selon les règles : bille 8 empochée avant d'avoir vidé son groupe ({count} restantes).",
+    biyariUncalledPocketLoss: 'Défaite : bille 8 empochée dans une poche non désignée.',
+    dameQueenRules: 'Règles de la Dame',
+    dameQueenRulesDesc: "Lorsqu'un pion atteint la rangée du fond adverse, il est promu en Dame et peut se déplacer ou capturer vers l'avant et l'arrière.",
+    dameMandatoryCaptureNotice: "Prise obligatoire : Lorsqu'une prise est possible, vous devez capturer avant tout autre coup.",
+    dameNoMovesVictoryReason: "{player} n'a plus aucun coup légal possible. {winner} remporte la partie.",
+    igisoroFrontBattleZone: 'Rangée de combat avant (Gusiba)',
+    spectatorZeroMatches: 'Aucune partie en direct pour le moment. Lancez un défi dans le salon ou essayez le mode entraînement !',
+    demoModeBadge: 'Mode Démonstration',
+    biyariCalledPocketWinReason: 'Victoire Authentique ! La bille 8 a été empochée dans la poche annoncée avec grande maîtrise.',
+    biyariScratchBallInHand: 'Faute de Scratch : L’adversaire obtient la bille en main sur toute la table !',
+    biyariPottedContinueTurn: 'Belle bille empochée ! Poursuivez votre tour',
+    biyariChampionshipWinTitle: 'Victoire Magistrale : {player} a Gagné !',
+    biyariMatchConcludedTitle: 'Partie Terminée : {player} l’Emporte',
+    biyariAimCueBallPrompt: 'Visez avec la bille blanche vers vos billes cibles',
+    pocketCornerTopLeft: 'Poche Coin Haut Gauche',
+    pocketCenterTop: 'Poche Milieu Haut',
+    pocketCornerTopRight: 'Poche Coin Haut Droit',
+    pocketCornerBottomLeft: 'Poche Coin Bas Gauche',
+    pocketCenterBottom: 'Poche Milieu Bas',
+    pocketCornerBottomRight: 'Poche Coin Bas Droit',
   },
 };
 

@@ -6,7 +6,7 @@ interface ChallengeModalProps {
   opponent: PlayerProfile;
   initialGame?: GameType;
   onClose: () => void;
-  onStart: (gameType: GameType, timeControl: TimeControl) => void;
+  onStart: (gameType: GameType, timeControl: TimeControl, message?: string) => void;
 }
 
 export const ChallengeModal: React.FC<ChallengeModalProps> = ({
@@ -27,7 +27,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onStart(selectedGame, timeControl);
+    onStart(selectedGame, timeControl, message);
   };
 
   return (

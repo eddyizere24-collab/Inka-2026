@@ -4,6 +4,10 @@ import {
   VolumeX,
   ArrowLeft,
   Award,
+  Maximize2,
+  Minimize2,
+  Smartphone,
+  X,
 } from 'lucide-react';
 import { PlatformProvider, usePlatform, GameType } from './context/PlatformContext';
 import { InkaLogo } from './components/brand/InkaLogo';
@@ -33,38 +37,103 @@ const MainShell: React.FC = () => {
     setCurrentMatch,
   } = usePlatform();
 
-  // If in active match, render the game view
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [isPortrait, setIsPortrait] = useState<boolean>(false);
+  const [showLandscapePrompt, setShowLandscapePrompt] = useState<boolean>(true);
+
+  // Monitor orientation on resize/mount
+  React.useEffect(() => {
+    const checkOrientation = () => {
+      if (typeof window !== 'undefined') {
+        setIsPortrait(window.innerHeight > window.innerWidth && window.innerWidth < 900);
+        setIsFullscreen(!!document.fullscreenElement);
+      }
+    };
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    document.addEventListener('fullscreenchange', checkOrientation);
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      document.removeEventListener('fullscreenchange', checkOrientation);
+    };
+  }, []);
+
+  // When match begins, attempt auto-landscape orientation lock on mobile devices
+  React.useEffect(() => {
+    if (currentMatch) {
+      try {
+        if ('orientation' in screen && screen.orientation && 'lock' in screen.orientation) {
+          (screen.orientation as any).lock('landscape').catch(() => {});
+        }
+      } catch {
+        // Fallback gracefully on devices where orientation lock is restricted
+      }
+    }
+  }, [currentMatch]);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        if ('orientation' in screen && screen.orientation && 'lock' in screen.orientation) {
+          await (screen.orientation as any).lock('landscape').catch(() => {});
+        }
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        if ('orientation' in screen && screen.orientation && 'unlock' in screen.orientation) {
+          (screen.orientation as any).unlock();
+        }
+        setIsFullscreen(false);
+      }
+    } catch {
+      // User gesture restriction safe catch
+    }
+  };
+
+  // If in active match, render the full-bleed, edge-to-edge game arena
   if (currentMatch) {
     return (
-      <div className="min-h-screen bg-[#0a0e14] bg-rwandan-pattern text-slate-100 flex flex-col">
-        {/* Game Top Header */}
-        <header className="h-16 px-4 sm:px-8 border-b border-slate-800/80 bg-[#101620]/95 backdrop-blur-md flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3">
+      <div className="h-screen w-screen overflow-hidden bg-[#070a0f] text-slate-100 flex flex-col select-none">
+        {/* Sleek Minimal Game Bar (~42px height) */}
+        <header className="h-11 px-2.5 sm:px-5 border-b border-slate-800/80 bg-[#0d131c]/95 backdrop-blur-md flex items-center justify-between z-40 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setCurrentMatch(null)}
-              className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="p-1.5 sm:px-2.5 sm:py-1 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700/60"
+              title={t.backToLobby}
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>{t.backToLobby}</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{t.backToLobby}</span>
             </button>
-            <div className="h-4 w-px bg-slate-800 hidden sm:block" />
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="h-3.5 w-px bg-slate-800 hidden sm:block" />
+            <div className="flex items-center gap-1.5">
               <InkaLogo variant="symbol" size="sm" ariaLabel={t.logoAccessibleLabel} />
-              <span className="font-display font-bold text-white text-sm sm:text-base">
+              <span className="font-display font-bold text-white text-xs sm:text-sm">
                 INKA · {currentMatch.gameType === 'dame' ? t.dameTitle : currentMatch.gameType === 'igisoro' ? t.igisoroTitle : t.biyariTitle}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Language selector remains available during a match. */}
-            <div role="group" aria-label={t.languageSelectorLabel} className="flex items-center bg-[#18212e] p-1 rounded-xl border border-slate-700/80 text-[11px] font-mono">
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Fullscreen & Landscape Orientation Toggle */}
+            <button
+              onClick={toggleFullscreen}
+              className="p-1.5 rounded-lg bg-[#141b26] hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700/80"
+              title={t.toggleFullscreen}
+              aria-label={t.toggleFullscreen}
+            >
+              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5 text-emerald-400" /> : <Maximize2 className="w-3.5 h-3.5" />}
+            </button>
+
+            {/* Language Selector Pill */}
+            <div role="group" aria-label={t.languageSelectorLabel} className="flex items-center bg-[#141b26] p-0.5 rounded-lg border border-slate-700/80 text-[10px] font-mono">
               {(['rw', 'en', 'fr'] as const).map((code) => (
                 <button
                   key={code}
                   onClick={() => setLang(code)}
                   aria-pressed={lang === code}
-                  className={`px-2 py-1 rounded-lg uppercase font-bold transition-all cursor-pointer ${
+                  className={`px-1.5 py-0.5 rounded uppercase font-bold transition-all cursor-pointer ${
                     lang === code ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -72,25 +141,46 @@ const MainShell: React.FC = () => {
                 </button>
               ))}
             </div>
+
             {/* Audio Toggle */}
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 rounded-lg bg-[#18212e] hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer border border-slate-700/80"
+              className="p-1.5 rounded-lg bg-[#141b26] hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer border border-slate-700/80"
               aria-label={isMuted ? t.unmuteSound : t.muteSound}
             >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+              {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-400" />}
             </button>
 
-            {/* Honor Points pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18212e] border border-emerald-500/40 rounded-xl text-xs font-mono text-emerald-300">
-              <Award className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{honorPoints} {t.honorPointsLabel}</span>
+            {/* Honor Points chip */}
+            <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-[#141b26] border border-emerald-500/40 rounded-lg text-[11px] font-mono text-emerald-300">
+              <Award className="w-3 h-3 text-emerald-400" />
+              <span>{honorPoints}</span>
             </div>
           </div>
         </header>
 
-        {/* Game Canvas Container */}
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Mobile Portrait Orientation Prompt (Floating, dismissable) */}
+        {isPortrait && showLandscapePrompt && (
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 z-40 bg-[#121a26]/95 border border-amber-500/60 text-amber-200 px-3.5 py-1.5 rounded-full shadow-2xl flex items-center gap-2.5 text-xs backdrop-blur-md animate-in slide-in-from-top duration-200">
+            <Smartphone className="w-3.5 h-3.5 text-amber-400 rotate-90 shrink-0 animate-pulse" />
+            <span className="text-[11px] font-medium">{t.rotateToLandscapeDesc}</span>
+            <button
+              onClick={toggleFullscreen}
+              className="px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded text-[10px] shrink-0 cursor-pointer"
+            >
+              {t.toggleFullscreen}
+            </button>
+            <button
+              onClick={() => setShowLandscapePrompt(false)}
+              className="p-0.5 hover:text-white text-slate-400 cursor-pointer"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        )}
+
+        {/* Full-Bleed Edge-to-Edge Arena */}
+        <main className="flex-1 w-full h-[calc(100vh-44px)] overflow-hidden flex flex-col items-center justify-center p-1 sm:p-2 bg-gradient-to-b from-[#070a0f] via-[#090e17] to-[#06080d]">
           {currentMatch.gameType === 'dame' && <DameGame />}
           {currentMatch.gameType === 'igisoro' && <IgisoroGame />}
           {currentMatch.gameType === 'biyari' && <BiyariGame />}

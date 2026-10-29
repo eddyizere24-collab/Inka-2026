@@ -97,7 +97,7 @@ interface PlatformContextType {
   liveMatches: ActiveMatch[];
   currentMatch: ActiveMatch | null;
   setCurrentMatch: (match: ActiveMatch | null) => void;
-  startMatch: (gameType: GameType, opponent: PlayerProfile, timeControl?: TimeControl) => ActiveMatch;
+  startMatch: (gameType: GameType, opponent: PlayerProfile, timeControl?: TimeControl, message?: string) => ActiveMatch;
   concludeMatch: (reason: string, isDraw?: boolean, winner?: 'A' | 'B') => void;
   updateMatchScore: (scoreResult: MatchScoreResult) => void;
   addSpectatorComment: (matchId: string, comment: string) => void;
